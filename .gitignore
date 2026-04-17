@@ -1,0 +1,15 @@
+.DS_Store
+
+nvim/.luarc.json
+nvim/parser/
+nvim/parser-info/
+nvim/queries/
+nvim/.ruff_cache/
+
+java-scratch/**/target/
+java-scratch/**/out/
+java-scratch/**/*.class
+
+*.log
+*.swp
+*.swo

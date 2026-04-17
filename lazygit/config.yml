@@ -1,0 +1,19 @@
+gui:
+  border: "single"
+  nerdFontsVersion: "3"
+  showIcons: true
+  showRandomTip: false
+  showCommandLog: false
+  showBottomLine: true
+git:
+  pagers:
+    - pager: ""
+  branchLogCmd: "git log --graph --color=always --abbrev-commit --decorate --date=relative --pretty=medium {{branchName}} --"
+os:
+  editPreset: 'nvim'
+disableStartupPopups: true
+customCommands:
+  - key: "<c-s>"
+    command: 'git diff --cached --quiet || (git commit -m "Sync: $(date +%d-%m-%Y\ %H:%M:%S)" && git push)'
+    context: "files"
+    output: popup

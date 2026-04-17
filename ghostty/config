@@ -1,0 +1,14 @@
+theme = Nord
+font-family = JetBrainsMono Nerd Font Mono
+font-size = 22
+cursor-style = block
+cursor-color = #88C0D0
+window-decoration = false
+macos-window-shadow = false
+window-padding-x = 10
+window-padding-y = 0
+window-save-state = always
+mouse-hide-while-typing = true
+keybind = global:ctrl+option+super+q=toggle_quick_terminal
+keybind = super+k=increase_font_size:1
+keybind = super+j=decrease_font_size:1

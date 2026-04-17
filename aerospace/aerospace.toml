@@ -1,0 +1,82 @@
+default-root-container-layout = "accordion"
+start-at-login = true
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+accordion-padding = 0
+automatically-unhide-macos-hidden-apps = true
+
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+
+after-startup-command = [
+  'exec-and-forget open -a "Ghostty"'
+]
+
+[workspace-to-monitor-force-assignment]
+1 = 'main'
+2 = 'main'
+3 = 'main'
+E = 'secondary'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.Notes'
+run = 'layout floating'
+[[on-window-detected]]
+if.app-id = 'com.apple.iCal'
+run = 'layout floating'
+[[on-window-detected]]
+if.app-id = 'com.apple.reminders'
+run = 'layout floating'
+[[on-window-detected]]
+if.app-id = 'com.apple.finder'
+run = 'layout floating'
+[[on-window-detected]]
+if.app-id = 'com.apple.ActivityMonitor'
+run = 'layout floating'
+[[on-window-detected]]
+if.app-id = 'com.apple.Music'
+run = 'layout floating'
+[[on-window-detected]]
+if.app-id = 'com.apple.Preview'
+run = 'layout floating'
+[[on-window-detected]]
+if.app-id = 'info.sioyek.sioyek'
+run = 'fullscreen'
+
+
+[[on-window-detected]]
+if.app-id = 'com.mitchellh.ghostty'
+run = 'move-node-to-workspace 1'
+[[on-window-detected]]
+if.app-id = 'net.imput.helium'
+run = 'move-node-to-workspace 2'
+[[on-window-detected]]
+if.app-id = 'com.remarkable.desktop'
+run = 'move-node-to-workspace 2'
+[[on-window-detected]]
+if.app-id = 'com.jetbrains.intellij'
+run = 'move-node-to-workspace 3'
+
+[mode.main.binding]
+alt-ctrl-cmd-h = 'focus left'
+alt-ctrl-cmd-j = 'focus down'
+alt-ctrl-cmd-k = 'focus up'
+alt-ctrl-cmd-l = 'focus right'
+
+alt-ctrl-cmd-1 = 'workspace 1'
+alt-ctrl-cmd-2 = 'workspace 2'
+alt-ctrl-cmd-3 = 'workspace 3'
+alt-ctrl-cmd-e = 'workspace E'
+
+alt-ctrl-cmd-shift-1 = 'move-node-to-workspace --focus-follows-window 1'
+alt-ctrl-cmd-shift-2 = 'move-node-to-workspace --focus-follows-window 2'
+alt-ctrl-cmd-shift-3 = 'move-node-to-workspace --focus-follows-window 3'
+alt-ctrl-cmd-shift-e = 'move-node-to-workspace --focus-follows-window E'
+
+alt-ctrl-cmd-shift-f = 'layout floating tiling'
+alt-ctrl-cmd-shift-t = 'layout tiles accordion'
+alt-ctrl-cmd-enter = 'fullscreen'
+alt-ctrl-cmd-x = 'close'
+
+alt-ctrl-cmd-s = 'exec-and-forget open -a Helium'
+alt-ctrl-cmd-t = 'exec-and-forget open -a Ghostty'
+alt-ctrl-cmd-f = 'exec-and-forget open -a Finder'

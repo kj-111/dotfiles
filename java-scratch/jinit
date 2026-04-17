@@ -1,0 +1,92 @@
+#!/bin/sh
+
+set -eu
+
+usage() {
+  cat <<EOF
+Usage: $(basename "$0") [OPTIONS] <project-name-or-path>
+
+Options:
+  -m, --maven    Create a Maven project with JUnit 5
+  -h, --help     Show this help message
+
+Examples:
+  $(basename "$0") demo
+  $(basename "$0") ~/projects/scratch/demo
+  $(basename "$0") --maven demo
+  $(basename "$0") -m ~/projects/scratch/demo
+EOF
+  exit 0
+}
+
+use_maven=false
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    -m|--maven)
+      use_maven=true
+      shift
+      ;;
+    -h|--help)
+      usage
+      ;;
+    -*)
+      printf 'Unknown option: %s\n' "$1" >&2
+      exit 1
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+[ "$#" -eq 1 ] || usage
+
+script_path=$0
+while [ -L "$script_path" ]; do
+  link_target=$(readlink "$script_path")
+  case "$link_target" in
+    /*) script_path="$link_target" ;;
+    *)
+      link_dir=$(CDPATH= cd -- "$(dirname -- "$script_path")" && pwd)
+      script_path="$link_dir/$link_target"
+      ;;
+  esac
+done
+
+script_dir=$(CDPATH= cd -- "$(dirname -- "$script_path")" && pwd)
+
+if [ "$use_maven" = true ]; then
+  template_dir="$script_dir/templates-maven"
+else
+  template_dir="$script_dir/templates"
+fi
+
+case "$1" in
+  /*) target_dir="$1" ;;
+  *) target_dir="$PWD/$1" ;;
+esac
+
+project_name=$(basename "$target_dir")
+
+if [ -e "$target_dir" ] && [ -n "$(ls -A "$target_dir" 2>/dev/null)" ]; then
+  printf 'Directory is not empty: %s\n' "$target_dir" >&2
+  exit 1
+fi
+
+mkdir -p "$target_dir"
+cp -R "$template_dir"/. "$target_dir"
+
+if [ "$use_maven" = true ]; then
+  PROJECT_NAME="$project_name" perl -0pi -e 's/__PROJECT_NAME__/$ENV{PROJECT_NAME}/g' \
+    "$target_dir/pom.xml" \
+    "$target_dir/src/main/java/Main.java"
+  printf 'Created Maven Java project: %s\n' "$target_dir"
+  printf 'Run with: cd "%s" && mvn test\n' "$target_dir"
+else
+  PROJECT_NAME="$project_name" perl -0pi -e 's/__PROJECT_NAME__/$ENV{PROJECT_NAME}/g' \
+    "$target_dir/.project" \
+    "$target_dir/src/Main.java"
+  printf 'Created Java scratch project: %s\n' "$target_dir"
+  printf 'Run with: cd "%s" && java src/Main.java\n' "$target_dir"
+fi
