@@ -44,4 +44,12 @@ git_branch_name() {
   [[ -n $branch ]] && echo " %B%F{#B48EAD} $branch%f%b"
 }
 
-prompt='%B%F{#88C0D0}%2~%f%b$(git_branch_name) %B%F{#EBCB8B}❯%f%b '
+prompt_arrow() {
+  if [[ -n $TMUX ]]; then
+    echo "%B%F{#EBCB8B}❯%f%b"
+  else
+    echo "%B%F{#BF616A}❭%f%b"
+  fi
+}
+
+prompt='%B%F{#88C0D0}%2~%f%b$(git_branch_name) $(prompt_arrow) '

@@ -40,7 +40,8 @@ jinit -m ~/projects/scratch/demo
 Maakt een Maven project met:
 - `pom.xml` (Java 25, JUnit 5.14.2)
 - `src/main/java/Main.java`
-- `src/test/java/MainTest.java`
+- `src/test/java/MainTest.java` met gangbare JUnit 5 assertions
+- `.project`, `.classpath` en `.settings/` voor jdtls/Eclipse tooling
 
 ```sh
 cd demo
@@ -64,9 +65,9 @@ Options:
 ```bash
 templates/
 ├── .classpath
+├── .gitignore
 ├── .java-root
 ├── .project
-├── out/
 └── src/
     └── Main.java
 ```
@@ -75,6 +76,10 @@ templates/
 
 ```bash
 templates-maven/
+├── .classpath
+├── .gitignore
+├── .project
+├── .settings/
 ├── pom.xml
 └── src/
     ├── main/java/

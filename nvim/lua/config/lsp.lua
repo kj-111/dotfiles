@@ -4,7 +4,7 @@ return {
       capabilities = require('blink.cmp').get_lsp_capabilities(),
     })
 
-    vim.lsp.enable({ 'clangd', 'lua_ls', 'pyright', 'ruff', 'ts_ls' })
+    vim.lsp.enable({ 'basedpyright', 'clangd', 'lua_ls', 'ruff', 'ts_ls' })
 
     vim.diagnostic.config({
       virtual_text = false,
@@ -19,7 +19,11 @@ return {
 
         if client and client.name == 'ruff' then client.server_capabilities.hoverProvider = false end
 
-        if client and client.name == 'ts_ls' and client:supports_method('textDocument/inlayHint') then
+        if
+          client
+          and vim.tbl_contains({ 'basedpyright', 'ts_ls' }, client.name)
+          and client:supports_method('textDocument/inlayHint')
+        then
           vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
         end
       end,

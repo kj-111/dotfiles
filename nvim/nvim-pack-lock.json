@@ -13,6 +13,10 @@
       "rev": "b5c252ec1ef07f37620554f49987b12054fee200",
       "src": "git@github.com:kj-111/dodona.nvim.git"
     },
+    "markview.nvim": {
+      "rev": "86cf4bcede58e88497f7e5214efb281d4a6f633d",
+      "src": "https://github.com/OXY2DEV/markview.nvim"
+    },
     "mason.nvim": {
       "rev": "12ddd182d9efbdc848b540f16484a583d52da0fb",
       "src": "https://github.com/mason-org/mason.nvim"
@@ -30,7 +34,7 @@
       "src": "https://github.com/nvim-mini/mini.pick"
     },
     "miniharp.nvim": {
-      "rev": "251314fac7fe21733671f2c9c7ec0e0e3b0a2851",
+      "rev": "7799937b82318e50ad260b7a6d79dd4b230861f2",
       "src": "git@github.com:kj-111/miniharp.nvim.git"
     },
     "nvim-jdtls": {

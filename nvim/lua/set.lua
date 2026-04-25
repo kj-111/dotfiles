@@ -12,6 +12,7 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.numberwidth = 5
 vim.opt.showmode = false
+vim.opt.shortmess:append('Iws')
 vim.opt.signcolumn = 'yes'
 vim.opt.splitright = true
 vim.opt.splitbelow = true
@@ -40,6 +41,6 @@ vim.opt.timeoutlen = 300
 vim.opt.virtualedit = 'block'
 vim.opt.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣', leadmultispace = '│   ' }
-vim.opt.mouse = ''
+vim.opt.mouse = 'a'
 
 vim.opt.undofile = true

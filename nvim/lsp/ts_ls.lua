@@ -27,9 +27,9 @@ return {
       inlayHints = {
         includeInlayParameterNameHints = 'literals',
         includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-        includeInlayFunctionParameterTypeHints = false,
-        includeInlayVariableTypeHints = false,
-        includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayVariableTypeHints = true,
+        includeInlayVariableTypeHintsWhenTypeMatchesName = true,
         includeInlayPropertyDeclarationTypeHints = false,
         includeInlayFunctionLikeReturnTypeHints = false,
         includeInlayEnumMemberValueHints = false,

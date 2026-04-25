@@ -80,13 +80,13 @@ cp -R "$template_dir"/. "$target_dir"
 if [ "$use_maven" = true ]; then
   PROJECT_NAME="$project_name" perl -0pi -e 's/__PROJECT_NAME__/$ENV{PROJECT_NAME}/g' \
     "$target_dir/pom.xml" \
-    "$target_dir/src/main/java/Main.java"
+    "$target_dir/.project" \
+    "$target_dir/src/main/java/Main.java" \
+    "$target_dir/src/test/java/MainTest.java"
   printf 'Created Maven Java project: %s\n' "$target_dir"
-  printf 'Run with: cd "%s" && mvn test\n' "$target_dir"
 else
   PROJECT_NAME="$project_name" perl -0pi -e 's/__PROJECT_NAME__/$ENV{PROJECT_NAME}/g' \
     "$target_dir/.project" \
     "$target_dir/src/Main.java"
   printf 'Created Java scratch project: %s\n' "$target_dir"
-  printf 'Run with: cd "%s" && java src/Main.java\n' "$target_dir"
 fi

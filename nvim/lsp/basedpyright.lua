@@ -1,5 +1,5 @@
 return {
-  cmd = { 'pyright-langserver', '--stdio' },
+  cmd = { 'basedpyright-langserver', '--stdio' },
   filetypes = { 'python' },
   root_markers = {
     'pyrightconfig.json',
@@ -11,14 +11,19 @@ return {
     '.git',
   },
   settings = {
-    pyright = {
+    basedpyright = {
       disableOrganizeImports = true,
-    },
-    python = {
       analysis = {
         autoSearchPaths = true,
-        useLibraryCodeForTypes = true,
         diagnosticMode = 'openFilesOnly',
+        typeCheckingMode = 'basic',
+        useLibraryCodeForTypes = true,
+        inlayHints = {
+          callArgumentNames = true,
+          callArgumentNamesMatching = false,
+          functionReturnTypes = true,
+          variableTypes = true,
+        },
       },
     },
   },

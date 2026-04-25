@@ -1,16 +1,8 @@
 local M = {}
 
-local tools = {
-  'clangd',
-  'jdtls',
-  'lua-language-server',
-  'prettierd',
-  'pyright',
-  'ruff',
-  'stylua',
-  'tree-sitter-cli',
-  'typescript-language-server',
-}
+-- stylua: ignore
+local tools = { 'basedpyright', 'clangd', 'jdtls', 'lua-language-server',
+'prettierd', 'ruff', 'stylua', 'tree-sitter-cli', 'typescript-language-server',}
 
 function M.setup()
   require('mason').setup({

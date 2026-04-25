@@ -28,14 +28,14 @@ local function ensure_terminal_buffer()
 end
 
 local function open_window()
-  local height = math.floor(vim.o.lines * 0.91)
+  local height = vim.o.lines
 
   state.win = vim.api.nvim_open_win(state.buf, true, {
     relative = 'editor',
     width = vim.o.columns,
     height = height,
     col = 0,
-    row = math.floor((vim.o.lines - height) * 0.2),
+    row = 0,
     style = 'minimal',
   })
 

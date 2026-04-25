@@ -5,6 +5,7 @@ if vim.fn.exists('syntax_on') == 1 then vim.cmd.syntax('reset') end
 vim.o.termguicolors = true
 vim.g.colors_name = 'nord'
 
+-- Nord base palette, plus a few local UI accents.
 local c = {
   none = 'NONE',
   nord0 = '#2E3440',
@@ -12,6 +13,7 @@ local c = {
   nord2 = '#434C5E',
   nord3 = '#4C566A',
   nord3_bright = '#616E88',
+  inlay_hint = '#6F5F73',
   nord4 = '#D8DEE9',
   nord5 = '#E5E9F0',
   nord6 = '#ECEFF4',
@@ -28,6 +30,7 @@ local c = {
 
 local set = function(group, spec) vim.api.nvim_set_hl(0, group, spec) end
 
+-- Terminal ANSI colors, aligned with the main Nord accents.
 for index, color in ipairs({
   c.nord1,
   c.nord11,
@@ -49,7 +52,10 @@ for index, color in ipairs({
   vim.g['terminal_color_' .. (index - 1)] = color
 end
 
+-- Highlight groups are split by editor UI, syntax, Markdown, Treesitter,
+-- plugin integrations and LSP/completion UI.
 local groups = {
+  -- Core editor UI
   Normal = { fg = c.nord4, bg = c.nord0 },
   NormalFloat = { fg = c.nord4, bg = c.nord0 },
   FloatBorder = { fg = c.nord1, bg = c.nord0 },
@@ -114,6 +120,7 @@ local groups = {
   CursorLineFold = { fg = c.nord7 },
   CursorLineSign = { fg = c.nord4, bg = c.nord1 },
 
+  -- Classic syntax groups
   Comment = { fg = c.nord3_bright },
   Constant = { fg = c.nord4 },
   Character = { fg = c.nord14 },
@@ -148,6 +155,8 @@ local groups = {
   Todo = { fg = c.nord13 },
   String = { fg = c.nord14 },
   Link = { fg = c.nord9, underline = true },
+
+  -- Legacy Markdown syntax groups
   htmlLink = { link = 'Link' },
   mkdLink = { link = 'Link' },
   markdownLinkText = { link = 'Link' },
@@ -165,6 +174,7 @@ local groups = {
   mkdCodeStart = { fg = c.nord8 },
   mkdCodeEnd = { fg = c.nord8 },
 
+  -- Treesitter captures
   ['@comment'] = { fg = c.nord3_bright },
   ['@comment.note'] = { fg = c.nord10 },
   ['@comment.warning'] = { fg = c.nord15 },
@@ -237,6 +247,89 @@ local groups = {
   ['@markup.heading.5.delimiter'] = { fg = c.nord8 },
   ['@markup.heading.6.delimiter'] = { fg = c.nord15 },
 
+  -- Markview.nvim, mirrored from the Markdown heading/list/link/code palette.
+  MarkviewPalette0 = { fg = c.nord3_bright, bg = c.none },
+  MarkviewPalette0Fg = { fg = c.nord3_bright },
+  MarkviewPalette0Bg = { bg = c.none },
+  MarkviewPalette0Sign = { fg = c.nord3_bright },
+  MarkviewPalette1 = { fg = c.nord11, bg = c.none },
+  MarkviewPalette1Fg = { fg = c.nord11 },
+  MarkviewPalette1Bg = { bg = c.none },
+  MarkviewPalette1Sign = { fg = c.nord11 },
+  MarkviewPalette2 = { fg = c.nord12, bg = c.none },
+  MarkviewPalette2Fg = { fg = c.nord12 },
+  MarkviewPalette2Bg = { bg = c.none },
+  MarkviewPalette2Sign = { fg = c.nord12 },
+  MarkviewPalette3 = { fg = c.nord13, bg = c.none },
+  MarkviewPalette3Fg = { fg = c.nord13 },
+  MarkviewPalette3Bg = { bg = c.none },
+  MarkviewPalette3Sign = { fg = c.nord13 },
+  MarkviewPalette4 = { fg = c.nord14, bg = c.none },
+  MarkviewPalette4Fg = { fg = c.nord14 },
+  MarkviewPalette4Bg = { bg = c.none },
+  MarkviewPalette4Sign = { fg = c.nord14 },
+  MarkviewPalette5 = { fg = c.nord8, bg = c.none },
+  MarkviewPalette5Fg = { fg = c.nord8 },
+  MarkviewPalette5Bg = { bg = c.none },
+  MarkviewPalette5Sign = { fg = c.nord8 },
+  MarkviewPalette6 = { fg = c.nord15, bg = c.none },
+  MarkviewPalette6Fg = { fg = c.nord15 },
+  MarkviewPalette6Bg = { bg = c.none },
+  MarkviewPalette6Sign = { fg = c.nord15 },
+  MarkviewPalette7 = { fg = c.nord9, bg = c.none },
+  MarkviewPalette7Fg = { fg = c.nord9 },
+  MarkviewPalette7Bg = { bg = c.none },
+  MarkviewPalette7Sign = { fg = c.nord9 },
+  MarkviewCode = { bg = c.nord1 },
+  MarkviewCodeFg = { fg = c.nord1 },
+  MarkviewCodeInfo = { fg = c.nord3_bright, bg = c.nord1 },
+  MarkviewInlineCode = { fg = c.nord9, bg = c.nord1 },
+  MarkviewBlockQuoteDefault = { link = 'MarkviewPalette0Fg' },
+  MarkviewBlockQuoteError = { link = 'MarkviewPalette1Fg' },
+  MarkviewBlockQuoteNote = { link = 'MarkviewPalette5Fg' },
+  MarkviewBlockQuoteOk = { link = 'MarkviewPalette4Fg' },
+  MarkviewBlockQuoteSpecial = { link = 'MarkviewPalette3Fg' },
+  MarkviewBlockQuoteWarn = { link = 'MarkviewPalette2Fg' },
+  MarkviewCheckboxCancelled = { link = 'MarkviewPalette0Fg' },
+  MarkviewCheckboxChecked = { link = 'MarkviewPalette4Fg' },
+  MarkviewCheckboxPending = { link = 'MarkviewPalette2Fg' },
+  MarkviewCheckboxProgress = { link = 'MarkviewPalette6Fg' },
+  MarkviewCheckboxUnchecked = { link = 'MarkviewPalette1Fg' },
+  MarkviewCheckboxStriked = { fg = c.nord3_bright, strikethrough = true },
+  MarkviewIcon0 = { fg = c.nord3_bright, bg = c.nord1 },
+  MarkviewIcon1 = { fg = c.nord11, bg = c.nord1 },
+  MarkviewIcon2 = { fg = c.nord12, bg = c.nord1 },
+  MarkviewIcon3 = { fg = c.nord13, bg = c.nord1 },
+  MarkviewIcon4 = { fg = c.nord14, bg = c.nord1 },
+  MarkviewIcon5 = { fg = c.nord8, bg = c.nord1 },
+  MarkviewIcon6 = { fg = c.nord15, bg = c.nord1 },
+  MarkviewHeading1 = { link = 'MarkviewPalette1' },
+  MarkviewHeading2 = { link = 'MarkviewPalette2' },
+  MarkviewHeading3 = { link = 'MarkviewPalette3' },
+  MarkviewHeading4 = { link = 'MarkviewPalette4' },
+  MarkviewHeading5 = { link = 'MarkviewPalette5' },
+  MarkviewHeading6 = { link = 'MarkviewPalette6' },
+  MarkviewHeading1Sign = { link = 'MarkviewPalette1Sign' },
+  MarkviewHeading2Sign = { link = 'MarkviewPalette2Sign' },
+  MarkviewHeading3Sign = { link = 'MarkviewPalette3Sign' },
+  MarkviewHeading4Sign = { link = 'MarkviewPalette4Sign' },
+  MarkviewHeading5Sign = { link = 'MarkviewPalette5Sign' },
+  MarkviewHeading6Sign = { link = 'MarkviewPalette6Sign' },
+  MarkviewHyperlink = { link = 'Link' },
+  MarkviewImage = { link = 'Link' },
+  MarkviewEmail = { link = 'Link' },
+  MarkviewSubscript = { link = 'MarkviewPalette3Fg' },
+  MarkviewSuperscript = { link = 'MarkviewPalette6Fg' },
+  MarkviewListItemMinus = { link = 'markdownListMarker' },
+  MarkviewListItemPlus = { link = 'markdownListMarker' },
+  MarkviewListItemStar = { link = 'markdownListMarker' },
+  MarkviewTableHeader = { link = '@markup.heading.3' },
+  MarkviewTableBorder = { fg = c.nord8 },
+  MarkviewTableAlignLeft = { link = '@markup.heading.3' },
+  MarkviewTableAlignCenter = { link = '@markup.heading.3' },
+  MarkviewTableAlignRight = { link = '@markup.heading.3' },
+
+  -- Legacy Treesitter group aliases
   TSComment = { link = '@comment' },
   TSString = { link = '@string' },
   TSCharacter = { link = '@character' },
@@ -268,6 +361,7 @@ local groups = {
   TSPunctBracket = { link = '@punctuation.bracket' },
   TSPunctSpecial = { link = '@punctuation.special' },
 
+  -- Filetype-specific compatibility groups
   yamlBlockMappingKey = { fg = c.nord7 },
   yamlBool = { link = 'Boolean' },
   yamlDocumentStart = { link = 'Keyword' },
@@ -276,6 +370,7 @@ local groups = {
   yamlTSPunctSpecial = { link = 'Keyword' },
   yamlKey = { fg = c.nord7 },
 
+  -- LSP references and diagnostics
   LspReferenceText = { fg = c.nord4, bg = c.nord1 },
   LspReferenceRead = { fg = c.nord4, bg = c.nord1 },
   LspReferenceWrite = { fg = c.nord4, bg = c.nord1 },
@@ -295,12 +390,13 @@ local groups = {
   DiagnosticUnderlineWarn = { sp = c.nord15, undercurl = true },
   DiagnosticUnderlineInfo = { sp = c.nord10, undercurl = true },
   DiagnosticUnderlineHint = { sp = c.nord10, undercurl = true },
-  LspInlayHint = { fg = c.nord3_bright },
-  LspCodeLens = { fg = c.nord3_bright },
+  LspInlayHint = { fg = c.inlay_hint },
+  LspCodeLens = { fg = c.inlay_hint },
   LspSignatureActiveParameter = { underline = true, sp = c.nord4 },
   DiagnosticDeprecated = { strikethrough = true, fg = c.nord3_bright },
   DiagnosticUnnecessary = { fg = c.nord3_bright },
 
+  -- blink.cmp
   BlinkCmpLabel = { fg = c.nord4 },
   BlinkCmpLabelDeprecated = { fg = c.nord3_bright, strikethrough = true },
   BlinkCmpLabelMatch = { fg = c.nord9 },
@@ -312,7 +408,7 @@ local groups = {
   BlinkCmpDoc = { fg = c.nord4, bg = c.nord0 },
   BlinkCmpDocBorder = { fg = c.nord3, bg = c.nord0 },
   BlinkCmpSignatureHelpBorder = { fg = c.nord3, bg = c.nord0 },
-  BlinkCmpGhostText = { fg = c.nord3_bright },
+  BlinkCmpGhostText = { fg = c.inlay_hint },
   BlinkCmpKind = { link = 'PmenuKind' },
   BlinkCmpSource = { link = 'PmenuExtra' },
   BlinkCmpKindText = { link = 'BlinkCmpKind' },
@@ -342,6 +438,7 @@ local groups = {
   BlinkCmpKindTypeParameter = { link = 'BlinkCmpKind' },
 }
 
+-- Apply all highlight groups after the full table is built.
 for group, spec in pairs(groups) do
   set(group, spec)
 end
