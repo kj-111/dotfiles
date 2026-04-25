@@ -88,5 +88,5 @@ else
   PROJECT_NAME="$project_name" perl -0pi -e 's/__PROJECT_NAME__/$ENV{PROJECT_NAME}/g' \
     "$target_dir/.project" \
     "$target_dir/src/Main.java"
-  printf 'Created Java scratch project: %s\n' "$target_dir"
+  printf 'Created Plain Java project: %s\n' "$target_dir"
 fi

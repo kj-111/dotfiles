@@ -1,6 +1,6 @@
-# Java Scratch
+# jinit
 
-Generator voor Java scratch projecten met twee modi: plain en Maven.
+Generator voor Java projecten met twee modi: plain en Maven.
 
 ## Vereisten
 
@@ -12,10 +12,10 @@ Generator voor Java scratch projecten met twee modi: plain en Maven.
 
 ## Installatie
 
-Zorg dat `jinit` in je `PATH` staat. Bijvoorbeeld:
+Zorg dat `jinit` in je `PATH` staat. Bijvoorbeeld via een symlink:
 
 ```sh
-export PATH="$HOME/.config/java-scratch:$PATH"
+ln -s "$HOME/.config/nvim/jinit/jinit" "$HOME/bin/jinit"
 ```
 
 ## Gebruik
@@ -124,3 +124,4 @@ Voordelen:
 |--------|--------|
 | maven-compiler-plugin | 3.15.0 |
 | maven-surefire-plugin | 3.5.5 |
+

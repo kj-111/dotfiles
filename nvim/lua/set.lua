@@ -11,6 +11,8 @@ vim.o.guicursor = 'n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20,t:block-TermCursor'
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.numberwidth = 5
+vim.opt.laststatus = 3
+vim.opt.cmdheight = 1
 vim.opt.showmode = false
 vim.opt.shortmess:append('Iws')
 vim.opt.signcolumn = 'yes'
@@ -42,5 +44,6 @@ vim.opt.virtualedit = 'block'
 vim.opt.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣', leadmultispace = '│   ' }
 vim.opt.mouse = 'a'
+vim.opt.mousescroll = 'ver:3,hor:0'
 
 vim.opt.undofile = true

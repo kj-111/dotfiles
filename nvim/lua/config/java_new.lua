@@ -1,7 +1,7 @@
 local M = {}
 
 local config = {
-  jinit = vim.fs.normalize(vim.fs.joinpath(vim.fn.stdpath('config'), 'java-scratch', 'jinit')),
+  jinit = vim.fs.normalize(vim.fs.joinpath(vim.fn.stdpath('config'), 'jinit', 'jinit')),
 }
 
 local templates = {

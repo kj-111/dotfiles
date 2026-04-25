@@ -28,6 +28,7 @@ export FZF_DEFAULT_COMMAND='fd --type f --hidden --no-ignore --exclude .git'
 
 source /opt/homebrew/opt/fzf/shell/completion.zsh
 source /opt/homebrew/opt/fzf/shell/key-bindings.zsh
+source $HOME/.config/fzf/key-bindings.zsh
 
 alias c='clear' q='exit'
 alias nv='nvim'
