@@ -30,17 +30,13 @@ function M.setup()
     vim.g.neovide_scale_factor = math.max(0.5, math.min(2.0, scale))
   end
 
-  vim.keymap.set({ 'n', 'i', 'v', 'c', 't' }, '<D-k>', function() change_scale(0.1) end, { silent = true })
-  vim.keymap.set({ 'n', 'i', 'v', 'c', 't' }, '<D-j>', function() change_scale(-0.1) end, { silent = true })
+  vim.keymap.set({ 'n', 'i', 'v', 'c', 't' }, '<D-k>', function() change_scale(0.03) end, { silent = true })
+  vim.keymap.set({ 'n', 'i', 'v', 'c', 't' }, '<D-j>', function() change_scale(-0.03) end, { silent = true })
 
   vim.keymap.set('v', '<D-c>', '"+y', { silent = true })
   vim.keymap.set('n', '<D-v>', '"+p', { silent = true })
   vim.keymap.set('v', '<D-v>', '"+p', { silent = true })
   vim.keymap.set({ 'i', 'c' }, '<D-v>', '<C-r>+', { silent = true })
-  vim.keymap.set('t', '<D-v>', function()
-    local job = vim.b.terminal_job_id
-    if job then vim.api.nvim_chan_send(job, vim.fn.getreg('+')) end
-  end, { silent = true })
 
   for _, key in ipairs({ 'q', 'w', 'n', 'm', 'h', 'f', '[', ']', 's' }) do
     vim.keymap.set({ 'n', 'i', 'v', 'c', 't' }, '<D-' .. key .. '>', '<Nop>', { silent = true })
