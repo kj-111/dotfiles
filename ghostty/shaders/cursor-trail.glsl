@@ -79,6 +79,11 @@ float animation_duration(vec2 move_vec, vec4 current_cursor) {
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     fragColor = texture(iChannel0, fragCoord.xy / iResolution.xy);
 
+    float elapsed = iTime - iTimeCursorChange;
+    if (elapsed >= ANIMATION_LENGTH || iCursorVisible.x <= 0.0) {
+        return;
+    }
+
     vec2 vu = normalize(fragCoord, 1.0);
     vec2 offset_factor = vec2(-0.5, 0.5);
 
@@ -93,9 +98,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float line_length = length(move_vec);
     float min_distance = max(current_cursor.z, current_cursor.w) * THRESHOLD_MIN_DISTANCE;
     float duration = animation_duration(move_vec, current_cursor);
-    float elapsed = iTime - iTimeCursorChange;
 
-    if (line_length <= min_distance || elapsed >= duration || iCursorVisible.x <= 0.0) {
+    if (line_length <= min_distance || elapsed >= duration) {
         return;
     }
 
