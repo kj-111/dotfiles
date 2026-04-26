@@ -2,8 +2,8 @@
 #
 # Based on Homebrew fzf's shell/key-bindings.zsh, but kept in dotfiles so Brew
 # upgrades do not overwrite local behavior.
-# - Ctrl-F: select a file and open it with nvim.
-# - Ctrl-E: select a directory and open it with nvim.
+# - Ctrl-F: select a file and insert its path.
+# - Ctrl-E: select a directory and cd into it.
 
 if [[ "${FZF_CTRL_T_COMMAND-x}" != "" ]]; then
   fzf-file-widget() {
@@ -26,10 +26,8 @@ if [[ "${FZF_CTRL_T_COMMAND-x}" != "" ]]; then
       return 0
     fi
 
-    zle push-line
-    BUFFER="nvim ${(q)file}"
-    zle accept-line
-    ret=$?
+    LBUFFER+="${(q)file}"
+    zle redisplay
     zle reset-prompt
     return $ret
   }
@@ -57,7 +55,7 @@ if [[ "${FZF_ALT_C_COMMAND-x}" != "" ]]; then
     fi
 
     zle push-line
-    BUFFER="nvim ${(q)dir:a}"
+    BUFFER="cd -- ${(q)dir:a}"
     zle accept-line
     local ret=$?
     unset dir

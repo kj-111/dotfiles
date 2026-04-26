@@ -1,29 +1,31 @@
 tap "anomalyco/tap"
 tap "nikitabobko/tap"
-# OpenType text shaping engine
-brew "harfbuzz"
 # General-purpose data compression with high compression ratio
 brew "xz"
+# OpenType text shaping engine
+brew "harfbuzz"
 # Apache Derby is an embedded relational database running on JVM
 brew "derby"
 # Simple, fast and user-friendly alternative to find
 brew "fd"
+# Cryptography and SSL/TLS Toolkit
+brew "openssl@3"
 # Command-line fuzzy finder written in Go
 brew "fzf"
 # Simple terminal UI for git commands
 brew "lazygit"
-# Cryptography and SSL/TLS Toolkit
-brew "openssl@3"
 # Java-based project management
 brew "maven"
 # Deep clean and optimize your Mac
 brew "mole"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.14"
+# Media player based on MPlayer and mplayer2
+brew "mpv"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
 # Open-source, cross-platform JavaScript runtime environment
 brew "node"
-# Interpreted, interactive, object-oriented programming language
-brew "python@3.14"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # Terminal multiplexer
@@ -41,6 +43,8 @@ cask "codex"
 cask "font-jetbrains-mono-nerd-font"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
+# Neovim Client
+cask "neovide-app"
 # Drag & drop GUI designer for JavaFX
 cask "scenebuilder"
 # JDK from the Eclipse Foundation (Adoptium)

@@ -4,7 +4,6 @@ setopt prompt_subst INC_APPEND_HISTORY SHARE_HISTORY HIST_IGNORE_DUPS HIST_REDUC
 path=(
   $HOME/bin
   $HOME/.local/bin
-  $HOME/.config/java-scratch
   /opt/homebrew/bin
   /opt/homebrew/sbin
   /usr/local/bin
@@ -32,6 +31,7 @@ source $HOME/.config/fzf/key-bindings.zsh
 
 alias c='clear' q='exit'
 alias nv='nvim'
+alias nvide='neovide'
 alias lg='lazygit' dash='dashboard'
 mkcd() { mkdir -p "$1" && cd "$1" }
 

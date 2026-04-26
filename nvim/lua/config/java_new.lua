@@ -9,9 +9,7 @@ local templates = {
   { name = 'Maven + JUnit', args = { '--maven' }, main = 'src/main/java/Main.java' },
 }
 
-local function target_path(input)
-  return vim.fs.normalize(vim.fn.fnamemodify(vim.fn.expand(input), ':p'))
-end
+local function target_path(input) return vim.fs.normalize(vim.fn.fnamemodify(vim.fn.expand(input), ':p')) end
 
 local function create_project(template, target)
   local cmd = vim.list_extend({ config.jinit }, template.args)
@@ -56,9 +54,7 @@ end
 function M.setup(opts)
   config = vim.tbl_extend('force', config, opts or {})
 
-  vim.api.nvim_create_user_command('JavaNew', function(command)
-    M.new(command.args)
-  end, {
+  vim.api.nvim_create_user_command('JavaNew', function(command) M.new(command.args) end, {
     nargs = '?',
     complete = 'dir',
   })

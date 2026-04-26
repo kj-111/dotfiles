@@ -38,14 +38,13 @@ run = 'layout floating'
 [[on-window-detected]]
 if.app-id = 'com.apple.Preview'
 run = 'layout floating'
-[[on-window-detected]]
-if.app-id = 'info.sioyek.sioyek'
-run = 'fullscreen'
-
 
 [[on-window-detected]]
 if.app-id = 'com.mitchellh.ghostty'
 run = 'move-node-to-workspace 1'
+[[on-window-detected]]
+if.app-id = 'info.sioyek.sioyek'
+run = ['fullscreen on', 'move-node-to-workspace 2']
 [[on-window-detected]]
 if.app-id = 'net.imput.helium'
 run = 'move-node-to-workspace 2'

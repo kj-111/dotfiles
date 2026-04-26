@@ -1,5 +1,10 @@
 vim.g.mapleader = ' '
 
+vim.g.loaded_node_provider = 0
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+
 vim.g.netrw_banner = 0
 vim.g.netrw_hide = 0
 vim.g.netrw_bufsettings = 'noma nomod nu rnu nobl nowrap ro'
@@ -14,7 +19,7 @@ vim.opt.numberwidth = 5
 vim.opt.laststatus = 3
 vim.opt.cmdheight = 1
 vim.opt.showmode = false
-vim.opt.shortmess:append('Iws')
+vim.opt.shortmess:append('IWs')
 vim.opt.signcolumn = 'yes'
 vim.opt.splitright = true
 vim.opt.splitbelow = true
