@@ -3,6 +3,7 @@ font-family = JetBrainsMono Nerd Font Mono
 font-size = 24
 cursor-style = block
 cursor-style-blink = false
+adjust-cursor-thickness = 4
 cursor-color = #88C0D0
 custom-shader = shaders/cursor-trail.glsl
 shell-integration-features = no-cursor,no-sudo,title,no-ssh-env,no-ssh-terminfo,path

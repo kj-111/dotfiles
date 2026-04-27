@@ -12,7 +12,7 @@ vim.g.netrw_bufsettings = 'noma nomod nu rnu nobl nowrap ro'
 function _G.statusline_lsp_icon() return #vim.lsp.get_clients({ bufnr = 0 }) > 0 and '󰰎 ' or '' end
 
 vim.o.winborder = 'single'
-vim.o.guicursor = 'n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20,t:block-TermCursor'
+vim.o.guicursor = 'n-v-c-sm:block,i-ci-ve:ver35,r-cr-o:hor20,t:block-TermCursor'
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.numberwidth = 5
