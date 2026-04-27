@@ -1,8 +1,9 @@
-vim.cmd.highlight('clear')
+vim.o.termguicolors = true
 
+-- Reset highlighting.
+vim.cmd.highlight('clear')
 if vim.fn.exists('syntax_on') == 1 then vim.cmd.syntax('reset') end
 
-vim.o.termguicolors = true
 vim.g.colors_name = 'nord'
 
 -- Nord base palette, plus a few local UI accents.
