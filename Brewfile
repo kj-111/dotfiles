@@ -34,8 +34,6 @@ brew "tmux"
 brew "wget"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
-# The AI coding agent built for the terminal.
-brew "anomalyco/tap/opencode"
 # AeroSpace is an i3-like tiling window manager for macOS
 cask "nikitabobko/tap/aerospace"
 # OpenAI's coding agent that runs in your terminal
