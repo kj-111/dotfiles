@@ -31,7 +31,6 @@ source $HOME/.config/fzf/key-bindings.zsh
 
 alias c='clear' q='exit'
 alias nv='nvim'
-alias nvide='neovide'
 alias lg='lazygit' dash='dashboard'
 mkcd() { mkdir -p "$1" && cd "$1" }
 

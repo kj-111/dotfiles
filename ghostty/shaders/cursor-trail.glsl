@@ -1,9 +1,24 @@
 // Neovide-like Ghostty cursor smear.
 // Adapted from sahaj-b/ghostty-cursor-shaders cursor_warp.glsl.
 // Reference: https://github.com/sahaj-b/ghostty-cursor-shaders
+//
+// Notes:
+// This shader is tuned as a Ghostty approximation of Neovide's cursor feel,
+// not as a full reimplementation. Neovide owns the editor surface directly,
+// while Ghostty only receives terminal cursor cells. That means some motions,
+// such as viewport-only scrolls where Neovim keeps the cursor on the same
+// terminal cell, cannot produce a shader animation here.
+//
+// Intended behavior:
+// - normal/block cursor keeps a subtle smear for real jumps and navigation;
+// - insert/bar cursor remains visually calm while typing;
+// - small horizontal moves, including typing and h/l, are instant/no-smear;
+// - larger jumps, including split/window navigation, still animate;
+// - block/bar shape changes are left to Ghostty because shader morphing added
+//   distracting artifacts.
 
 const float ANIMATION_LENGTH = 0.150;
-const float SHORT_ANIMATION_LENGTH = 0.040;
+const float SHORT_ANIMATION_LENGTH = 0.0;
 const float TRAIL_SIZE = 1.0;
 const float THRESHOLD_MIN_DISTANCE = 0.05;
 const float BLUR = 1.0;
@@ -70,7 +85,8 @@ float get_duration_from_dot(float dot_value, float duration_lead, float duration
 
 float animation_duration(vec2 move_vec, vec4 current_cursor) {
     float line_length = length(move_vec);
-    float short_distance = current_cursor.z * 2.25;
+    float cell_width_estimate = max(current_cursor.z, current_cursor.w * 0.5);
+    float short_distance = cell_width_estimate * 2.25;
     float same_row = 1.0 - step(current_cursor.w * 0.25, abs(move_vec.y));
     float is_short_horizontal = same_row * (1.0 - step(short_distance, line_length));
     return mix(ANIMATION_LENGTH, SHORT_ANIMATION_LENGTH, is_short_horizontal);

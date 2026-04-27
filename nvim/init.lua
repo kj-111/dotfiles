@@ -5,7 +5,6 @@ require('vim._core.ui2').enable({})
 vim.cmd.colorscheme('nord')
 
 require('set')
-require('config.neovide').setup()
 require('autocmds')
 require('remap')
 

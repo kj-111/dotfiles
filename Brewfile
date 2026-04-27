@@ -43,8 +43,6 @@ cask "codex"
 cask "font-jetbrains-mono-nerd-font"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
-# Neovim Client
-cask "neovide-app"
 # Drag & drop GUI designer for JavaFX
 cask "scenebuilder"
 # JDK from the Eclipse Foundation (Adoptium)
