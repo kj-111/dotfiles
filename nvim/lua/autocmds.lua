@@ -83,7 +83,6 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.opt_local.linebreak = true
     vim.opt_local.breakindent = true
 
-    -- vim.keymap.set('i', 'jk', 'jk', { buffer = args.buf })
     vim.keymap.set('n', 'j', 'gj', { buffer = args.buf })
     vim.keymap.set('n', 'k', 'gk', { buffer = args.buf })
   end,
