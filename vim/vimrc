@@ -8,8 +8,8 @@ let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6, 'border': 'sharp' 
 filetype plugin indent on
 syntax enable
 
-set termguicolors
 set background=dark
+colorscheme habamax
 
 let g:netrw_banner = 0
 let g:netrw_hide = 0
