@@ -10,7 +10,6 @@ syntax enable
 
 set termguicolors
 set background=dark
-colorscheme nordless
 
 let g:netrw_banner = 0
 let g:netrw_hide = 0
@@ -23,7 +22,7 @@ set numberwidth=5
 set laststatus=2
 set cmdheight=1
 set shortmess+=IWs
-set signcolumn=yes
+set signcolumn=no
 set splitright
 set splitbelow
 
