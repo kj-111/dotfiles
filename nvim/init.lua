@@ -16,9 +16,8 @@ vim.pack.add({
   'https://github.com/nvim-mini/mini.clue',
   'https://github.com/nvim-mini/mini.pairs',
   'https://github.com/nvim-mini/mini.pick',
-  'git@github.com:kj-111/miniharp.nvim.git',
+  'https://github.com/kj-111/miniharp.nvim',
   'https://github.com/nvim-treesitter/nvim-treesitter',
-  'git@github.com:kj-111/dodona.nvim.git',
   'https://github.com/OXY2DEV/markview.nvim',
 })
 
@@ -34,4 +33,3 @@ require('config.format').setup()
 require('config.java_new').setup()
 require('config.jdtls').setup()
 require('config.lsp').setup()
-require('dodona').setup()

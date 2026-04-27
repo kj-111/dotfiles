@@ -9,10 +9,6 @@
       "rev": "dca1a190aa85f9065979ef35802fb77131911106",
       "src": "https://github.com/stevearc/conform.nvim"
     },
-    "dodona.nvim": {
-      "rev": "b5c252ec1ef07f37620554f49987b12054fee200",
-      "src": "git@github.com:kj-111/dodona.nvim.git"
-    },
     "markview.nvim": {
       "rev": "86cf4bcede58e88497f7e5214efb281d4a6f633d",
       "src": "https://github.com/OXY2DEV/markview.nvim"
@@ -35,7 +31,7 @@
     },
     "miniharp.nvim": {
       "rev": "7799937b82318e50ad260b7a6d79dd4b230861f2",
-      "src": "git@github.com:kj-111/miniharp.nvim.git"
+      "src": "https://github.com/kj-111/miniharp.nvim"
     },
     "nvim-jdtls": {
       "rev": "77ccaeb422f8c81b647605da5ddb4a7f725cda90",
