@@ -17,7 +17,7 @@
 // - block/bar shape changes are left to Ghostty because shader morphing added
 //   distracting artifacts.
 
-const float ANIMATION_LENGTH = 0.150;
+const float ANIMATION_LENGTH = 0.175;
 const float SHORT_ANIMATION_LENGTH = 0.0;
 const float TRAIL_SIZE = 1.0;
 const float THRESHOLD_MIN_DISTANCE = 0.05;
