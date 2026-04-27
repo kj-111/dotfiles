@@ -23,8 +23,6 @@ Options:
   --skip-brew         Do not run brew bundle.
   --skip-checks       Do not run zsh/nvim validation checks.
   -h, --help          Show this help.
-
-Before first full use on a new Mac, set up your GitHub SSH key.
 EOF
 }
 
@@ -187,25 +185,15 @@ brew_bundle() {
   run "$brew_bin" bundle --file "$BREWFILE"
 }
 
-warn_about_ssh_plugins() {
-  local nvim_init="$DOTFILES_DIR/nvim/init.lua"
-
-  [[ -f "$nvim_init" ]] || return
-  grep -q 'git@github.com' "$nvim_init" || return
-  compgen -G "$HOME/.ssh/id_*" >/dev/null || warn "Neovim uses git@github.com plugins; set up GitHub SSH before first plugin install."
-}
-
 validate_setup() {
   [[ "$SKIP_CHECKS" -eq 1 ]] && return
 
   log "Validating zsh config"
   run zsh -n "$DOTFILES_DIR/zshrc"
 
-  warn_about_ssh_plugins
-
   if command -v nvim >/dev/null 2>&1; then
     log "Validating Neovim config"
-    if ! run env GIT_TERMINAL_PROMPT=0 GIT_SSH_COMMAND='ssh -o BatchMode=yes' nvim --headless --cmd 'set shadafile=NONE' -u "$DOTFILES_DIR/nvim/init.lua" +qa; then
+    if ! run env GIT_TERMINAL_PROMPT=0 nvim --headless --cmd 'set shadafile=NONE' -u "$DOTFILES_DIR/nvim/init.lua" +qa; then
       warn "Neovim validation failed. Bootstrap completed, but open nvim manually after checking plugins/tools."
     fi
   else
@@ -220,9 +208,8 @@ Bootstrap complete.
 
 Optional manual steps:
   1. Restart the terminal or run: exec zsh
-  2. Set up your GitHub SSH key, then verify: ssh -T git@github.com
-  3. In Neovim, run :MasonEnsureTools if language tools are missing.
-  4. Open Ghostty once and reload config if needed.
+  2. In Neovim, run :MasonEnsureTools if language tools are missing.
+  3. Open Ghostty once and reload config if needed.
 
 Neovide and neovim-remote are intentionally not restored by this bootstrap.
 EOF
@@ -274,10 +261,6 @@ It will:
   - validate zsh and Neovim unless --skip-checks is used
 
 Existing conflicting files are backed up with a timestamp.
-
-Important:
-  Set up your GitHub SSH key on a new Mac before first full Neovim use.
-  Your config uses git@github.com plugin URLs.
 EOF
 
 if [[ "$YES" -ne 1 ]]; then
