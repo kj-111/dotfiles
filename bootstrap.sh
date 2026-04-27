@@ -50,6 +50,15 @@ run() {
   "$@"
 }
 
+run_quiet() {
+  if [[ "$DRY_RUN" -eq 1 ]]; then
+    run "$@"
+    return
+  fi
+
+  "$@" >/dev/null
+}
+
 write_file() {
   local target="$1"
   local content="$2"
@@ -75,6 +84,41 @@ ensure_dir() {
   [[ -d "$dir" ]] && return
   log "Creating $dir"
   run mkdir -p "$dir"
+}
+
+require_repo_path() {
+  local relative="$1"
+  local path="$DOTFILES_DIR/$relative"
+
+  [[ -e "$path" ]] || die "Missing repo path: $relative"
+}
+
+ensure_managed_config_paths() {
+  log "Checking managed config files"
+
+  require_repo_path "Brewfile"
+  require_repo_path "zshrc"
+  require_repo_path "ripgreprc"
+  require_repo_path "prettierrc"
+  require_repo_path "aerospace/aerospace.toml"
+  require_repo_path "ghostty/config"
+  require_repo_path "ghostty/shaders/cursor-trail.glsl"
+  require_repo_path "lazygit/config.yml"
+  require_repo_path "nvim/init.lua"
+  require_repo_path "nvim/jinit/jinit"
+  require_repo_path "sioyek/keys_user.config"
+  require_repo_path "sioyek/prefs_user.config"
+  require_repo_path "tmux/tmux.conf"
+}
+
+ensure_executable() {
+  local path="$1"
+
+  [[ -f "$path" ]] || die "Missing executable file: $path"
+  [[ -x "$path" ]] && return
+
+  log "Making executable: $path"
+  run chmod +x "$path"
 }
 
 ensure_symlink() {
@@ -191,6 +235,32 @@ validate_setup() {
   log "Validating zsh config"
   run zsh -n "$DOTFILES_DIR/zshrc"
 
+  log "Validating jinit"
+  run_quiet "$DOTFILES_DIR/nvim/jinit/jinit" --help
+
+  if command -v node >/dev/null 2>&1; then
+    log "Validating Prettier JSON config"
+    run_quiet node -e 'JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"))' "$DOTFILES_DIR/prettierrc"
+  else
+    warn "node not found on PATH; skipping Prettier JSON validation."
+  fi
+
+  if command -v tmux >/dev/null 2>&1; then
+    local tmux_socket="${TMPDIR:-/tmp}/tmux-bootstrap-check-$$"
+    local tmux_output
+    log "Validating tmux config"
+    if [[ "$DRY_RUN" -eq 1 ]]; then
+      run tmux -S "$tmux_socket" -f /dev/null start-server \; source-file -n "$DOTFILES_DIR/tmux/tmux.conf" \; kill-server
+    elif ! tmux_output="$(tmux -S "$tmux_socket" -f /dev/null start-server \; source-file -n "$DOTFILES_DIR/tmux/tmux.conf" \; kill-server 2>&1 >/dev/null)"; then
+      warn "tmux validation failed. Bootstrap completed, but check tmux/tmux.conf manually."
+      [[ -z "$tmux_output" ]] || warn "$tmux_output"
+    elif [[ -n "$tmux_output" ]]; then
+      warn "tmux validation skipped or produced diagnostics: $tmux_output"
+    fi
+  else
+    warn "tmux not found on PATH; skipping tmux validation."
+  fi
+
   if command -v nvim >/dev/null 2>&1; then
     log "Validating Neovim config"
     if ! run env GIT_TERMINAL_PROMPT=0 nvim --headless --cmd 'set shadafile=NONE' -u "$DOTFILES_DIR/nvim/init.lua" +qa; then
@@ -209,9 +279,9 @@ Bootstrap complete.
 Optional manual steps:
   1. Restart the terminal or run: exec zsh
   2. In Neovim, run :MasonEnsureTools if language tools are missing.
-  3. Open Ghostty once and reload config if needed.
+  3. Restart AeroSpace/Ghostty/Sioyek if those apps were already running.
+  4. Check gui-apps.txt for manual GUI apps that are not managed by Brewfile.
 
-Neovide and neovim-remote are intentionally not restored by this bootstrap.
 EOF
 }
 
@@ -254,11 +324,12 @@ This will bootstrap your dotfiles from:
 
 It will:
   - create ~/bin and ~/.local/bin
+  - check that the managed app config files exist under ~/.config
   - ensure ~/.zshrc loads ~/.config/zshrc
   - ensure ~/.zshenv loads Cargo env when present
-  - link ~/.ripgreprc and ~/.ideavimrc to this repo
+  - link ~/.ripgreprc, ~/.prettierrc, and ~/bin/jinit to this repo
   - run brew bundle from $BREWFILE unless --skip-brew is used
-  - validate zsh and Neovim unless --skip-checks is used
+  - validate zsh, jinit, tmux, Prettier JSON, and Neovim unless --skip-checks is used
 
 Existing conflicting files are backed up with a timestamp.
 EOF
@@ -278,10 +349,13 @@ fi
 
 ensure_dir "$HOME/bin"
 ensure_dir "$HOME/.local/bin"
+ensure_managed_config_paths
+ensure_executable "$DOTFILES_DIR/nvim/jinit/jinit"
 ensure_zshrc_loader
 ensure_zshenv
 ensure_symlink "$DOTFILES_DIR/ripgreprc" "$HOME/.ripgreprc"
-ensure_symlink "$DOTFILES_DIR/ideavim/ideavimrc" "$HOME/.ideavimrc"
+ensure_symlink "$DOTFILES_DIR/prettierrc" "$HOME/.prettierrc"
+ensure_symlink "$DOTFILES_DIR/nvim/jinit/jinit" "$HOME/bin/jinit"
 brew_bundle
 validate_setup
 print_next_steps

@@ -32,7 +32,7 @@ export FZF_DEFAULT_COMMAND='fd --type f --hidden --no-ignore --exclude .git'
 [[ -r $HOME/.config/fzf/key-bindings.zsh ]] && source $HOME/.config/fzf/key-bindings.zsh
 
 alias c='clear' q='exit'
-alias nv='nvim'
+alias nv='nvim' vi='nvim' vim='nvim'
 alias lg='lazygit' dash='dashboard'
 mkcd() { mkdir -p "$1" && cd "$1" }
 
@@ -50,10 +50,12 @@ git_branch_name() {
 
 prompt_arrow() {
   if [[ -n $TMUX ]]; then
-    echo "%B%F{#EBCB8B}❯%f%b"
+    echo "%B%F{#5E81AC}❯%f%b"
   else
     echo "%B%F{#BF616A}❭%f%b"
   fi
 }
 
-prompt='%B%F{#88C0D0}%2~%f%b$(git_branch_name) $(prompt_arrow) '
+printf '\33c\e[3J' #beter oplossing is touch ~/.hushlogin
+prompt='%B%F{#88C0D0}%2~%f%b $(prompt_arrow) '
+# prompt='%B%F{#88C0D0}%2~%f%b$(git_branch_name) $(prompt_arrow) '

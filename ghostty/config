@@ -1,6 +1,6 @@
 theme = Nord
 font-family = JetBrainsMono Nerd Font Mono
-font-size = 24
+font-size = 23
 cursor-style = block
 cursor-style-blink = false
 adjust-cursor-thickness = 4
@@ -9,7 +9,7 @@ custom-shader = shaders/cursor-trail.glsl
 shell-integration-features = no-cursor,no-sudo,title,no-ssh-env,no-ssh-terminfo,path
 window-decoration = false
 macos-window-shadow = false
-window-padding-x = 10
+window-padding-x = 0
 window-padding-y = 0
 window-save-state = always
 mouse-hide-while-typing = true
