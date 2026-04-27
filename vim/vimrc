@@ -1,0 +1,108 @@
+scriptencoding utf-8
+
+let mapleader = " "
+
+set runtimepath+=/opt/homebrew/opt/fzf
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6, 'border': 'sharp' } }
+
+filetype plugin indent on
+syntax enable
+
+set termguicolors
+set background=dark
+colorscheme nordless
+
+let g:netrw_banner = 0
+let g:netrw_hide = 0
+let g:netrw_dirhistmax = 0
+let g:netrw_bufsettings = 'noma nomod nu rnu nobl nowrap ro'
+
+set number
+set relativenumber
+set numberwidth=5
+set laststatus=2
+set cmdheight=1
+set shortmess+=IWs
+set signcolumn=yes
+set splitright
+set splitbelow
+
+set scrolloff=10
+set nowrap
+set smoothscroll
+set foldlevel=99
+set foldlevelstart=99
+
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set expandtab
+set confirm
+
+set ignorecase
+set smartcase
+set hlsearch
+
+" Default Vim file search and command-line completion.
+set path=.,,**
+set wildmenu
+set wildmode=longest:full,full
+set wildoptions=pum
+set wildignore+=*/.git/*,*/.hg/*,*/.svn/*
+set wildignore+=*/node_modules/*,*/vendor/*,*/target/*,*/build/*,*/dist/*
+set wildignore+=*/.venv/*,*/venv/*,*/__pycache__/*,*/.cache/*
+set wildignore+=*/.mypy_cache/*,*/.pytest_cache/*,*/.ruff_cache/*
+set wildignore+=*/.next/*,*/.nuxt/*,*/coverage/*
+set wildignore+=*.o,*.obj,*.so,*.dylib,*.class,*.jar,*.pyc,*.pyo
+set wildignore+=*.swp,*.swo,*.zip,*.tar,*.gz,*.png,*.jpg,*.jpeg,*.gif,*.webp
+
+set updatetime=200
+set timeoutlen=300
+
+set virtualedit=block
+set list
+set listchars=tab:»\ ,trail:·,nbsp:␣
+set mouse=a
+
+function! s:ToggleExplore() abort
+  if &filetype ==# 'netrw'
+    silent! bdelete
+  else
+    Explore
+  endif
+endfunction
+
+function! s:HelpWindow() abort
+  wincmd L
+  vertical resize 80
+endfunction
+
+function! s:NetrwSetup() abort
+  nnoremap <buffer><silent> h -
+  nmap <buffer><silent> l <CR>
+  setlocal nocursorline nocursorcolumn
+endfunction
+
+nnoremap <C-i> <C-^>
+nnoremap <silent> <C-e> :call <SID>ToggleExplore()<CR>
+nnoremap <silent> <leader>f :FZF<CR>
+
+vnoremap <silent> <C-j> :m '>+1<CR>gv=gv
+vnoremap <silent> <C-k> :m '<-2<CR>gv=gv
+vnoremap < <gv
+vnoremap > >gv
+
+inoremap jk <Esc>
+tnoremap <C-[> <C-\><C-n>
+tnoremap jk <C-\><C-n>
+
+augroup minimal_vim
+  autocmd!
+  autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | execute 'normal! g`"zv' | endif
+  autocmd FocusGained,BufEnter,CursorHold * silent! checktime
+  autocmd FileType help call <SID>HelpWindow()
+  autocmd FileType help,qf,man nnoremap <buffer><silent> q :close<CR>
+  autocmd FileType netrw call <SID>NetrwSetup()
+  autocmd FileType lua setlocal shiftwidth=2 tabstop=2 softtabstop=2
+  autocmd TerminalOpen * setlocal nobuflisted
+augroup END
