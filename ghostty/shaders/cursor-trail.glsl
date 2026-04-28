@@ -14,8 +14,14 @@
 // - insert/bar cursor remains visually calm while typing;
 // - small horizontal moves, including typing and h/l, are instant/no-smear;
 // - larger jumps, including split/window navigation, still animate;
-// - block/bar shape changes are left to Ghostty because shader morphing added
-//   distracting artifacts.
+// - block/bar shape changes get a short best-effort morph overlay.
+//
+// Commit notes:
+// - 4bfe918: added the baseline Ghostty cursor smear shader.
+// - 55d054c: added early exit when cursor animation is done or hidden.
+// - f510840: removed short typing/h-l smear; documented Ghostty limits.
+// - fc1b12c: tuned main cursor smear from 150ms to 175ms.
+// - c955c3c: added the insert-mode block/bar shape morph overlay.
 
 const float ANIMATION_LENGTH = 0.175;
 const float SHORT_ANIMATION_LENGTH = 0.0;
@@ -26,11 +32,21 @@ const float TRAIL_THICKNESS = 1.0;
 const float TRAIL_THICKNESS_X = 1.0;
 const float FADE_ENABLED = 0.0;
 const float FADE_EXPONENT = 5.0;
+const float SHAPE_ANIMATION_LENGTH = 0.05;
+const float SHAPE_MIN_DELTA = 0.08;
+const float SHAPE_LOCAL_DISTANCE = 1.25;
+const float SHAPE_MASK_ALPHA = 0.95;
+const float SHAPE_OVERLAY_ALPHA = 1.0;
+const float SHAPE_BLUR = 1.0;
 
 const float PI = 3.14159265359;
 
 float ease(float x) {
     return sqrt(1.0 - pow(x - 1.0, 2.0));
+}
+
+float ease_shape(float x) {
+    return x * x * (3.0 - 2.0 * x);
 }
 
 float get_sdf_rectangle(in vec2 p, in vec2 xy, in vec2 b) {
@@ -92,11 +108,45 @@ float animation_duration(vec2 move_vec, vec4 current_cursor) {
     return mix(ANIMATION_LENGTH, SHORT_ANIMATION_LENGTH, is_short_horizontal);
 }
 
+vec4 apply_shape_morph(vec4 color, vec2 vu, vec4 current_cursor, vec4 previous_cursor, vec2 offset_factor, float elapsed) {
+    if (elapsed >= SHAPE_ANIMATION_LENGTH) {
+        return color;
+    }
+
+    vec2 center_current = current_cursor.xy - (current_cursor.zw * offset_factor);
+    vec2 center_previous = previous_cursor.xy - (previous_cursor.zw * offset_factor);
+    vec2 size_delta = abs(current_cursor.zw - previous_cursor.zw);
+    float cursor_extent = max(max(current_cursor.z, current_cursor.w), max(previous_cursor.z, previous_cursor.w));
+    float shape_changed = step(cursor_extent * SHAPE_MIN_DELTA, max(size_delta.x, size_delta.y));
+    float local_change = 1.0 - step(cursor_extent * SHAPE_LOCAL_DISTANCE, length(center_current - center_previous));
+
+    if (shape_changed * local_change <= 0.0) {
+        return color;
+    }
+
+    float progress = ease_shape(clamp(elapsed / SHAPE_ANIMATION_LENGTH, 0.0, 1.0));
+    vec4 morph_cursor = mix(previous_cursor, current_cursor, progress);
+    vec2 center_morph = morph_cursor.xy - (morph_cursor.zw * offset_factor);
+
+    float sdf_current = get_sdf_rectangle(vu, center_current, current_cursor.zw * 0.5);
+    float sdf_morph = get_sdf_rectangle(vu, center_morph, morph_cursor.zw * 0.5);
+    float current_alpha = antialiasing(sdf_current, SHAPE_BLUR);
+    float morph_alpha = antialiasing(sdf_morph, SHAPE_BLUR);
+    float is_expanding = step(previous_cursor.z * previous_cursor.w, current_cursor.z * current_cursor.w);
+
+    color = mix(color, vec4(iBackgroundColor, color.a), current_alpha * (1.0 - morph_alpha) * is_expanding * SHAPE_MASK_ALPHA);
+
+    vec4 cursor_color = mix(iPreviousCursorColor, iCurrentCursorColor, progress);
+    color = mix(color, vec4(cursor_color.rgb, color.a), morph_alpha * cursor_color.a * SHAPE_OVERLAY_ALPHA);
+
+    return color;
+}
+
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     fragColor = texture(iChannel0, fragCoord.xy / iResolution.xy);
 
     float elapsed = iTime - iTimeCursorChange;
-    if (elapsed >= ANIMATION_LENGTH || iCursorVisible.x <= 0.0) {
+    if (elapsed >= max(ANIMATION_LENGTH, SHAPE_ANIMATION_LENGTH) || iCursorVisible.x <= 0.0) {
         return;
     }
 
@@ -114,12 +164,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float line_length = length(move_vec);
     float min_distance = max(current_cursor.z, current_cursor.w) * THRESHOLD_MIN_DISTANCE;
     float duration = animation_duration(move_vec, current_cursor);
+    vec4 new_color = apply_shape_morph(vec4(fragColor), vu, current_cursor, previous_cursor, offset_factor, elapsed);
 
     if (line_length <= min_distance || elapsed >= duration) {
+        fragColor = new_color;
         return;
     }
 
-    vec4 new_color = vec4(fragColor);
     float sdf_current_cursor = get_sdf_rectangle(vu, center_current, half_current);
 
     float cc_half_height = current_cursor.w * 0.5;
