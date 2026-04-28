@@ -13,7 +13,6 @@ vim.pack.add({
   'https://github.com/stevearc/conform.nvim',
   'https://github.com/mason-org/mason.nvim',
   'https://github.com/mfussenegger/nvim-jdtls',
-  'https://github.com/nvim-mini/mini.clue',
   'https://github.com/nvim-mini/mini.pairs',
   'https://github.com/nvim-mini/mini.pick',
   'https://github.com/kj-111/miniharp.nvim',
