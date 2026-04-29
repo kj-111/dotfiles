@@ -19,7 +19,7 @@ vim.opt.numberwidth = 5
 vim.opt.laststatus = 3
 vim.opt.cmdheight = 1
 vim.opt.showmode = false
-vim.opt.shortmess:append('IWs')
+vim.opt.shortmess:append('Ws')
 vim.opt.signcolumn = 'yes'
 vim.opt.splitright = true
 vim.opt.splitbelow = true

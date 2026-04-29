@@ -10,3 +10,4 @@ vim.keymap.set('v', '>', '>gv')
 
 vim.keymap.set('i', 'jk', '<Esc>')
 vim.keymap.set('t', '<C-[>', '<C-\\><C-n>')
+vim.keymap.set('t', 'jk', '<C-\\><C-n>')

@@ -57,5 +57,5 @@ prompt_arrow() {
 }
 
 printf '\33c\e[3J' #beter oplossing is touch ~/.hushlogin
-prompt='%B%F{#88C0D0}%2~%f%b $(prompt_arrow) '
-# prompt='%B%F{#88C0D0}%2~%f%b$(git_branch_name) $(prompt_arrow) '
+# prompt='%B%F{#88C0D0}%2~%f%b $(prompt_arrow) '
+prompt='%B%F{#88C0D0}%2~%f%b$(git_branch_name) $(prompt_arrow) '
