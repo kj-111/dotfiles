@@ -9,7 +9,7 @@ local pick_win_config = function()
     anchor = 'NW',
     height = height,
     width = width,
-    row = math.floor(0.3 * (vim.o.lines - height)),
+    row = math.floor(0.5 * (vim.o.lines - height)),
     col = math.floor(0.5 * (vim.o.columns - width)),
   }
 end

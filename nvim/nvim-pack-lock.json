@@ -10,7 +10,7 @@
       "src": "https://github.com/stevearc/conform.nvim"
     },
     "markview.nvim": {
-      "rev": "86cf4bcede58e88497f7e5214efb281d4a6f633d",
+      "rev": "8b82823bbe7b452c5920ab22947e186c6cb067b4",
       "src": "https://github.com/OXY2DEV/markview.nvim"
     },
     "mason.nvim": {
@@ -26,7 +26,7 @@
       "src": "https://github.com/nvim-mini/mini.pick"
     },
     "miniharp.nvim": {
-      "rev": "7799937b82318e50ad260b7a6d79dd4b230861f2",
+      "rev": "fa22a401a02842e940ba1c65c49a24f4c76c2cee",
       "src": "https://github.com/kj-111/miniharp.nvim"
     },
     "nvim-jdtls": {

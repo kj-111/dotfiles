@@ -1,7 +1,6 @@
 local misc = vim.api.nvim_create_augroup('misc', { clear = true })
 local checktime = vim.api.nvim_create_augroup('checktime', { clear = true })
 local close_with_q = vim.api.nvim_create_augroup('close-with-q', { clear = true })
-local help_window = vim.api.nvim_create_augroup('help-window', { clear = true })
 local highlight_yank = vim.api.nvim_create_augroup('highlight-yank', { clear = true })
 local netrw_setup = vim.api.nvim_create_augroup('netrw-setup', { clear = true })
 local filetype_setup = vim.api.nvim_create_augroup('filetype-setup', { clear = true })
@@ -20,16 +19,6 @@ vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold' }, {
   desc = 'Reload files changed outside Neovim',
   group = checktime,
   command = 'checktime',
-})
-
-vim.api.nvim_create_autocmd('FileType', {
-  desc = 'Open help buffers in a vertical split',
-  group = help_window,
-  pattern = 'help',
-  callback = function()
-    vim.cmd.wincmd('L')
-    vim.cmd('vertical resize 80')
-  end,
 })
 
 vim.api.nvim_create_autocmd('TextYankPost', {
