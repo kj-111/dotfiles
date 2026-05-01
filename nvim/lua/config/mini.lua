@@ -28,21 +28,10 @@ local setup_pick = function()
   vim.keymap.set('n', '<leader>j', pick.builtin.buffers)
 end
 
--- miniharp
-local setup_miniharp = function()
-  local miniharp = require('miniharp')
-
-  miniharp.setup()
-
-  vim.keymap.set('n', '<leader>m', miniharp.toggle_file)
-  vim.keymap.set('n', '<leader>l', miniharp.show_list)
-end
-
 -- setup
 function M.setup()
   require('mini.pairs').setup()
   setup_pick()
-  setup_miniharp()
 end
 
 return M

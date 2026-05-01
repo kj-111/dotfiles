@@ -25,10 +25,6 @@
       "rev": "437d44eb57312f23e6b931704694fc294922cd88",
       "src": "https://github.com/nvim-mini/mini.pick"
     },
-    "miniharp.nvim": {
-      "rev": "fa22a401a02842e940ba1c65c49a24f4c76c2cee",
-      "src": "https://github.com/kj-111/miniharp.nvim"
-    },
     "nvim-jdtls": {
       "rev": "77ccaeb422f8c81b647605da5ddb4a7f725cda90",
       "src": "https://github.com/mfussenegger/nvim-jdtls"

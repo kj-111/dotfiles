@@ -15,7 +15,6 @@ vim.pack.add({
   'https://github.com/mfussenegger/nvim-jdtls',
   'https://github.com/nvim-mini/mini.pairs',
   'https://github.com/nvim-mini/mini.pick',
-  'https://github.com/kj-111/miniharp.nvim',
   'https://github.com/nvim-treesitter/nvim-treesitter',
   'https://github.com/OXY2DEV/markview.nvim',
 })
