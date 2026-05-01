@@ -1,17 +1,9 @@
 local M = {}
 
 local function resolve_settings_file(root_dir)
-  local global_settings_file = vim.fs.normalize(vim.fn.expand('~/.config/nvim/java-settings.properties'))
   local project_settings_file = vim.fs.joinpath(root_dir, '.settings', 'org.eclipse.jdt.core.prefs')
 
   if vim.uv.fs_stat(project_settings_file) then return project_settings_file end
-  if vim.uv.fs_stat(global_settings_file) then return global_settings_file end
-end
-
-local function resolve_jdtls_cmd()
-  local path_cmd = vim.fn.exepath('jdtls')
-
-  if path_cmd ~= '' then return path_cmd end
 end
 
 local function start_jdtls(bufnr)
@@ -31,8 +23,8 @@ local function start_jdtls(bufnr)
 
   if not root_dir then return end
 
-  local jdtls_cmd = resolve_jdtls_cmd()
-  if not jdtls_cmd then
+  local jdtls_cmd = vim.fn.exepath('jdtls')
+  if jdtls_cmd == '' then
     vim.notify('jdtls niet gevonden op PATH. Installeer de binary via :MasonInstall jdtls.', vim.log.levels.WARN)
     return
   end
