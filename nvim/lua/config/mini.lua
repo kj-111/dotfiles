@@ -35,8 +35,6 @@ local setup_miniharp = function()
   miniharp.setup()
 
   vim.keymap.set('n', '<leader>m', miniharp.toggle_file)
-  vim.keymap.set('n', '<C-j>', miniharp.next)
-  vim.keymap.set('n', '<C-k>', miniharp.prev)
   vim.keymap.set('n', '<leader>l', miniharp.show_list)
 end
 

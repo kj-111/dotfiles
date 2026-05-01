@@ -3,6 +3,8 @@ vim.keymap.set('n', '<C-e>', function() vim.cmd(vim.bo.filetype == 'netrw' and '
 vim.keymap.set('n', '<leader>u', '<cmd>Undotree<CR>')
 vim.keymap.set('n', '<leader>v', '<cmd>Markview toggle<CR>')
 
+vim.keymap.set('n', '<C-j>', '<cmd>m .+1<CR>==', { silent = true })
+vim.keymap.set('n', '<C-k>', '<cmd>m .-2<CR>==', { silent = true })
 vim.keymap.set('v', '<C-j>', ":m '>+1<CR>gv=gv", { silent = true })
 vim.keymap.set('v', '<C-k>', ":m '<-2<CR>gv=gv", { silent = true })
 vim.keymap.set('v', '<', '<gv')
