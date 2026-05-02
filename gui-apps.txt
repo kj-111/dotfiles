@@ -1,17 +1,5 @@
-GUI apps
-
-Manual / unmanaged:
-- Helium 0.11.3.2
-  Path: /Applications/Helium.app
-
-- Hyperkey 1.56
-  Path: /Applications/Hyperkey.app
-
-- IntelliJ IDEA 2026.1
-  Path: /Applications/IntelliJ IDEA.app
-
-- Sioyek 2.0
-  Path: /Applications/Sioyek.app
-
-- reMarkable 3.26.0
-  Path: /Applications/reMarkable.app
+Helium 0.11.3.2
+Hyperkey 1.56
+IntelliJ IDEA 2026.1
+Sioyek 2.0
+reMarkable 3.26.0

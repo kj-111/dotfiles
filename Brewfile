@@ -1,4 +1,3 @@
-tap "anomalyco/tap"
 tap "nikitabobko/tap"
 # General-purpose data compression with high compression ratio
 brew "xz"
