@@ -16,16 +16,16 @@ vim.pack.add({
   'https://github.com/nvim-mini/mini.pairs',
   'https://github.com/nvim-mini/mini.pick',
   'https://github.com/nvim-treesitter/nvim-treesitter',
-  'https://github.com/OXY2DEV/markview.nvim',
+  'https://github.com/MeanderingProgrammer/render-markdown.nvim',
 })
 
 vim.cmd('packadd nvim.undotree')
 
-require('markview').setup()
 require('config.term').setup()
 require('config.mason').setup()
 require('config.treesitter').setup()
 require('config.mini').setup()
+require('render-markdown').setup()
 require('config.blink').setup()
 require('config.format').setup()
 require('config.java_new').setup()
