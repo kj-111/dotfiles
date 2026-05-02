@@ -25,7 +25,11 @@ require('config.term').setup()
 require('config.mason').setup()
 require('config.treesitter').setup()
 require('config.mini').setup()
-require('render-markdown').setup()
+require('render-markdown').setup({
+  anti_conceal = {
+    enabled = false,
+  },
+})
 require('config.blink').setup()
 require('config.format').setup()
 require('config.java_new').setup()
