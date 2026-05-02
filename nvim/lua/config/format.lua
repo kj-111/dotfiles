@@ -2,6 +2,7 @@ return {
   setup = function()
     require('conform').setup({
       formatters_by_ft = {
+        c = { 'clang_format' },
         javascript = { 'prettierd' },
         json = { 'prettierd' },
         lua = { 'stylua' },

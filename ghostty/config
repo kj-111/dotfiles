@@ -1,6 +1,6 @@
 theme = Nord
 font-family = JetBrainsMono Nerd Font Mono
-font-size = 23
+font-size = 22
 cursor-style = block
 cursor-style-blink = false
 adjust-cursor-thickness = 6

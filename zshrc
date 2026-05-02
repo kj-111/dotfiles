@@ -48,13 +48,4 @@ git_branch_name() {
   [[ -n $branch ]] && echo " %B%F{#B48EAD} $branch%f%b"
 }
 
-prompt_arrow() {
-  if [[ -n $TMUX ]]; then
-    echo "%B%F{#5E81AC}❯%f%b"
-  else
-    echo "%B%F{#BF616A}❭%f%b"
-  fi
-}
-
-printf '\33c\e[3J' #beter oplossing is touch ~/.hushlogin
-prompt='%B%F{#88C0D0}%2~%f%b$(git_branch_name) $(prompt_arrow) '
+PROMPT='%B%F{#88C0D0}%2~%f%b$(git_branch_name) %B%F{#5E81AC}❯%f%b '
