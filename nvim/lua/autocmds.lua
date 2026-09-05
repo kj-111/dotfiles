@@ -58,6 +58,21 @@ vim.api.nvim_create_autocmd('CmdlineChanged', {
   end,
 })
 
+vim.api.nvim_create_autocmd('BufReadCmd', {
+  desc = 'Open a PDF in Sioyek instead of the buffer',
+  group = group,
+  pattern = '*.pdf',
+  callback = function(ev)
+    local file = vim.fn.fnamemodify(ev.file, ':p')
+    vim.system({ 'open', '-a', 'Sioyek', file }, { text = true }, function(res)
+      if res.code ~= 0 then vim.schedule(function() vim.notify(vim.trim(res.stderr), vim.log.levels.ERROR) end) end
+    end)
+    vim.schedule(function()
+      if vim.api.nvim_buf_is_valid(ev.buf) then vim.api.nvim_buf_delete(ev.buf, { force = true }) end
+    end)
+  end,
+})
+
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight yanked text',
   group = group,

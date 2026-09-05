@@ -28,13 +28,3 @@ for i = 1, 6 do
     vim.cmd('silent! ' .. i .. 'argument')
   end)
 end
-
--- :!sioyek werkt niet: een niet-interactieve zsh kent de zshrc-alias niet en
--- start de kale binary in de voorgrond, mét al zijn Qt-meldingen.
-vim.api.nvim_create_user_command('Sioyek', function(opts)
-  local file = opts.args ~= '' and vim.fn.fnamemodify(opts.args, ':p') or vim.fn.expand('%:p')
-
-  vim.system({ 'open', '-a', 'Sioyek', file }, { text = true }, function(res)
-    if res.code ~= 0 then vim.schedule(function() vim.notify(vim.trim(res.stderr), vim.log.levels.ERROR) end) end
-  end)
-end, { nargs = '?', complete = 'file', desc = 'Open een PDF in Sioyek' })

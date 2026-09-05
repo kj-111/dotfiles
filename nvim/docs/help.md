@@ -46,7 +46,7 @@ toetsen: lsp-keys.md.
 ## Buiten nvim
 
 - `:Man iets` — man-pages als doorzoekbare buffer (shell: K doet dit vanzelf)
-- `:Sioyek [bestand.pdf]` — open de opgegeven PDF, of de huidige buffer, in Sioyek
+- een PDF openen (`:e`, `<leader>f`, `gf`) start Sioyek; er komt geen buffer
 - offline referenties (JDK 25, Python, MDN): ~/academia/books/references/ — in de browser
 - Greenfoot-javadoc: K/CTRL-] dekken de API; het bredere verhaal: ~/academia/uni/java/notes/greenfoot.pdf
 
