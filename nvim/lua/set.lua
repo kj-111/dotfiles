@@ -27,15 +27,17 @@ vim.opt.splitright = true
 vim.opt.splitbelow = true
 
 _G.Config = {
-  -- Sessie-icoon zodra een sessie gemaakt of hersteld is.
-  statusline_session_icon = function() return vim.v.this_session ~= '' and '󰆓 ' or '' end,
   -- Lsp-icoon zodra er een client aan de buffer hangt (afwezigheid = uit).
   statusline_lsp_icon = function() return next(vim.lsp.get_clients({ bufnr = 0 })) and '󰰎 ' or '' end,
+  -- Sessie-icoon zodra een sessie gemaakt of hersteld is.
+  statusline_session_icon = function() return vim.v.this_session ~= '' and '󰆓 ' or '' end,
+  -- Neovide-icoon zodra nvim in de GUI draait (afwezigheid = terminal).
+  statusline_neovide_icon = function() return vim.g.neovide and '\u{e6ae} ' or '' end,
 }
 -- %l tekent zelf de nummerkolom volgens 'number'/'relativenumber'.
 vim.opt.statuscolumn = '%s%=%l %C '
 vim.opt.statusline =
-  ' %f %h%m%r %= %{%v:lua.Config.statusline_session_icon()%}%{%v:lua.Config.statusline_lsp_icon()%} %l:%c | %L '
+  ' %f %h%m%r %= %{%v:lua.Config.statusline_lsp_icon()%}%{%v:lua.Config.statusline_session_icon()%}%{%v:lua.Config.statusline_neovide_icon()%} %2l:%c | %2L '
 
 vim.opt.scrolloff = 10
 vim.opt.scroll = 8
