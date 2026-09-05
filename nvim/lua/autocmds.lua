@@ -59,12 +59,13 @@ vim.api.nvim_create_autocmd('CmdlineChanged', {
 })
 
 vim.api.nvim_create_autocmd('BufReadCmd', {
-  desc = 'Open a PDF in Sioyek instead of the buffer',
+  desc = 'Open a PDF or video in an external app instead of the buffer',
   group = group,
-  pattern = '*.pdf',
+  pattern = { '*.pdf', '*.mp4' },
   callback = function(ev)
     local file = vim.fn.fnamemodify(ev.file, ':p')
-    vim.system({ 'open', '-a', 'Sioyek', file }, { text = true }, function(res)
+    local cmd = file:lower():match('%.pdf$') and { 'open', '-a', 'Sioyek', file } or { 'open', file }
+    vim.system(cmd, { text = true }, function(res)
       if res.code ~= 0 then vim.schedule(function() vim.notify(vim.trim(res.stderr), vim.log.levels.ERROR) end) end
     end)
     vim.schedule(function()
