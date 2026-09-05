@@ -1,0 +1,97 @@
+#!/bin/sh
+
+set -eu
+
+LC_ALL=C
+export LC_ALL
+
+usage() {
+  cat <<EOF
+Usage: $(basename "$0") <project-name-or-path>
+
+Examples:
+  $(basename "$0") demo
+  $(basename "$0") ~/projects/scratch/demo
+EOF
+}
+
+case "${1:-}" in
+  -h|--help)
+    usage
+    exit 0
+    ;;
+  -*)
+    printf 'Unknown option: %s\n' "$1" >&2
+    usage >&2
+    exit 2
+    ;;
+esac
+
+if [ "$#" -ne 1 ]; then
+  usage >&2
+  exit 2
+fi
+
+script_path=$0
+while [ -L "$script_path" ]; do
+  link_target=$(readlink "$script_path")
+  case "$link_target" in
+    /*) script_path="$link_target" ;;
+    *)
+      link_dir=$(CDPATH= cd -- "$(dirname -- "$script_path")" && pwd)
+      script_path="$link_dir/$link_target"
+      ;;
+  esac
+done
+
+script_dir=$(CDPATH= cd -- "$(dirname -- "$script_path")" && pwd)
+template_dir="$script_dir/templates"
+
+if [ ! -d "$template_dir" ]; then
+  printf 'Template directory not found: %s\n' "$template_dir" >&2
+  exit 1
+fi
+
+if ! command -v perl >/dev/null 2>&1; then
+  printf 'Required command not found: perl\n' >&2
+  exit 1
+fi
+
+case "$1" in
+  /*) target_dir="$1" ;;
+  *) target_dir="$PWD/$1" ;;
+esac
+
+project_name=$(basename "$target_dir")
+case "$project_name" in
+  ''|.|..|[.-]*|*[!A-Za-z0-9._-]*)
+    printf 'Invalid project name: %s\n' "$project_name" >&2
+    printf 'Start with a letter, number, or underscore; then dots and hyphens are also allowed.\n' >&2
+    exit 2
+    ;;
+esac
+
+if [ -L "$target_dir" ]; then
+  printf 'Refusing symbolic-link target: %s\n' "$target_dir" >&2
+  exit 1
+fi
+
+if [ -e "$target_dir" ] && [ ! -d "$target_dir" ]; then
+  printf 'Target is not a directory: %s\n' "$target_dir" >&2
+  exit 1
+fi
+
+if [ -d "$target_dir" ] && [ -n "$(ls -A "$target_dir")" ]; then
+  printf 'Directory is not empty: %s\n' "$target_dir" >&2
+  exit 1
+fi
+
+mkdir -p "$target_dir"
+cp -R "$template_dir"/. "$target_dir"
+
+grep -rl '__PROJECT_NAME__' "$target_dir" | while IFS= read -r file; do
+  PROJECT_NAME="$project_name" perl -0pi -e 's/__PROJECT_NAME__/$ENV{PROJECT_NAME}/g' "$file"
+done
+
+printf 'Created C project: %s\n' "$target_dir"
+printf 'Run make run inside that directory.\n'

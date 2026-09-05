@@ -1,0 +1,25 @@
+.DS_Store
+
+# Machine-gegenereerde JGit-cache (IntelliJ), geen echte config.
+jgit/
+
+# Local personal tools: track cinit and jinit; keep other experiments local.
+tools/*
+!tools/README.md
+!tools/jinit/
+!tools/jinit/**
+!tools/cinit/
+!tools/cinit/**
+
+*.log
+*.swp
+*.swo
+.netrwhist
+
+claude/
+codex/
+hardware.md
+mole/
+
+# Exercism CLI-config bevat de persoonlijke API-token.
+exercism/user.json

@@ -1,0 +1,9 @@
+[user]
+	name = kj-111
+	email = 76260068+kj-111@users.noreply.github.com
+[core]
+	editor = nvim
+[pull]
+	rebase = false
+[init]
+	defaultBranch = main

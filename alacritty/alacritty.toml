@@ -1,0 +1,120 @@
+# Monaspace Neon op 15.5 — de ultieme combinatie.
+# Meeste overzicht en minste strain
+
+# ─── Omgeving ────────────────────────────────────────────────────────────────
+
+[env]
+TERM = "alacritty"
+
+# ─── Venster ─────────────────────────────────────────────────────────────────
+
+[window]
+decorations = "None"
+opacity = 0.9999
+startup_mode = "Windowed"
+dynamic_title = false
+option_as_alt = "Both"
+
+[window.padding]
+x = 0
+y = 0
+
+[scrolling]
+history = 10000
+multiplier = 3
+
+[bell]
+duration = 0
+command = "None"
+
+# ─── Font: Monaspace Neon ────────────────────────────────────────────────────
+# https://monaspace.githubnext.com — gekozen om hoe de letters eruitzien, niet om
+# texture healing: Alacritty shapet niet, dus liga en calt doen hier niets. Neovide
+# shapet wel en zet calt daar aan. Cask font-monaspice-nerd-font, MonaspiceNe = Neon.
+#
+# Font smoothing: macOS-setting, niet via TOML. Nu: default (geen key, smoothing aan).
+# Dunnere strokes: defaults write org.alacritty AppleFontSmoothing -int 0
+# Terug naar default: defaults delete org.alacritty AppleFontSmoothing
+
+[font]
+# Kleiner font = meer overzicht: meer regels, en ruimte voor splits.
+size = 15.5 # old: 24.5
+builtin_box_drawing = true
+
+[font.normal]
+family = "MonaspiceNe Nerd Font Mono"
+style = "Regular"
+
+[font.bold]
+style = "Bold"
+
+[font.italic]
+style = "Italic"
+
+[font.bold_italic]
+style = "Bold Italic"
+
+# ─── Kleuren: Nord ───────────────────────────────────────────────────────────
+# Zelfde palet als colors/nord.lua in de nvim-config.
+
+[colors]
+draw_bold_text_with_bright_colors = false
+
+[colors.primary]
+background = "#2e3440"
+foreground = "#d8dee9"
+
+[colors.selection]
+background = "#4c566a"
+text = "#eceff4"
+
+[colors.cursor]
+cursor = "#88c0d0"
+text = "#2e3440"
+
+[colors.normal]
+black = "#3b4252"
+red = "#bf616a"
+green = "#a3be8c"
+yellow = "#ebcb8b"
+blue = "#81a1c1"
+magenta = "#b48ead"
+cyan = "#88c0d0"
+white = "#e5e9f0"
+
+[colors.bright]
+black = "#4c566a"
+red = "#bf616a"
+green = "#a3be8c"
+yellow = "#ebcb8b"
+blue = "#81a1c1"
+magenta = "#b48ead"
+cyan = "#8fbcbb"
+white = "#eceff4"
+
+# ─── Cursor en muis ──────────────────────────────────────────────────────────
+
+[cursor]
+style = { shape = "Block", blinking = "Never" }
+thickness = 0.25
+
+[mouse]
+hide_when_typing = true
+
+# ─── Sneltoetsen ─────────────────────────────────────────────────────────────
+# Command N: new window
+
+[[keyboard.bindings]]
+key = "K"
+mods = "Command"
+action = "IncreaseFontSize"
+
+[[keyboard.bindings]]
+key = "J"
+mods = "Command"
+action = "DecreaseFontSize"
+
+[[keyboard.bindings]]
+key = "Key0"
+mods = "Command"
+action = "ResetFontSize"

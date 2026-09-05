@@ -1,0 +1,30 @@
+# Uitleg bij deze keuzes: nvim/docs/formatteren.md
+#
+# Werkt alleen via een symlink, want clang-format zoekt niet in ~/.config:
+#     ln -s ~/.config/clang-format/.clang-format ~/.clang-format
+
+BasedOnStyle: LLVM
+Language: Cpp
+
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ContinuationIndentWidth: 4
+ColumnLimit: 80
+IndentCaseLabels: true
+
+BreakBeforeBraces: Attach
+InsertBraces: true
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+
+PointerAlignment: Left
+DerivePointerAlignment: false
+
+SpaceBeforeParens: ControlStatements
+AlignAfterOpenBracket: Align
+
+LineEnding: LF
+InsertNewlineAtEOF: true
+SortIncludes: Never

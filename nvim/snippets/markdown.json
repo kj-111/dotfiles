@@ -1,0 +1,42 @@
+{
+  "code block": {
+    "prefix": "code",
+    "body": ["```${1:python}", "$0", "```"],
+    "description": "Codeblok met taal"
+  },
+  "table": {
+    "prefix": "table",
+    "body": [
+      "| ${1:kolom} | ${2:kolom} |",
+      "| --- | --- |",
+      "| $3 | $4 |",
+      "$0"
+    ],
+    "description": "Tabel"
+  },
+  "note callout": {
+    "prefix": "note",
+    "body": ["> [!NOTE]", "> $0"],
+    "description": "Callout: opmerking"
+  },
+  "tip callout": {
+    "prefix": "tip",
+    "body": ["> [!TIP]", "> $0"],
+    "description": "Callout: tip"
+  },
+  "warning callout": {
+    "prefix": "warn",
+    "body": ["> [!WARNING]", "> $0"],
+    "description": "Callout: waarschuwing"
+  },
+  "todo": {
+    "prefix": "todo",
+    "body": "- [ ] $0",
+    "description": "Open taak"
+  },
+  "date": {
+    "prefix": "date",
+    "body": "$CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE",
+    "description": "Datum van vandaag"
+  }
+}

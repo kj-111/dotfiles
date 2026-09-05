@@ -1,0 +1,17 @@
+# Uitleg bij deze keuzes: nvim/docs/formatteren.md
+
+target-version = "py314"
+line-length = 88
+indent-width = 4
+extend-exclude = [".venv", ".idea"]
+
+[lint]
+select = ["E", "F", "I", "UP", "B", "C4", "SIM", "RUF"]
+ignore = ["E501", "B905"]
+
+[format]
+quote-style = "single"
+indent-style = "space"
+line-ending = "auto"
+skip-magic-trailing-comma = false
+docstring-code-format = true

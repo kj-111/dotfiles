@@ -1,0 +1,106 @@
+#!/bin/sh
+
+set -eu
+
+usage() {
+  cat <<EOF
+Usage: $(basename "$0") [OPTIONS] <project-name-or-path>
+
+Options:
+  -m, --maven      Create a Maven project with JUnit 6
+  -f, --javafx     Create a JavaFX Maven project with JUnit 6
+  -g, --greenfoot  Create a Greenfoot scenario
+  -h, --help       Show this help message
+
+Examples:
+  $(basename "$0") demo
+  $(basename "$0") ~/projects/scratch/demo
+  $(basename "$0") --maven demo
+  $(basename "$0") -m ~/projects/scratch/demo
+  $(basename "$0") --javafx demo
+  $(basename "$0") -g knikkerbaan
+EOF
+}
+
+mode=plain
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    -m|--maven)
+      mode=maven
+      shift
+      ;;
+    -f|--javafx)
+      mode=javafx
+      shift
+      ;;
+    -g|--greenfoot)
+      mode=greenfoot
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    -*)
+      printf 'Unknown option: %s\n' "$1" >&2
+      usage >&2
+      exit 2
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+if [ "$#" -ne 1 ]; then
+  usage >&2
+  exit 2
+fi
+
+script_path=$0
+while [ -L "$script_path" ]; do
+  link_target=$(readlink "$script_path")
+  case "$link_target" in
+    /*) script_path="$link_target" ;;
+    *)
+      link_dir=$(CDPATH= cd -- "$(dirname -- "$script_path")" && pwd)
+      script_path="$link_dir/$link_target"
+      ;;
+  esac
+done
+
+script_dir=$(CDPATH= cd -- "$(dirname -- "$script_path")" && pwd)
+
+case "$mode" in
+  maven) template_dir="$script_dir/templates-maven" ;;
+  javafx) template_dir="$script_dir/templates-javafx" ;;
+  greenfoot) template_dir="$script_dir/templates-greenfoot" ;;
+  *) template_dir="$script_dir/templates" ;;
+esac
+
+case "$1" in
+  /*) target_dir="$1" ;;
+  *) target_dir="$PWD/$1" ;;
+esac
+
+project_name=$(basename "$target_dir")
+
+if [ -e "$target_dir" ] && [ -n "$(ls -A "$target_dir" 2>/dev/null)" ]; then
+  printf 'Directory is not empty: %s\n' "$target_dir" >&2
+  exit 1
+fi
+
+mkdir -p "$target_dir"
+cp -R "$template_dir"/. "$target_dir"
+
+grep -rl '__PROJECT_NAME__' "$target_dir" | while IFS= read -r file; do
+  PROJECT_NAME="$project_name" perl -0pi -e 's/__PROJECT_NAME__/$ENV{PROJECT_NAME}/g' "$file"
+done
+
+case "$mode" in
+  maven) printf 'Created Maven Java project: %s\n' "$target_dir" ;;
+  javafx) printf 'Created JavaFX Maven project: %s\n' "$target_dir" ;;
+  greenfoot) printf 'Created Greenfoot scenario: %s (open -a Greenfoot %s)\n' "$target_dir" "$target_dir" ;;
+  *) printf 'Created Plain Java project: %s\n' "$target_dir" ;;
+esac

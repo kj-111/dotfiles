@@ -1,0 +1,123 @@
+" =============================================================================
+" Vim — minimal setup without LSP or autocomplete.
+" =============================================================================
+
+" FZF -------------------------------------------------------------------------
+
+" Requires: brew install fzf ripgrep
+" Includes hidden files, respects .gitignore, excludes .git.
+let $FZF_DEFAULT_COMMAND = 'rg --files --hidden -g "!.git"'
+set rtp+=/opt/homebrew/opt/fzf
+
+" Editor ----------------------------------------------------------------------
+
+" Allow switching buffers without saving first.
+" Unsaved changes stay in memory until you return, save, or quit.
+set hidden
+
+" Make Escape instant in the terminal.
+set ttimeout
+set ttimeoutlen=0
+
+" Wait up to 300ms for mapped key sequences such as jk.
+set timeout
+set timeoutlen=300
+
+" Reload files changed outside Vim when safe.
+set autoread
+
+" Check for external changes when returning to Vim or entering a buffer.
+augroup reload_external_changes
+  autocmd!
+  autocmd FocusGained,BufEnter * checktime
+augroup END
+
+" Open horizontal splits below and vertical splits to the right.
+set splitbelow
+set splitright
+
+" Better command-line completion.
+set wildmenu
+set wildmode=longest:full,full
+
+" Ask what to do instead of failing when quitting with unsaved changes.
+set confirm
+
+" Silence terminal bells and screen flashes.
+set belloff=all
+
+set nonumber
+set norelativenumber
+set tabstop=4
+set shiftwidth=4
+set shiftround
+set expandtab
+set autoindent
+set scrolloff=5
+set mouse=a
+
+" Search ----------------------------------------------------------------------
+
+set ignorecase
+set smartcase
+set incsearch
+set nohlsearch
+
+" Search project contents with :grep and browse matches through quickfix.
+set grepprg=rg\ --vimgrep\ --smart-case\ --hidden\ -g\ !.git
+set grepformat=%f:%l:%c:%m
+
+" UI --------------------------------------------------------------------------
+
+" Keep a subtle gutter as visual padding, even when there are no signs.
+set signcolumn=yes
+
+" Always show the statusline.
+set laststatus=2
+
+" Hide -- INSERT --, -- VISUAL --, etc.
+set noshowmode
+
+" Extra built-in syntax detection for C and Java.
+let g:c_functions = 1
+let g:c_function_pointers = 1
+let g:java_highlight_functions = "style"
+
+syntax on
+filetype plugin indent on
+
+" Keep the gutter the same color as the editor background.
+highlight! link SignColumn Normal
+
+" Extend % wherever a filetype defines extra matching pairs.
+packadd! matchit
+
+" File and flags on the left, position and total lines on the right.
+let &statusline = ' %<%f %h%m%r %= %l:%c | %L '
+
+" Cursor ----------------------------------------------------------------------
+
+" Normal: block, Insert: bar, Replace: underline.
+let &t_EI = "\e[2 q"
+let &t_SI = "\e[6 q"
+let &t_SR = "\e[4 q"
+
+" Keymaps ---------------------------------------------------------------------
+
+let mapleader = " "
+
+inoremap jk <Esc>
+nnoremap <silent> <leader>f :<C-u>FZF<CR>
+nnoremap <leader>i <C-^>
+
+" Make ------------------------------------------------------------------------
+
+" Open quickfix automatically after :make or :grep if there are results.
+augroup quickfix_auto_open
+  autocmd!
+  autocmd QuickFixCmdPost make,grep cwindow 8
+augroup END
+
+" Navigate quickfix entries.
+nnoremap <silent> ]q :cnext<CR>
+nnoremap <silent> [q :cprevious<CR>

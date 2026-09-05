@@ -1,0 +1,44 @@
+# Apps die buiten Homebrew om geinstalleerd worden; al de rest staat in de Brewfile.
+Alacritty 0.17.0 - https://github.com/alacritty/alacritty/releases (installatie: zie onderaan)
+Helium 0.16.2.1 - https://helium.computer/download
+JetBrains Toolbox 3.7.2.87231 - https://www.jetbrains.com/toolbox-app/
+IntelliJ IDEA 2026.2.1 (via jetbrains-toolbox) - https://www.jetbrains.com/idea/download/
+PyCharm 2026.2.1 (via jetbrains-toolbox) - https://www.jetbrains.com/pycharm/download/
+WebStorm 2026.2.1 (via jetbrains-toolbox) - https://www.jetbrains.com/webstorm/download/
+reMarkable 3.28.1 - https://support.remarkable.com/articles/Knowledge/Desktop-app
+Sioyek 3-alpha0 (ARM64) - https://github.com/ahrm/sioyek/releases/tag/sioyek3-alpha0
+
+(Amphetamine 5.3.2 - https://apps.apple.com/us/app/amphetamine/id937984704)
+(BlueJ 6.0.0 - https://www.bluej.org/)
+(SceneBuilder 26.0.0 - https://gluonhq.com/products/scene-builder/)
+(UTM 4.7.5 - https://mac.getutm.app/)
+
+# Alacritty installeren
+#
+# Zit buiten Homebrew sinds 1-9-2026: de cask is disabled omdat de officiele build
+# adhoc gesigneerd is (geen TeamIdentifier) en dus niet door Gatekeeper komt. Dat is
+# een eis van Homebrew, geen probleem in Alacritty.
+#
+#   1. Alacritty-vX.Y.Z.dmg van de releasepagina hierboven
+#   2. Alacritty.app naar /Applications slepen
+#   3. xattr -dr com.apple.quarantine /Applications/Alacritty.app
+#   4. de symlinks die de cask legde, nu in eigen ruimte:
+#
+#      A=/Applications/Alacritty.app/Contents
+#      mkdir -p ~/.terminfo/61 ~/.local/bin ~/.local/share/man/man1 ~/.local/share/man/man5
+#      ln -sf $A/Resources/61/alacritty        ~/.terminfo/61/alacritty
+#      ln -sf $A/Resources/61/alacritty-direct ~/.terminfo/61/alacritty-direct
+#      ln -sf $A/MacOS/alacritty               ~/.local/bin/alacritty
+#      ln -sf $A/Resources/alacritty.1.gz      ~/.local/share/man/man1/alacritty.1.gz
+#      ln -sf $A/Resources/alacritty-msg.1.gz  ~/.local/share/man/man1/alacritty-msg.1.gz
+#      ln -sf $A/Resources/alacritty.5.gz      ~/.local/share/man/man5/alacritty.5.gz
+#      ln -sf $A/Resources/alacritty-bindings.5.gz ~/.local/share/man/man5/alacritty-bindings.5.gz
+#
+# Alleen de terminfo-link moet echt: alacritty.toml zet TERM="alacritty" en macOS kent
+# die entry niet (ncurses 6.0 uit 2015, geen alacritty in /usr/share/terminfo/61/).
+# Zonder hem geven clear en tput "unknown terminal"; nvim en less overleven het wel.
+# MANPATH hoeft niet gezet: macOS leidt de manpath af uit PATH, en ~/.local/bin staat
+# er al in, dus ~/.local/share/man komt vanzelf mee.
+#
+# Bijwerken is stap 1 t/m 3 opnieuw. De symlinks wijzen naar een vast pad in de bundel
+# en blijven staan.

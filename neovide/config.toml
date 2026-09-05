@@ -1,0 +1,19 @@
+fork = true
+frame = "none"
+maximized = true
+tabs = false
+# Globale hotkeys ⌘⌃Z (pinned window) en ⌘⌃N (editors switcher); leeg = uit.
+system-pinned-hotkey = ""
+system-switcher-hotkey = ""
+
+# Gelijk aan alacritty.toml: zelfde familie, faces en grootte.
+[font]
+normal = { family = "MonaspiceNe Nerd Font Mono", style = "Regular" }
+bold = { family = "MonaspiceNe Nerd Font Mono", style = "Bold" }
+italic = { family = "MonaspiceNe Nerd Font Mono", style = "Italic" }
+bold_italic = { family = "MonaspiceNe Nerd Font Mono", style = "Bold Italic" }
+size = 15.5
+
+# calt = Monaspace's texture healing, liga = ligaturen; alleen Neovide past ze toe.
+[font.features]
+"MonaspiceNe Nerd Font Mono" = ["-liga", "+calt"]

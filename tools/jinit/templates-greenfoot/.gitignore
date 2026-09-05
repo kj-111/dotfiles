@@ -1,0 +1,6 @@
+out/
+*.class
+*.ctxt
+
+# symlink naar /Applications/Greenfoot.app; jinit legt hem per project aan
+lib/

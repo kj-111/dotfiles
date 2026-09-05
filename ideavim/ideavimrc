@@ -1,0 +1,50 @@
+" Doelomgeving: JetBrains macOS-keymap met de IdeaVim-plugin.
+" Niet gebruiken met de Windows/XWin-keymap; daar betekenen Ctrl-toetsen iets anders.
+" Vim wint voor modal editing; de IDE wint voor unieke IDE-acties of nutteloze Vim-acties.
+
+set relativenumber
+set scrolloff=10
+set incsearch           " spring al naar de match tijdens het typen van /zoekterm
+set hlsearch            " highlight alle matches na een zoekopdracht
+set ignorecase          " zoeken negeert hoofdletters...
+set smartcase           " ...behalve als je zelf een hoofdletter typt
+set timeoutlen=300
+set ideajoin            " J gebruikt de slimme join van de IDE (bv. strings samenvoegen)
+
+set highlightedyank     " licht kort op wat je zonet yankte
+set commentary          " gcc / gc+motion: (un)commenten
+
+inoremap jk <Esc>
+vnoremap jk <Esc>
+
+" Ctrl-conflicten: wie wint, Vim of de IDE? (a=alle modes, n=normal, i=insert,
+" v=visual/select, c=command-line). IDE-acties volgens de macOS-keymap.
+sethandler <C-A> a:vim          " vim: getal +1              | ide: cursor naar begin regel
+sethandler <C-B> a:vim          " vim: pagina omhoog         | ide: cursor links
+sethandler <C-C> a:vim          " vim: werkt als <Esc>       | ide: copy
+sethandler <C-D> a:vim          " vim: halve pagina omlaag   | ide: debug
+sethandler <C-E> a:vim          " vim: scroll omlaag         | ide: cursor naar einde regel
+sethandler <C-F> a:vim          " vim: pagina omlaag         | ide: cursor rechts
+sethandler <C-G> n-v:ide i-c:vim " vim: info / insert-prefix  | ide: volgende occurrence selecteren
+sethandler <C-H> n-v:ide i-c:vim " vim: links / backspace     | ide: type hierarchy
+sethandler <C-I> a:vim          " vim: jumplist vooruit      | ide: implement methods
+sethandler <C-J> a:vim          " vim: regel omlaag          | ide: quick documentation
+sethandler <C-K> a:vim          " vim: digraphs (é, ü, ...)  | ide: knip tot einde regel
+sethandler <C-L> a:vim          " vim: scherm hertekenen     | ide: scroll naar midden / find next
+sethandler <C-M> a:vim          " vim: werkt als <CR>        | ide: spring naar bijpassend haakje
+sethandler <C-O> a:vim          " vim: jumplist terug        | ide: override methods
+sethandler <C-Q> a:vim          " vim: visual block (alt)    | ide: niets (documentatie = F1)
+sethandler <C-R> a:vim          " vim: redo                  | ide: run
+sethandler <C-T> a:ide          " vim: tag-stack terug       | ide: refactor this
+sethandler <C-U> a:vim          " vim: halve pagina omhoog   | ide: go to super method
+sethandler <C-V> a:vim          " vim: visual block          | ide: paste
+sethandler <C-W> a:vim          " vim: windows / woord wissen| ide: niets
+sethandler <C-X> a:vim          " vim: getal -1              | ide: cut
+sethandler <C-Y> a:vim          " vim: scroll / completion   | ide: niets
+sethandler <C-6> a:vim          " vim: alternate file        | ide: go to bookmark 6
+sethandler <C-]> a:vim          " vim: go to definition      | ide: niets
+sethandler <C-N> n-v:vim i:ide  " vim: regel omlaag          | ide: volgend completion-item (insert)
+sethandler <C-P> n-v:vim i:ide  " vim: regel omhoog          | ide: vorig completion-item (insert)
+sethandler <C-S> a:ide          " vim: niets                 | ide: save all
+sethandler <C-Z> a:ide          " vim: suspend (nutteloos)   | ide: niets (undo = Cmd-Z)
+sethandler <C-2> a:ide          " vim: <C-@> (obscuur)       | ide: go to bookmark 2
