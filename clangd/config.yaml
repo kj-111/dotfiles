@@ -8,6 +8,7 @@ If:
   PathMatch: .*\.(c|h)$
 CompileFlags:
   Add:
+    - -xc
     - -std=c23
     - -Wall
     - -Wextra

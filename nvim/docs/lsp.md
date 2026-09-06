@@ -131,6 +131,21 @@ Failed to find compilation database for .../hallo.c
 clang -std=c23 -Wall -Wextra          ← komt uit clangd/config.yaml
 ```
 
+Twee dingen die je daardoor zelf moet regelen.
+
+`-xc` staat in die flags omdat clangd op deze Mac een `.h` zonder bruikbaar
+compilatiecommando als Objective-C++ behandelde. Hij weigerde daardoor
+`-std=c23` met "invalid argument '-std=c23' not allowed with
+'Objective-C++'", waarna elk headerbestand een fout op regel 1 toonde. Voor
+`.c` verandert `-xc` niets.
+
+Clangd leest je Makefiles niet rechtstreeks. De builds in het graphics-project
+voegen uiteindelijk `-I/opt/homebrew/include` toe, rechtstreeks of via
+`pkg-config`, maar zonder compile database ziet clangd die vlag niet. Het gevolg
+is `'SDL3/SDL.h' file not found` en daarna elk symbool uit die header rood,
+terwijl `make` gewoon bouwt. Zet daarom een `.clangd` met het include-pad in de
+projectmap; zie `~/academia/projects/c/graphics/.clangd`.
+
 Juist omdat je met Makefiles werkt is dit bestand dus nodig. Wil je clangd
 je echte build laten volgen, dan schrijft `bear -- make` de database mee —
 voor oefenprojecten van één bestand is dat overkill.
