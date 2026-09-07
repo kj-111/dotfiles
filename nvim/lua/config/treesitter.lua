@@ -1,7 +1,7 @@
 -- stylua: ignore
 local parsers = {
   'bash', 'c', 'cpp', 'html', 'java', 'javascript', 'json', 'lua',
-  'latex', 'markdown', 'markdown_inline', 'python', 'toml', 'vim', 'vimdoc', 'xml', 'yaml',
+  'latex', 'markdown', 'markdown_inline', 'python', 'rust', 'toml', 'vim', 'vimdoc', 'xml', 'yaml',
 }
 
 return {

@@ -1,4 +1,5 @@
 tap "nikitabobko/tap", trusted: true
+# Rust wordt beheerd door rustup, niet Homebrew; zie nvim/docs/tools.md.
 # Cryptography and SSL/TLS Toolkit
 brew "openssl@3"
 # General-purpose data compression with high compression ratio

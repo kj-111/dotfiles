@@ -49,8 +49,8 @@ native completion — die rol vervult blink hier.)
    een `root_marker` uit de config (pyproject.toml, .stylua.toml, .git, …) om
    de projectroot te bepalen, en start daar de server. Een geneste lijst geeft
    markers gelijke prioriteit: dan wint de dichtstbijzijnde match.
-3. De binary wordt op naam gevonden via PATH — installatie via brew, zie
-   tools.md.
+3. De binary wordt op naam gevonden via PATH — installatie via brew of, voor
+   Rust, rustup; zie tools.md.
 
 Uitzondering: java. jdtls start niet via lsp/, maar via `config/jdtls.lua`
 (eigen workspace per project en projectinstellingen).
@@ -86,7 +86,7 @@ Elk bestand is de config van één server, met dezelfde bouwstenen:
 
 - `cmd` — hoe de binary heet en start
 - `filetypes` — waarvoor hij aangaat
-- `root_markers` — wat een projectroot markeert
+- `root_markers` of `root_dir` — hoe de projectroot wordt bepaald
 - `settings` — serverspecifieke opties (bijv. basedpyright's typeCheckingMode)
 
 Bestand toevoegen = server erbij; verwijderen = server weg. Welke server er
@@ -174,8 +174,20 @@ Let op de vindplaats: clangd zoekt op macOS in
 via een symlink, en verdwijnt die, dan wordt het bestand stil genegeerd. Je
 merkt het doordat waarschuwingen wegblijven die de compiler wél geeft.
 
+## Rust-analyzer
+
+`lsp/rust_analyzer.lua` vraagt `cargo metadata` naar de echte workspace-root,
+zodat een workspace met meerdere crates één client deelt. Een niet-Cargo-project
+kan `rust-project.json` gebruiken. Voor een volledig los `.rs`-bestand start de
+LSP bewust niet: rust-analyzer kan daar geen workspace-diagnostics leveren en
+geeft momenteel herhaalde foutmeldingen. Treesitter, rustfmt en nvim's
+rustc-`:make` blijven wel werken; gebruik `cargo new` zodra je de volledige IDE
+wilt. De server gebruikt `cargo clippy` voor uitgebreidere diagnostics.
+Compiler, Cargo, rust-analyzer, rustfmt en clippy komen samen uit de actieve
+rustup-toolchain, zodat hun versies bij elkaar passen.
+
 ## Formatters (conform, bij :w)
 
-Python doet ruff, lua stylua, javascript/json/markdown prettierd. De rest
-valt terug op de LSP: java via jdtls, c via clangd. Welke tool bij welke taal
-hoort en waar elke config staat: formatteren.md.
+Python doet ruff, lua stylua, javascript/json/markdown prettierd en Rust
+rustfmt. De rest valt terug op de LSP: java via jdtls, c via clangd. Welke tool
+bij welke taal hoort en waar elke config staat: formatteren.md.

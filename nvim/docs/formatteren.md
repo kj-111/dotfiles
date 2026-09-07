@@ -10,10 +10,16 @@ formatter vallen terug op de LSP, via `lsp_format = 'fallback'`.
 | javascript/json/markdown | prettierd                      | `prettier/.prettierrc`       |
 | c                        | clangd (LSP-fallback)          | `clang-format/.clang-format` |
 | java                     | jdtls (LSP-fallback)           | `.settings/` in het project  |
+| rust                     | rustfmt                        | project-`rustfmt.toml`       |
 
 Voor c en java staat er niets in conform: die servers formatteren zelf. Bij
 clangd zit de motor (LLVM's libFormat) ín de server, dus `clang-format` hoeft
 niet apart geïnstalleerd — zie tools.md.
+
+Rustfmt draait rechtstreeks via conform; rust-analyzer is alleen de fallback.
+In een Cargo-project haalt conform de edition uit `Cargo.toml` en een
+projectgebonden `rustfmt.toml` of `.rustfmt.toml` wint vanzelf. Voor een los
+`.rs`-bestand gebruikt de config edition 2024 en verder de standaard Rust-stijl.
 
 ## Hoe elke tool zijn config vindt
 

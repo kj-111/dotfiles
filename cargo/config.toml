@@ -1,0 +1,5 @@
+# ~/.cargo/config.toml is een symlink naar dit bestand.
+# Caches en binaries blijven in ~/.cargo; credentials in Keychain of credentials.toml.
+
+[registry]
+global-credential-providers = ["cargo:token", "cargo:macos-keychain"]

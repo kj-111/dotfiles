@@ -1,6 +1,6 @@
 return {
   setup = function()
-    -- Alleen talen zonder sterke LSP-formatter; de rest doet lsp_format = 'fallback'.
+    -- Voorkeursformatters; overige talen gebruiken lsp_format = 'fallback'.
     require('conform').setup({
       formatters_by_ft = {
         javascript = { 'prettierd' },
@@ -8,6 +8,12 @@ return {
         lua = { 'stylua' },
         markdown = { 'prettierd' },
         python = { 'ruff_organize_imports', 'ruff_format' },
+        rust = { 'rustfmt' },
+      },
+      formatters = {
+        rustfmt = {
+          options = { default_edition = '2024' },
+        },
       },
       -- Java niet hier: jdtls formatteert via de fallback, met de
       -- projectinstellingen uit .settings/org.eclipse.jdt.core.prefs.

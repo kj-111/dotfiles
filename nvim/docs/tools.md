@@ -1,27 +1,29 @@
 # Tools: waar de binaries vandaan komen
 
-De taalservers en formatters zijn gewone brew-formules (eigen sectie in de
-Brewfile); clangd komt mee met de Xcode Command Line Tools (`/usr/bin/clangd`).
-Nvim heeft geen eigen installer nodig: alle configs vinden hun binaries via je
-gewone PATH, waar `/opt/homebrew/bin` al vooraan staat (zshrc) — `lsp/*.lua`
-en conform zoeken toch op naam.
+De meeste taalservers en formatters zijn gewone brew-formules. Clangd komt mee
+met de Xcode Command Line Tools (`/usr/bin/clangd`); Rust gebruikt de officiële
+rustup-toolchain. Nvim heeft geen eigen installer nodig: alle configs vinden hun
+binaries via je gewone PATH — `lsp/*.lua` en conform zoeken op naam.
 
 ## De volledige lijst
 
-| tool                | voor                     | rol                                 | Brewfile-regel                  |
-| ------------------- | ------------------------ | ----------------------------------- | ------------------------------- |
-| basedpyright        | python                   | taalserver (types, hover)           | `brew "basedpyright"`           |
-| ruff                | python                   | linter-server én formatter          | `brew "ruff"`                   |
-| vtsls               | javascript               | taalserver                          | `brew "vtsls"`                  |
-| prettierd           | javascript/json/markdown | formatter                           | `brew "prettierd"`              |
-| jdtls               | java                     | taalserver én formatter             | `brew "jdtls"`                  |
-| lua-language-server | lua                      | taalserver                          | `brew "lua-language-server"`    |
-| stylua              | lua                      | formatter                           | `brew "stylua"`                 |
-| clangd              | c                        | taalserver, clang-tidy én formatter | geen — Xcode Command Line Tools |
-| tree-sitter-cli     | alle talen               | parsers bouwen (nvim-treesitter)    | `brew "tree-sitter-cli"`        |
-| ripgrep             | pickers en :grep         | de zoekmachine achter beide         | `brew "ripgrep"`                |
+| tool                | voor                     | rol                                 | installatie                  |
+| ------------------- | ------------------------ | ----------------------------------- | ---------------------------- |
+| basedpyright        | python                   | taalserver (types, hover)           | `brew "basedpyright"`        |
+| ruff                | python                   | linter-server én formatter          | `brew "ruff"`                |
+| vtsls               | javascript               | taalserver                          | `brew "vtsls"`               |
+| prettierd           | javascript/json/markdown | formatter                           | `brew "prettierd"`           |
+| jdtls               | java                     | taalserver én formatter             | `brew "jdtls"`               |
+| lua-language-server | lua                      | taalserver                          | `brew "lua-language-server"` |
+| stylua              | lua                      | formatter                           | `brew "stylua"`              |
+| clangd              | c                        | taalserver, clang-tidy én formatter | Xcode Command Line Tools     |
+| rust-analyzer       | rust                     | taalserver                          | rustup-component             |
+| rustfmt             | rust                     | formatter                           | rustup-component             |
+| clippy              | rust                     | linter                              | rustup-component             |
+| tree-sitter-cli     | alle talen               | parsers bouwen (nvim-treesitter)    | `brew "tree-sitter-cli"`     |
+| ripgrep             | pickers en :grep         | de zoekmachine achter beide         | `brew "ripgrep"`             |
 
-Alles in één keer (staat ook in de Brewfile):
+Alle brew-tools in één keer (staat ook in de Brewfile):
 
     brew install basedpyright jdtls lua-language-server \
       prettierd ripgrep ruff stylua tree-sitter-cli vtsls
@@ -29,12 +31,45 @@ Alles in één keer (staat ook in de Brewfile):
 ## Wie zoekt wat
 
 - `lsp/*.lua` — elke server start via zijn `cmd` op naam: `lua-language-server`,
-  `basedpyright-langserver`, `ruff server`, `clangd`, `vtsls`
-- conform — formatters op naam: `prettierd`, `stylua`, `ruff`
+  `basedpyright-langserver`, `ruff server`, `clangd`, `rust-analyzer`, `vtsls`
+- conform — formatters op naam: `prettierd`, `stylua`, `ruff`, `rustfmt`
+- rust — `rust-analyzer`, `rustfmt` en `clippy` komen uit de actieve
+  rustup-toolchain
 - nvim-treesitter — gebruikt de `tree-sitter`-CLI voor het bouwen van parsers
   (brew-formula heet tree-sitter-cli; kale "tree-sitter" is alleen de bibliotheek)
 - jdtls — `config/jdtls.lua` zoekt `jdtls` met `exepath()` en waarschuwt als
   hij ontbreekt
+
+## Rust installeren en bijwerken
+
+Op een nieuwe machine installeer je eerst rustup via de officiële installer:
+
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    rustup set profile default
+    rustup default stable
+    rustup component add rust-analyzer rustfmt clippy
+
+Het `default`-profiel is geschikt voor ontwikkeling en bevat rustfmt en clippy;
+de laatste opdracht maakt de drie benodigde componenten ook expliciet. Bijwerken:
+
+    rustup update stable
+    rustup self update
+    rustup check
+
+Cargo blijft in `~/.cargo`: daar horen binaries, downloads, Git-caches en
+eventuele lokale credentialbestanden thuis. Alleen de deelbare instellingen
+staan in `~/.config/cargo/config.toml`; `~/.cargo/config.toml` is er een symlink
+naar:
+
+    ln -s ~/.config/cargo/config.toml ~/.cargo/config.toml
+
+De config bevat geen geheimen. Hij geeft voor registrytokens voorrang aan de
+macOS Keychain en houdt Cargo's tokenprovider als fallback; zet een token dus
+nooit rechtstreeks in dit bestand.
+
+Een project kan eigen Cargo-instellingen toevoegen in `.cargo/config.toml` en
+een toolchain vastpinnen met `rust-toolchain.toml`. Pin globaal niets en gebruik
+nightly alleen als een project dat echt vereist.
 
 ## Waarom clang-format er niet bij hoeft
 
@@ -98,6 +133,7 @@ tweede installatiepad in nvim.
 
 - ontbrekende tool: `brew bundle --file ~/.config/Brewfile`
 - alles updaten: `brew upgrade`
+- Rust bijwerken: `rustup update stable && rustup self update`
 - controleren wat nvim kan vinden: `:checkhealth`
 
 Plugins en parsers hebben twee aparte updatecycli. Werk ze daarom in deze
