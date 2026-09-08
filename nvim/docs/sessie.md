@@ -112,10 +112,21 @@ weer ergens anders, in `'undofile'` (set.lua).
 current session", "4. Restores the saved session" (`:h :restart`). Dat is
 een eigen tijdelijk sessiebestand, los van het onze.
 
-Twee opzetten die tegelijk herstellen klinkt als een botsing, dus nagemeten
-met een echte terminal: vóór de restart vijf vensters met `A.java`, erna
-precies dezelfde vijf. Geen verdubbeling, niets kwijt. Onze `VimLeavePre`
-schrijft onderweg gewoon mee, want `:restart` stopt nvim via `:qall`.
+Vensters, buffers, cwd en het huidige bestand komen netjes terug. De arglist
+niet: die is erna leeg. Nagemeten in een echte UI, en ook met `-u NONE`, dus
+het ligt niet aan deze config — Neovim herstelt hem gewoon niet, terwijl een
+`mksession`-bestand hem wel bevat (`%argdel` gevolgd door `$argadd` per pad).
+
+Erger: bij het afsluiten schrijft onze `VimLeavePre` die lege lijst de sessie
+in. Gemeten ging het sessiebestand van drie `argadd`-regels naar nul. Eén
+`:restart` kan je werkset dus definitief kwijtmaken.
+
+Gebruik daarom `:qa` en start `nvim` opnieuw. Dat herstelt álles, arglist
+inbegrepen, want het loopt via deze sessie. `:restart` bespaart je alleen het
+typen van `nvim` en kost je de werkset — een slechtere versie van wat je al
+hebt. Een reparatie in de config zou moeten leunen op de volgorde tussen onze
+`VimEnter` en Neovims eigen herstel, en die ligt nergens vast; daarom staat
+die er bewust niet.
 
 Wil je weten in welke van de twee je zit: `v:startreason` is `"restart"` in
 plaats van `"normal"`, en `v:exitreason` doet hetzelfde bij het afsluiten.

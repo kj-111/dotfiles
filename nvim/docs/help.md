@@ -23,10 +23,10 @@ Werkregel (neovim-core): eerst K of :h, dan de bron, AI laatst.
 - mini.clue — prefix indrukken (`<leader>`, g, z, [, ], CTRL-W, ") en 300 ms wachten: het menu toont wat er bestaat; onbekende toets gezien → :h die-toets
 - `:h index` en `:h default-mappings` — alles wat ingebouwd is
 - `:checkhealth` — is alles gezond: providers, lsp, treesitter, plugins
-- `ZR` — nvim herstarten mét je sessie: hij bewaart de boel, start opnieuw
-  en zet alles terug (`:restart`, :h ZR). De derde uit de Z-familie naast
-  `ZZ` (opslaan en weg) en `ZQ` (weg zonder opslaan); handig na een
-  config-wijziging die een herstart vraagt
+- `ZR` — nvim herstarten (`:restart`, :h ZR). Vermijden: hij wist je arglist,
+  en bij het afsluiten belandt die leegte in je projectsessie (sessie.md).
+  Gebruik `:qa` en start opnieuw — dan komt álles terug. De derde uit de
+  Z-familie naast `ZZ` (opslaan en weg) en `ZQ` (weg zonder opslaan)
 
 ## Plugins
 
