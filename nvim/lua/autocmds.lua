@@ -17,8 +17,10 @@ vim.api.nvim_create_autocmd('QuickFixCmdPost', {
   desc = 'Open the quickfix window after :make/:grep',
   group = group,
   pattern = '[^l]*',
-  nested = true,
-  command = 'cwindow',
+  -- Laat compiler-hooks eerst hun buffer/cwd herstellen (onder meer Cargo).
+  callback = function()
+    vim.schedule(function() vim.cmd.cwindow() end)
+  end,
 })
 
 vim.api.nvim_create_autocmd('FileType', {

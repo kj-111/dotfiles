@@ -64,7 +64,7 @@ elders, dan worden de paden absoluut.
 | taal   | keuze door | commando                                                                                              |
 | ------ | ---------- | ----------------------------------------------------------------------------------------------------- |
 | java   | java.lua   | pom.xml → maven; gradle-bestand → gradlew/gradle; `src/` → javac naar `out/`; los bestand → `javac %` |
-| c      | c.lua      | Makefile → `make`; anders `make CFLAGS='-std=c23 -Wall -Wextra -g' %:r`                              |
+| c      | c.lua      | Makefile → `make`; anders `make CFLAGS='-std=c23 -Wall -Wextra -g' %:r`                               |
 | cpp    | c.lua      | idem met CXXFLAGS; cpp erft c.lua via `runtime! ftplugin/c`                                           |
 | rust   | nvim zelf  | Cargo.toml naar bóven zoekend → cargo; anders rustc                                                   |
 | python | beide      | testbestand → pytest daarop; andere code in een testproject → de hele suite                           |
@@ -86,6 +86,23 @@ naast je bron. Het profiel levert de errorformat, java.lua het commando.
 
 Linten zit hier bewust niet in. Ruff en jdtls draaien als LSP en melden
 live (lsp.md); `:make` is de build, niet de stijl.
+
+### Rust: geen eigen after/ftplugin nodig
+
+De ingebouwde Rust-ftplugin kiest al `compiler cargo` bij een Cargo-project,
+anders `compiler rustc`. Met Cargo gebruik je `:make check`, `:make build` of
+`:make test`; kaal `:make` kiest geen subcommando. De compiler levert ook de
+quickfix-parser. Clippy draait al via rust-analyzer; handmatig kan
+`:make clippy`. Voor interactieve programma's blijft `cargo run` in de terminal
+handiger dan `:make run`.
+
+Cargo's compiler-hooks wisselen tijdelijk naar de projectmap en herstellen
+daarna de cwd. Daarom opent onze quickfix-autocmd het venster pas nadat de
+compiler-hooks klaar zijn. De meegeleverde padzoeker in Neovim 0.12.5 heeft
+een beperking bij projectpaden met spaties: ga dan eerst zelf met `:cd` naar
+de Cargo-projectroot. De eigen LSP- en formatterconfig hebben die beperking
+niet. Een losse `.rs` gebruikt `rustc`; moderne syntax vraagt daar expliciet
+bijvoorbeeld `:make --edition=2024`.
 
 ## Doelen uit je Makefile
 
