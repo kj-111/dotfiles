@@ -13,9 +13,10 @@ gecentreerd; `Tab` klapt de preview open.
 - `<leader>g` — grep_live: zoeken terwijl je typt. Dit is wat de cmdline
   niet kan; `:grep` blijft one-shot naar de quickfix
 - `<leader>b` — buffers: springen tussen wat open is
-- `<leader>j` — arglist: je vaste werkset, mét preview (navigatie.md).
-  Mini.extra heeft die bron niet; het is `{ items = vim.fn.argv }`, het
-  voorbeeld van een eigen source uit `:h MiniPick-source`
+- `:Pick arglist` — je vaste werkset, mét preview (navigatie.md). Bewust zonder
+  keymap: beheren gaat via het menu op `<leader>h`, dit is er alleen als je wil
+  bladeren. Mini.extra heeft die bron niet; het is `{ items = vim.fn.argv }`,
+  het voorbeeld van een eigen source uit `:h MiniPick-source`
 
 ## Verder handig
 

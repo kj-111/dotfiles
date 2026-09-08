@@ -6,6 +6,11 @@ alles er weer: je buffers, de vensterindeling, de arglist en je folds.
 Een sessie bewaart geen onopgeslagen tekst, dus schrijf wijzigingen eerst weg.
 Zolang zo'n sessie actief is, staat het icoon `󰆓` in de statusline.
 
+Sessie en arglist horen bij elkaar. Een sessie maak je voor een project waar je
+een werkset in opbouwt, en die werkset ís de arglist (navigatie.md) — vandaar
+dat hij meegaat. Voor een los bestand heb je geen van beide nodig: dan maak je
+geen sessie, en gaat er dus ook geen arglist verloren.
+
 ## Hoe het werkt
 
 Twee autocmds en twee user commands in `lua/config/session.lua`. Geen plugin.

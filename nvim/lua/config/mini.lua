@@ -41,8 +41,6 @@ return {
     vim.keymap.set('n', '<leader>f', '<cmd>Pick files<CR>')
     vim.keymap.set('n', '<leader>g', '<cmd>Pick grep_live<CR>')
     vim.keymap.set('n', '<leader>b', '<cmd>Pick buffers<CR>')
-    -- <leader>a zet erbij, <leader>j toont de lijst.
-    vim.keymap.set('n', '<leader>j', '<cmd>Pick arglist<CR>')
 
     local clue = require('mini.clue')
     clue.setup({

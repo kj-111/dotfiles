@@ -15,7 +15,7 @@ allemaal vanaf daar — én de sessie, zie onderaan.
 2. Nieuw Java-project: eerst `jinit naam`; losse map zonder projectbestanden:
    `touch .java-root`, anders vindt jdtls zijn root niet
 3. Werkset opbouwen: bestanden zoeken met `<leader>f`, vastzetten
-   met `<leader>a` — daarna schakelt CTRL-1…6 (navigatie.md); eenmaal
+   met `<leader>h` en dan `a` — daarna schakelt CTRL-1…6 (navigatie.md); eenmaal
    alles open is `:b naam` de kortste sprong (buffers.md)
 4. Bestanden bekijken of beheren: `<leader>e` — mini.files (files.md)
 5. Terminal ernaast voor het runnen: `:vs +term` (de Java-loop hieronder)

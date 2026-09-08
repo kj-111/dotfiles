@@ -14,17 +14,3 @@ vim.keymap.set('t', 'jk', '<C-\\><C-n>')
 
 -- Alle diagnostics in de quickfixlijst; setqflist opent ze zelf.
 vim.keymap.set('n', '<leader>d', function() vim.diagnostic.setqflist() end, { desc = 'Diagnostics in quickfix' })
-
--- De arglist als harpoon; $argadd = achteraan, :%argdel wist de hele lijst.
-vim.keymap.set('n', '<leader>a', '<cmd>$argadd % | argdedupe<CR>')
-
--- Ctrl+cijfer vergt het uitgebreide toetsenbordprotocol (Alacritty).
-for i = 1, 6 do
-  vim.keymap.set('n', '<C-' .. i .. '>', function()
-    -- Zit je al in dit bestand, roep :argument dan niet aan: het is een :edit,
-    -- die herleest, en bij het herlezen gaan je handmatige folds verloren
-    local target = vim.fn.argv(i - 1)
-    if target ~= '' and vim.fn.fnamemodify(target, ':p') == vim.fn.expand('%:p') then return end
-    vim.cmd('silent! ' .. i .. 'argument')
-  end)
-end

@@ -45,19 +45,26 @@ argumentenlijst. Naast de bufferlijst ("alles wat open is geweest") is dit de
 korte, geordende lijst "waar ik nú aan werk", met een positie-aanwijzer — de
 `[]` in `:args`. Als harpoon, met een dun laagje eromheen:
 
-- `<leader>a` — voeg het huidige bestand achteraan toe
+- `<leader>h` — open of sluit het menu: de lijst als buffer, één pad per regel.
+  Daarin `a` om het bestand waar je vandaan kwam achteraan te zetten, `dd` om
+  een slot te wissen, `<C-j>` / `<C-k>` om te verschuiven en `l` om te openen.
+  Sluiten schrijft de lijst terug, hoe je ook sluit (config/arglist.lua)
 - `CTRL-1` … `CTRL-6` — spring direct naar bestand 1 t/m 6; het slot waar je
   al in zit doet expres niets, want dat zou het bestand herlezen en je folds
   wissen (folds.md); `]a` / `[a` — volgende/vorige in de lijst (ingebouwd,
   zelfde familie als ]q en ]l)
 - `:args` — toon de lijst op één regel (het huidige bestand staat tussen []);
-  `<leader>j` toont hem als picker, met preview (pick.md)
+  `:Pick arglist` toont hem als picker, met preview (pick.md)
 - `:argdo {cmd}` — voer iets uit op élk bestand in de lijst: "Execute {cmd}
   for each file in the argument list" (:h :argdo). Dus
   `:argdo %s/oud/nieuw/g | update` over je hele werkset, en met een range
   (`:2,4argdo …`) over een deel ervan. Wat `:cdo` voor de quickfix is
 - verwijderen: `:argd <Tab>` — de completion bladert door de lijst;
   `:%argdel` wist hem in één keer (:h :argdelete)
+
+Heb je in deze map ooit `:SessionCreate` gedaan, dan overleeft de werkset het
+afsluiten: de sessie schrijft de arglist mee weg, inclusief welk slot het
+huidige was. Zonder sessie begin je elke start met een lege lijst (sessie.md).
 
 De lijst leeft per nvim-instantie, in het geheugen, maar de projectsessie
 bewaart hem. Start je later `nvim` zonder argumenten in dezelfde cwd, dan komt

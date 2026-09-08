@@ -12,6 +12,7 @@ require('config.neovide').setup()
 require('autocmds')
 require('remap')
 
+require('config.arglist')
 require('config.session')
 require('config.term').setup()
 
