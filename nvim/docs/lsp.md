@@ -186,6 +186,14 @@ wilt. De server gebruikt `cargo clippy` voor uitgebreidere diagnostics.
 Compiler, Cargo, rust-analyzer, rustfmt en clippy komen samen uit de actieve
 rustup-toolchain, zodat hun versies bij elkaar passen.
 
+Cargo-metadata draait vanuit de cratemap en rust-analyzer vanuit de workspace.
+Dat is nodig voor `rust-toolchain.toml`: rustup kiest op basis van de proces-cwd,
+ook als je nvim elders hebt gestart. In Neovim 0.12 regelt de `cmd`-functie dat
+expliciet. Broncode onder de Cargo-caches of rustup-toolchains hergebruikt een
+actieve Rust-client, zoals in upstream nvim-lspconfig, zodat navigeren naar
+`std` geen tweede server start. Bij meerdere open workspaces kiest dit de laatst
+gestarte Rust-client; aparte Neovim-instanties per project vermijden ambiguïteit.
+
 ## Formatters (conform, bij :w)
 
 Python doet ruff, lua stylua, javascript/json/markdown prettierd en Rust

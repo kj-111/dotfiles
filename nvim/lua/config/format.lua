@@ -13,6 +13,8 @@ return {
       formatters = {
         rustfmt = {
           options = { default_edition = '2024' },
+          -- Rustup kiest de projecttoolchain; rustfmt zoekt zelf omhoog naar config.
+          cwd = function(_, ctx) return ctx.dirname end,
         },
       },
       -- Java niet hier: jdtls formatteert via de fallback, met de

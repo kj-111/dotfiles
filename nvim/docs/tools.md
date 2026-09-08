@@ -45,12 +45,14 @@ Alle brew-tools in één keer (staat ook in de Brewfile):
 Op een nieuwe machine installeer je eerst rustup via de officiële installer:
 
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    . "$HOME/.cargo/env"
     rustup set profile default
     rustup default stable
-    rustup component add rust-analyzer rustfmt clippy
+    rustup component add rust-analyzer rust-src rustfmt clippy
 
 Het `default`-profiel is geschikt voor ontwikkeling en bevat rustfmt en clippy;
-de laatste opdracht maakt de drie benodigde componenten ook expliciet. Bijwerken:
+de laatste opdracht voegt ook rust-analyzer en de standaardbibliotheekbroncode
+(`rust-src`, voor analyse en navigatie) toe. Bijwerken:
 
     rustup update stable
     rustup self update

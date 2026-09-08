@@ -422,14 +422,14 @@ Java `:JdtUpdateConfig`.
 | Insert-`.` herhaalt ook cursorbewegingen               | geen pijltjestoetsmappings                  | nieuw standaardgedrag                 |
 | Visual-`.` herhaalt semantisch                         | geen eigen repeat-config                    | nieuw standaardgedrag                 |
 | statusline-itemgroepen/truncatie gewijzigd             | `%=` staat buiten groepen                   | geen wijziging                        |
-| LSP-process-cwd wordt `root_dir`                       | alle servers gebruiken array-`cmd`          | werkt en is logischer                 |
+| LSP-process-cwd wordt `root_dir`                       | Rust zet cwd expliciet                      | Rust-cmd kan na upgrade eenvoudiger   |
 | `client.attached_buffers[buf]` bevat languageId        | eigen code gebruikt `vim.lsp.get_clients()` | geen wijziging                        |
 | LSP `reuse_win` verwijderd                             | nergens gebruikt                            | geen wijziging                        |
 | `BufModifiedSet` verwijderd                            | nergens gebruikt                            | geen wijziging                        |
 | `vim.opt`-operatoren niet ketenen                      | nergens geketend                            | geen wijziging                        |
 | `stdpath('log')` verhuist naar `stdpath('state')/logs` | geen hardcoded logpad                       | alleen pad in health-output verandert |
 | lege autocmdpatterns niet meer als nil                 | nergens gebruikt                            | geen wijziging                        |
-| `vim.fs.normalize(..., expand_env=false)` hernoemd     | nergens gebruikt                            | geen wijziging                        |
+| `vim.fs.normalize(..., expand_env=false)` hernoemd     | arglist gebruikt dit voor letterlijke paden | na upgrade `plain=true` gebruiken     |
 | `:helptags` vereist vimdoc-parser                      | parser staat in de lijst                    | reeds in orde                         |
 | `vim.hl.on_yank()` deprecated                          | één autocmd                                 | vervangen na upgrade                  |
 | keymapoptie `buffer` deprecated                        | één mapping                                 | hernoemen naar `buf`                  |

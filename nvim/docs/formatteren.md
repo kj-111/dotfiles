@@ -20,6 +20,10 @@ Rustfmt draait rechtstreeks via conform; rust-analyzer is alleen de fallback.
 In een Cargo-project haalt conform de edition uit `Cargo.toml` en een
 projectgebonden `rustfmt.toml` of `.rustfmt.toml` wint vanzelf. Voor een los
 `.rs`-bestand gebruikt de config edition 2024 en verder de standaard Rust-stijl.
+De formatter start vanuit de map van het bronbestand: zo vindt rustup de
+projecttoolchain, ook wanneer `rustfmt.toml` in een bovenliggende map staat.
+`formatters_by_ft` kiest de tool; `formatters.rustfmt` past de opties en cwd
+van diezelfde tool aan.
 
 ## Hoe elke tool zijn config vindt
 
