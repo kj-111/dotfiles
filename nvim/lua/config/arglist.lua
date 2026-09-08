@@ -100,7 +100,9 @@ local function open()
     -- Een verse buffer heeft één lege regel; die overschrijven in plaats van
     -- eronder plakken, anders begint de lijst met een gat.
     local start = (last == 1 and vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1] == '') and 0 or last
-    vim.api.nvim_buf_set_lines(buf, start, -1, false, { origin })
+    -- Kort weergeven, net als de regels die er al staan; elke lezer van de
+    -- buffer maakt er zelf weer een absoluut pad van.
+    vim.api.nvim_buf_set_lines(buf, start, -1, false, { vim.fs.relpath(cwd, origin) or origin })
     vim.api.nvim_win_set_height(win, math.max(1, math.min(vim.api.nvim_buf_line_count(buf), vim.o.lines - 6)))
   end
 
