@@ -48,7 +48,9 @@ korte, geordende lijst "waar ik nú aan werk", met een positie-aanwijzer — de
 - `<leader>h` — open of sluit het menu: de lijst als buffer, één pad per regel.
   Daarin `a` om het bestand waar je vandaan kwam achteraan te zetten, `dd` om
   een slot te wissen, `<C-j>` / `<C-k>` om te verschuiven en `l` om te openen.
-  Sluiten schrijft de lijst terug, hoe je ook sluit (config/arglist.lua)
+  Sluiten schrijft de lijst terug, hoe je ook sluit (config/arglist.lua).
+  Lege regels verdwijnen en dubbele paden worden samengevoegd; `l` blijft
+  het gekozen bestand openen. Een lange lijst scrollt binnen het scherm
 - `CTRL-1` … `CTRL-6` — spring direct naar bestand 1 t/m 6; het slot waar je
   al in zit doet expres niets, want dat zou het bestand herlezen en je folds
   wissen (folds.md); `]a` / `[a` — volgende/vorige in de lijst (ingebouwd,
@@ -65,6 +67,10 @@ korte, geordende lijst "waar ik nú aan werk", met een positie-aanwijzer — de
 Heb je in deze map ooit `:SessionCreate` gedaan, dan overleeft de werkset het
 afsluiten: de sessie schrijft de arglist mee weg, inclusief welk slot het
 huidige was. Zonder sessie begin je elke start met een lege lijst (sessie.md).
+Ook bij `:qa` met het menu open gaan de laatste menu-edits mee. Het huidige
+argument blijft bij herschikken behouden zolang je het niet verwijdert, zonder
+het bestand opnieuw te openen. `:arglocal` wordt in het oorspronkelijke venster
+bijgewerkt; spaties en speciale tekens in paden blijven letterlijk behouden.
 
 De lijst leeft per nvim-instantie, in het geheugen, maar de projectsessie
 bewaart hem. Start je later `nvim` zonder argumenten in dezelfde cwd, dan komt

@@ -26,7 +26,7 @@ zodra het bestand herlezen wordt, want dan berekent 'foldexpr' alles opnieuw.
 Daar helpt binnen een sessie geen optie tegen — `:mkview` / `:loadview` zou het
 bewaren, maar dat kost viewbestanden op schijf die verouderen.
 
-Daarom slaat de `CTRL-1`…`CTRL-6`-mapping (remap.lua) een sprong over naar het
+Daarom slaat de `CTRL-1`…`CTRL-6`-mapping (config/arglist.lua) een sprong over naar het
 bestand waar je al in zit: `:argument` is een `:edit` (:h :argument), dus dat
 zou herlezen. De herlezing niet doen is goedkoper dan de folds terugzetten.
 
