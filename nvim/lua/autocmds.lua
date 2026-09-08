@@ -30,7 +30,7 @@ vim.api.nvim_create_autocmd('FileType', {
     if vim.fn.maparg('q', 'n') ~= '' then return end
 
     vim.keymap.set('n', 'q', '<cmd>quit<CR>', {
-      buffer = args.buf,
+      buf = args.buf,
       desc = 'Close window',
       silent = true,
     })
