@@ -9,7 +9,11 @@ gecentreerd; `Tab` klapt de preview open.
 
 ## De drie met een toets
 
-- `<leader>f` — files: fuzzy over alle bestanden (via rg, respecteert .gitignore)
+- `<leader>f` — files: fuzzy over alle bestanden. Wát rg toont staat niet hier
+  maar in `ripgreprc`: .gitignore telt mee, dotfiles ook (`--hidden`, anders
+  waren `.stylua.toml` en `.prettierrc` onbereikbaar), en `.git` plus de
+  cachemappen zijn eruit gefilterd. Datzelfde bestand stuurt `<leader>g` en
+  `:grep`
 - `<leader>g` — grep_live: zoeken terwijl je typt. Dit is wat de cmdline
   niet kan; `:grep` blijft one-shot naar de quickfix
 - `<leader>b` — buffers: springen tussen wat open is
