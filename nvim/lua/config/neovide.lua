@@ -26,7 +26,7 @@ function M.setup()
 
   -- Dezelfde cursorvormen als set.lua, met een iets smallere balk en expliciete GUI-kleuren.
   vim.o.guicursor =
-    'n-v-c-sm:block-Cursor/lCursor,i-ci-ve:ver30-Cursor/lCursor,r-cr-o:hor20-Cursor/lCursor,t:ver30-TermCursor'
+    'n-v-c-sm:block-Cursor/lCursor,i-ci-ve:ver25-Cursor/lCursor,r-cr-o:hor20-Cursor/lCursor,t:ver25-TermCursor'
 
   local function change_scale(delta)
     local scale = vim.g.neovide_scale_factor + delta
