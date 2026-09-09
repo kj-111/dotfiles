@@ -17,8 +17,7 @@ function M.setup()
   vim.g.neovide_floating_shadow = false
   vim.g.neovide_progress_bar_enabled = false
 
-  -- Default aan, hier expliciet: Cmd-Q is een macOS-menu-item en niet in nvim af
-  -- te vangen, dus dit is het enige vangnet tegen per ongeluk afsluiten.
+  -- Bevestiging bij onopgeslagen wijzigingen, ook bij sluiten via de menubalk.
   vim.g.neovide_confirm_quit = true
 
   vim.g.neovide_hide_mouse_when_typing = true
@@ -41,6 +40,15 @@ function M.setup()
     '<D-0>',
     function() vim.g.neovide_scale_factor = 1.0 end,
     { silent = true }
+  )
+
+  -- Clipboard expliciet bedienen; de gewone Vim-registers blijven onafhankelijk.
+  vim.keymap.set('x', '<D-c>', '"+y', { silent = true, desc = 'Kopieer selectie naar clipboard' })
+  vim.keymap.set(
+    { 'n', 'i', 'v', 'c', 't' },
+    '<D-v>',
+    function() vim.api.nvim_paste(vim.fn.getreg('+'), true, -1) end,
+    { silent = true, desc = 'Plak clipboard' }
   )
 end
 

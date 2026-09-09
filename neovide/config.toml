@@ -5,6 +5,8 @@ tabs = false
 # Globale hotkeys ⌘⌃Z (pinned window) en ⌘⌃N (editors switcher); leeg = uit.
 system-pinned-hotkey = ""
 system-switcher-hotkey = ""
+system-tab-prev-hotkey = ""
+system-tab-next-hotkey = ""
 
 # Gelijk aan alacritty.toml: zelfde familie, faces en grootte.
 [font]

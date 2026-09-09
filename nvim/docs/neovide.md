@@ -21,6 +21,11 @@ De uiteindelijke pixels blijven afhankelijk van de renderer.
 Deze toetsen werken in Normal, Insert, Visual, command-line en terminal-mode.
 Cursor-, scroll- en vensteranimaties blijven bewust op Neovides defaults.
 
+`Cmd-C` kopieert de Visual-selectie naar het macOS-clipboard. `Cmd-V` plakt
+in Normal, Insert, Visual, command-line en terminal-mode via `nvim_paste()`;
+de tekst wordt niet als toetsen of mappings uitgevoerd. `clipboard` blijft
+ongewijzigd: `y`/`p` en de gewone registers volgen nog steeds Vim.
+
 ## Font
 
 Zelfde familie, faces en grootte als `alacritty.toml`, zodat beide er hetzelfde
@@ -43,32 +48,69 @@ De rendering staat op Neovides eigen Alacritty-emulatie: "you can use a gamma
 of 0.8 and a contrast of 0.1" (neovide.dev/configuration.html). De defaults
 zijn 0.0 en 0.5, dus dit dunt de strokes af. Te dun? Die kant op bewegen.
 
-## Native menutoetsen in Neovide 0.16.2
+## Ongebruikte native menutoetsen uit
 
-Cmd-Q, Cmd-N, Cmd-M, Cmd-H, Opt-Cmd-H en Ctrl-Cmd-F zijn key equivalents van
-Neovides native menubalk. AppKit verwerkt die vóór het toetsevent het venster
-bereikt, dus nvim ziet ze nooit — een mapping erop kan niets doen. Er is ook
-geen configsleutel voor: de struct kent alleen `system-pinned-hotkey`,
-`system-switcher-hotkey` en de twee voor native tabs.
+De gewenste Cmd-toetsen zijn `J`, `K`, `0`, `C` en `V`. De native shortcuts
+voor nieuw venster, afsluiten, verbergen, minimaliseren, fullscreen en Editors
+zijn via macOS-appvoorkeuren uitgeschakeld. De menu-items blijven bruikbaar;
+`neovide_confirm_quit` beschermt bij onopgeslagen wijzigingen. De globale
+activation-hotkeys en native tabnavigatie staan uit in `neovide/config.toml`.
 
-Dit geldt voor de geïnstalleerde 0.16.2. De online documentatie beschrijft
-inmiddels meer `system-*-hotkey`-opties; neem die niet over zonder te controleren
-of de geïnstalleerde versie ze ondersteunt.
+Neovide 0.16.2 heeft voor deze menutoetsen nog geen eigen configopties. AppKit
+handelt ze vóór gewone Neovim-input af; alleen Lua-mappings volstaan dus niet.
+De online docs beschrijven inmiddels meer `system-*-hotkey`-opties, maar die
+worden nog niet door deze versie ondersteund.
 
-Dat is de hele lijst; `src/platform/macos/mod.rs` bouwt geen Close-item, dus
-Cmd-W bereikt nvim wél en is gewoon te mappen. Fullscreen zit op Ctrl-Cmd-F,
-dus Cmd-F is ook vrij.
+Eenmalig op een nieuwe Mac uitvoeren, daarna Neovide volledig herstarten:
 
-Het vangnet is `neovide_confirm_quit`, expliciet aan gezet. Dat is de
-gedocumenteerde default, maar Neovides eigen Lua valt terug op
-`vim.g.neovide_confirm_quit or false` als de variabele leeg is.
+```sh
+for domain in com.neovide.neovide neovide; do
+  defaults write "$domain" NSUserKeyEquivalents -dict-add \
+    'New Window' '"\U0000"' \
+    'Quit Neovide' '"\U0000"' 'Quit neovide' '"\U0000"' \
+    'Hide Neovide' '"\U0000"' 'Hide neovide' '"\U0000"' \
+    'Hide Others' '"\U0000"' \
+    'Minimize' '"\U0000"' 'Minimize All' '"\U0000"' \
+    'Enter Full Screen' '"\U0000"' 'Exit Full Screen' '"\U0000"' \
+    'Editors' '"\U0000"'
+done
+```
 
-`title-hidden` staat er bewust niet: bij `frame = "none"` gaat Neovide de
-`with_decorations(false)`-tak in en wordt de sleutel niet doorgegeven.
+Dit koppelt de menu-items aan NUL, geen typbare toets. Een lege string schakelt
+de oorspronkelijke shortcut niet uit. Beide domeinen dekken de `.app` en de
+kale `nvide`-start; de twee schrijfwijzen dekken de bijbehorende menutitels.
+Andere apps en globale macOS-sneltoetsen veranderen niet. Deze voorkeuren staan
+in macOS, dus niet automatisch in een clone van `.config`.
 
-Wil je de toets echt dood, dan is het macOS: System Settings → Keyboard →
-Shortcuts → App Shortcuts, het menu-item op een onbruikbare chord zetten.
-Dezelfde truc als bij Finder (hyperkey/README.md).
+Terug naar de standaardmenutoetsen: `defaults delete com.neovide.neovide
+NSUserKeyEquivalents` en `defaults delete neovide NSUserKeyEquivalents`, gevolgd
+door een herstart. Dat verwijdert alle shortcut-overrides in die twee domeinen.
+
+### Later: vervangen door native Neovide-opties
+
+[PR #3481](https://github.com/neovide/neovide/pull/3481) voegde op 22 april 2026
+native menu-shortcutinstellingen toe. Deze ontbreken nog in 0.16.2. Zodra een
+stabiele release ze ondersteunt, hebben deze opties in `neovide/config.toml`
+de voorkeur boven de macOS-overrides:
+
+```toml
+system-new-window-hotkey = false
+system-quit-hotkey = false
+system-hide-hotkey = false
+system-hide-others-hotkey = false
+system-minimize-hotkey = false
+system-fullscreen-hotkey = false
+system-show-all-tabs-hotkey = false
+```
+
+Controleer bij de upgrade eerst de ondersteuning in die release; de online docs
+kunnen vooruitlopen. Verwijder daarna de hierboven ingestelde macOS-overrides,
+herstart Neovide volledig en test de uitgeschakelde toetsen én `Cmd-J/K/0/C/V`.
+Alleen hiervoor geen ontwikkelversie of extra keyboard-remapper installeren.
+
+De huidige overrides zijn met AppKit getest, maar nog niet end-to-end in een
+herstarte Neovide. De PR meldt dat macOS App Shortcuts niet bij iedereen werken;
+controleer dus het echte gedrag na herstart.
 
 ## Waarom aerospace op app-name matcht
 
