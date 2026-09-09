@@ -25,8 +25,9 @@ function M.setup()
   vim.g.neovide_theme = 'dark'
   vim.g.neovide_scale_factor = 1.0
 
+  -- Dezelfde cursorvormen als set.lua, met een iets smallere balk en expliciete GUI-kleuren.
   vim.o.guicursor =
-    'n-v-c-sm:block-Cursor/lCursor,i-ci-ve:ver25-Cursor/lCursor,r-cr-o:hor20-Cursor/lCursor,t:ver25-TermCursor'
+    'n-v-c-sm:block-Cursor/lCursor,i-ci-ve:ver30-Cursor/lCursor,r-cr-o:hor20-Cursor/lCursor,t:ver30-TermCursor'
 
   local function change_scale(delta)
     local scale = vim.g.neovide_scale_factor + delta
@@ -35,6 +36,12 @@ function M.setup()
 
   vim.keymap.set({ 'n', 'i', 'v', 'c', 't' }, '<D-k>', function() change_scale(0.03) end, { silent = true })
   vim.keymap.set({ 'n', 'i', 'v', 'c', 't' }, '<D-j>', function() change_scale(-0.03) end, { silent = true })
+  vim.keymap.set(
+    { 'n', 'i', 'v', 'c', 't' },
+    '<D-0>',
+    function() vim.g.neovide_scale_factor = 1.0 end,
+    { silent = true }
+  )
 end
 
 return M

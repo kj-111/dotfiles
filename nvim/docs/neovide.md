@@ -1,7 +1,7 @@
 # Neovide
 
 GUI-client voor dezelfde nvim-config. Starten met `nvide`; aerospace zet het
-venster op workspace 3, fullscreen. Installeren via `cask "neovide-app"`.
+venster op workspace 1, fullscreen. Installeren via `cask "neovide-app"`.
 
 ## Twee configbestanden
 
@@ -12,8 +12,14 @@ voor nvim start, dus alles wat het venster vormt hoort daar.
 bestand zit achter `if not vim.g.neovide then return end`, dus in de terminal
 gebeurt er niets. In init.lua staat de require ná `require('set')`, want
 `setup()` overschrijft 'guicursor' met een variant die `Cursor/lCursor` gebruikt.
-De balk staat daar bewust op `ver25` tegen `ver35` in set.lua; smaller in de
-GUI is een keuze, geen drift.
+De cursorvormen volgen set.lua: blok in Normal en `hor20` in Replace.
+In Insert/terminal is de balk bewust iets smaller: `ver30` in plaats van `ver35`.
+De uiteindelijke pixels blijven afhankelijk van de renderer.
+
+`Cmd-K` / `Cmd-J` vergroten/verkleinen de GUI-schaal, begrensd op 0.5–2.0.
+`Cmd-0` zet die terug op 1.0, dus de ingestelde fontgrootte van 15.5.
+Deze toetsen werken in Normal, Insert, Visual, command-line en terminal-mode.
+Cursor-, scroll- en vensteranimaties blijven bewust op Neovides defaults.
 
 ## Font
 
@@ -37,13 +43,17 @@ De rendering staat op Neovides eigen Alacritty-emulatie: "you can use a gamma
 of 0.8 and a contrast of 0.1" (neovide.dev/configuration.html). De defaults
 zijn 0.0 en 0.5, dus dit dunt de strokes af. Te dun? Die kant op bewegen.
 
-## Wat je niet kunt instellen
+## Native menutoetsen in Neovide 0.16.2
 
 Cmd-Q, Cmd-N, Cmd-M, Cmd-H, Opt-Cmd-H en Ctrl-Cmd-F zijn key equivalents van
 Neovides native menubalk. AppKit verwerkt die vóór het toetsevent het venster
 bereikt, dus nvim ziet ze nooit — een mapping erop kan niets doen. Er is ook
 geen configsleutel voor: de struct kent alleen `system-pinned-hotkey`,
 `system-switcher-hotkey` en de twee voor native tabs.
+
+Dit geldt voor de geïnstalleerde 0.16.2. De online documentatie beschrijft
+inmiddels meer `system-*-hotkey`-opties; neem die niet over zonder te controleren
+of de geïnstalleerde versie ze ondersteunt.
 
 Dat is de hele lijst; `src/platform/macos/mod.rs` bouwt geen Close-item, dus
 Cmd-W bereikt nvim wél en is gewoon te mappen. Fullscreen zit op Ctrl-Cmd-F,
@@ -73,7 +83,7 @@ aerospace ziet dan:
 ```
 
 Geen bundle-id, dus een regel op app-id vuurt niet. Via de app wél
-(`3 | com.neovide.neovide | Neovide`). De regex vangt allebei, want de naam is
+(`1 | com.neovide.neovide | Neovide`). De regex vangt allebei, want de naam is
 `neovide` of `Neovide`.
 
 ## Eén instance
