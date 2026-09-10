@@ -10,8 +10,10 @@ Sioyek 3-alpha0 (ARM64) - https://github.com/ahrm/sioyek/releases/tag/sioyek3-al
 
 (Amphetamine 5.3.2 - https://apps.apple.com/us/app/amphetamine/id937984704)
 (BlueJ 6.0.0 - https://www.bluej.org/)
+(Excalidraw - https://excalidraw.com (PWA via Helium: App installeren; komt in ~/Applications/Chromium Apps))
 (SceneBuilder 26.0.0 - https://gluonhq.com/products/scene-builder/)
 (UTM 4.7.5 - https://mac.getutm.app/)
+(Wacom Tablet Driver - https://www.wacom.com/en-us/support/product-support/drivers)
 
 # Alacritty installeren
 #
