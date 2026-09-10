@@ -10,14 +10,14 @@ allemaal vanaf daar — én de sessie, zie onderaan.
 
 1. In de terminal `cd` naar de projectmap, dan `nvim` zonder argumenten: zo
    wordt de projectsessie hersteld en later weer bewaard. `nvim .` (start in
-   mini.files) of `nvim src/Main.java` is bewust een eenmalige start zonder
+   oil) of `nvim src/Main.java` is bewust een eenmalige start zonder
    automatisch sessieherstel of -bewaring
 2. Nieuw Java-project: eerst `jinit naam`; losse map zonder projectbestanden:
    `touch .java-root`, anders vindt jdtls zijn root niet
 3. Werkset opbouwen: bestanden zoeken met `<leader>f`, vastzetten
    met `<leader>h` en dan `a` — daarna schakelt CTRL-1…6 (navigatie.md); eenmaal
    alles open is `:b naam` de kortste sprong (buffers.md)
-4. Bestanden bekijken of beheren: `<leader>e` — mini.files (files.md)
+4. Bestanden bekijken of beheren: `<leader>e` — oil (oil.md)
 5. Terminal ernaast voor het runnen: `:vs +term` (de Java-loop hieronder)
 6. Toch verkeerd gestart: `:cd map` verlegt het anker binnen de sessie
    (`:pwd` toont waar je zit). Ook handig als je werk zich naar een submap

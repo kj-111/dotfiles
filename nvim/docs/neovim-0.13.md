@@ -4,6 +4,11 @@
 > de officiële releasechecklist staat open, bevat nog blockers en `news.txt`
 > heeft nog lege onderdelen. Controleer dit document daarom opnieuw tegen
 > `:help news` van de uiteindelijke `v0.13.0`.
+>
+> De metingen hieronder zijn gedaan toen MiniFiles nog de verkenner was; die
+> tabelregel blijft staan zoals gemeten. Inmiddels is dat oil (oil.md), en de
+> redenering over de `dir`-plugin geldt daar één op één: ook oil claimt
+> directorybuffers.
 
 ## Kort besluit
 
@@ -21,8 +26,7 @@ aanpassingen zinvol:
    0.12.5);
 4. `vim.opt.autoread = true` expliciet instellen;
 5. het eigen sessiebeheer bewust laten samenwerken met de nieuwe `:restart`;
-6. Neovims nieuwe `dir`-explorer expliciet uitschakelen ten gunste van
-   MiniFiles.
+6. Neovims nieuwe `dir`-explorer expliciet uitschakelen ten gunste van oil.
 
 De LSP-filewatcherbeperking voorlopig behouden. Het onderliggende
 resourceprobleem is nog open en 0.13 laat ook `'autoread'` filewatchers
@@ -160,18 +164,19 @@ release, omdat `:restart` en zijn UI-lifecycle nog nieuw zijn.
 ### 6. Ingebouwde `dir`-explorer expliciet uitschakelen
 
 Neovim 0.13 laadt standaard zijn nieuwe `dir`-plugin voor directorybuffers.
-MiniFiles blijft hier bewust de standaard explorer. Zet daarom vóór het laden
+Oil blijft hier bewust de standaard explorer. Zet daarom vóór het laden
 van de plugins in `lua/set.lua`:
 
 ```lua
 vim.g.loaded_nvim_dir_plugin = 1
 ```
 
-Zonder die vlag opent MiniFiles in de geteste nightly uiteindelijk nog steeds
-zowel `nvim map/` als `:edit map/`, maar Neovims twee `nvim.dir`-autocmds zijn
-dan eerst ook actief. De officiële disable-vlag voorkomt die dubbele
-afhandeling volledig. Dit is getest met dezelfde config op zowel 0.12.5 als
-0.13-nightly en verstoort MiniFiles op geen van beide versies.
+Zonder die vlag opent de verkenner in de geteste nightly uiteindelijk nog
+steeds zowel `nvim map/` als `:edit map/`, maar Neovims twee
+`nvim.dir`-autocmds zijn dan eerst ook actief. De officiële disable-vlag
+voorkomt die dubbele afhandeling volledig. Dit is getest met dezelfde config
+op zowel 0.12.5 als 0.13-nightly en verstoorde de verkenner op geen van beide
+versies.
 
 ### Wat niet moet veranderen
 
@@ -187,8 +192,8 @@ afhandeling volledig. Dit is getest met dezelfde config op zowel 0.12.5 als
   gewijzigde truncatieregels.
 - De huidige `nvim-pack-lock.json` staat al exact op de nieuwe standaardlocatie
   en hoort in Git te blijven.
-- MiniFiles blijft de juiste keuze voor de gekozen explorerworkflow. Gebruik
-  daarbij wel de expliciete `loaded_nvim_dir_plugin`-vlag hierboven.
+- Er blijft één eigen verkenner voor de gekozen workflow. Gebruik daarbij wel
+  de expliciete `loaded_nvim_dir_plugin`-vlag hierboven.
 
 ## API-audit van de huidige Lua-config
 
@@ -341,9 +346,9 @@ directorypad wordt geopend. De browser:
 - kan bestandstypes, executables en symlinkdoelen decoreren;
 - vormt ook de interface van de nieuwe read-only zipbrowser.
 
-Dat is een goede native, minimalistische vervanger voor netrw. MiniFiles blijft
-voor deze config echter beter passen door zijn kolommen, previews en
-bestandsbewerkingen met trash-ondersteuning. Schakel `dir` daarom expliciet uit
+Dat is een goede native, minimalistische vervanger voor netrw. Oil past voor
+deze config echter beter door zijn previews en bestandsbewerkingen met
+trash-ondersteuning. Schakel `dir` daarom expliciet uit
 zoals bij wijziging 6 beschreven; zo is er precies één eigenaar van
 directorybuffers.
 

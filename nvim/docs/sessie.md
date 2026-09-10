@@ -141,10 +141,12 @@ overgenomen.
 `:mksession` schrijft inderdaad een genoemde scratch-buffer weg als
 `badd`-regel, en bij het herstellen krijg je die dan terug als leeg,
 niet-bestaand bestand. Maar dat geldt alleen voor buffers met
-`'buflisted'`. De plugins hier maken die niet: mini.files gebruikt
-`nvim_create_buf(false, true)` met `bufhidden=wipe`, dus niet in de lijst
-en weg zodra je hem sluit. Het quickfix-venster komt sowieso niet in de
-sessie. En `gitcommit` hoeft niet gefilterd: `git commit` start nvim mét
+`'buflisted'`. De plugins hier maken die niet: een oil-map staat op
+`buflisted = false`, dus er komt geen `badd`-regel voor. Stond er wel een
+oil-venster open, dan bewaart de sessie dat venster als `file oil://pad/` en
+rendert oil de map bij het herstellen gewoon opnieuw. Het quickfix-venster
+komt sowieso niet in de sessie. En `gitcommit` hoeft niet gefilterd:
+`git commit` start nvim mét
 een argument, dus daar herstelt en bewaart hij toch al niets.
 
 Open je nvim ergens en sluit je meteen af, dan ontstaat er geen leeg

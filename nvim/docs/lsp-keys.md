@@ -16,7 +16,7 @@ een server attacht. Hoe die keten werkt staat in lsp.md.
 
 ## Veranderen
 
-- `grn` — rename: symbool, bestand én alle verwijzingen (zie files.md)
+- `grn` — rename: symbool, bestand én alle verwijzingen (zie oil.md)
 - `gra` — code actions (ook in visual mode): quick fixes, imports, refactors
 - `grx` — codelens uitvoeren (bijv. "run test" boven een methode)
 

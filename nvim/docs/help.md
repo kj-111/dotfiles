@@ -31,8 +31,8 @@ Werkregel (neovim-core): eerst K of :h, dan de bron, AI laatst.
 ## Plugins
 
 Elke plugin scheept zijn eigen handleiding mee, doorzoekbaar als gewone help:
-`:h mini.clue`, `:h mini.pick`, `:h mini.files`, `:h conform`,
-`:h blink-cmp`, `:h fugitive` — en in de mini.files- en fugitive-buffers
+`:h mini.clue`, `:h mini.pick`, `:h oil`, `:h conform`,
+`:h blink-cmp`, `:h fugitive` — en in de oil- en fugitive-buffers
 toont `g?` alle toetsen van dát venster. Undotree is geen losse plugin maar
 een meegeleverde van nvim zelf: `:h package-undotree`.
 
