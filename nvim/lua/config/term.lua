@@ -49,6 +49,7 @@ local function toggle()
 
   if not vim.api.nvim_buf_is_valid(state.buf) then state.buf = vim.api.nvim_create_buf(false, true) end
   state.win = vim.api.nvim_open_win(state.buf, true, geometry())
+  vim.wo[state.win].winfixbuf = true
 
   -- Pas starten als het venster er staat, anders krijgt de pty eerst de
   -- standaardmaat en herschikt de shell zijn prompt bij de eerste tekens.

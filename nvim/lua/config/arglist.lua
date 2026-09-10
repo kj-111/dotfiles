@@ -84,6 +84,7 @@ local function open()
   -- slot waar CTRL-1 t/m CTRL-6 naartoe springt.
   vim.wo[win].number = true
   vim.wo[win].wrap = false
+  vim.wo[win].winfixbuf = true
   vim.bo[buf].bufhidden = 'wipe'
 
   local function add()
