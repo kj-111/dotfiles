@@ -4,7 +4,7 @@ vim.g.loaded_node_provider = 0
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 
--- Netrw uit, vóór het plugin-laden: mini.files is de verkenner.
+-- Netrw uit, vóór het plugin-laden: oil is de verkenner.
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 

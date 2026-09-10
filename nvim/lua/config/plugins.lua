@@ -7,6 +7,7 @@ local plugins = {
   { src = 'https://github.com/mfussenegger/nvim-jdtls' },
   { src = 'https://github.com/nvim-mini/mini.nvim' },
   { src = 'https://github.com/nvim-treesitter/nvim-treesitter' },
+  { src = 'https://github.com/stevearc/oil.nvim' },
   { src = 'https://github.com/tpope/vim-fugitive' },
   { src = 'https://github.com/MeanderingProgrammer/render-markdown.nvim' },
 }

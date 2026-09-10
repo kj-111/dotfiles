@@ -29,15 +29,6 @@ return {
     -- kale paden, dus preview en CTRL-V/S/T werken vanzelf (:h MiniPick-source).
     MiniPick.registry.arglist = function() return MiniPick.start({ source = { items = vim.fn.argv, name = 'Arglist' } }) end
 
-    -- Verkenner in kolommen; bewerken is bestandsbeheer, = voert het uit.
-    -- permanent_delete uit: verwijderd gaat naar mini's eigen prullenbak.
-    require('mini.files').setup({ options = { permanent_delete = false } })
-
-    vim.keymap.set('n', '<leader>e', function()
-      local files = require('mini.files')
-      if not files.close() then files.open(vim.api.nvim_buf_get_name(0)) end
-    end)
-
     vim.keymap.set('n', '<leader>f', '<cmd>Pick files<CR>')
     vim.keymap.set('n', '<leader>g', '<cmd>Pick grep_live<CR>')
     vim.keymap.set('n', '<leader>b', '<cmd>Pick buffers<CR>')
