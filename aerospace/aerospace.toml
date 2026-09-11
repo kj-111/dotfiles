@@ -50,7 +50,7 @@ if.app-id = 'org.alacritty'
 run = ['layout accordion', 'move-node-to-workspace 1']
 [[on-window-detected]]
 if.app-id = 'info.sioyek.sioyek'
-run = ['fullscreen on', 'move-node-to-workspace 2']
+run = ['fullscreen on', 'move-node-to-workspace 1']
 [[on-window-detected]]
 if.app-id = 'net.imput.helium'
 run = 'move-node-to-workspace 2'
