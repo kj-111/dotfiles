@@ -60,6 +60,33 @@ draaien (met root en buffers), welke configs er zijn en waar het logbestand
 staat. Hangt hij: `:lsp restart` herstart de clients van deze buffer
 (:h lsp-commands).
 
+### Rust: `FieldIndex(4294967295)`-panic
+
+Op 11 september 2026 gaf rust-analyzer `1.98.1` tijdens typen herhaaldelijk
+`-32603: request handler panicked: field FieldIndex(4294967295) out of range`.
+De logs wezen op `textDocument/diagnostic` en rust-analyzers interne
+MIR/borrow-checkanalyse, niet op Neovide of Blink. `:lsp restart` verhielp
+de meldingen; er is niets aan de config gewijzigd.
+
+[Upstream #22928](https://github.com/rust-lang/rust-analyzer/issues/22928)
+beschrijft dezelfde panic bij tijdelijk ontbrekende formatargumenten, zoals
+`println!("{} {}", 3);`. Dit is een waarschijnlijke trigger tijdens het typen;
+de exacte toenmalige bufferinhoud is niet vastgelegd. Ongeldige code hoort
+een diagnostic te geven, geen panic in de taalserver.
+
+De [upstreamfix](https://github.com/rust-lang/rust-analyzer/commit/4f4433ef151c942cf2b528c07bbe72c0acf62c91)
+controleert ongeldige tuplevelden vóór verdere MIR-analyse. Bij bronvergelijking
+ontbrak die controle in de via rustup geleverde Rust `1.98.1`, maar stond ze
+wel in de zelfstandige rust-analyzer-release `2026-09-07`. Een recente
+Rust-release bevat dus niet noodzakelijk de recentste rust-analyzer-code.
+De fix is hier niet met een andere binary getest.
+
+Voorlopig diagnostics en de bestaande rustup-setup behouden. Komt het terug:
+controleer de formatargumenten en gebruik zo nodig `:lsp restart`. Een herstart
+is symptoomherstel, geen structurele fix. Bij herhaling eerst controleren of
+de actuele rustup-versie de fix bevat; anders een nieuwere zelfstandige
+rust-analyzer overwegen, met expliciete controle welke binary via PATH start.
+
 ## Voorbeeld: `nvim src/Speler.java`
 
 1. nvim herkent filetype java; de FileType-autocmd van `config/jdtls.lua`
