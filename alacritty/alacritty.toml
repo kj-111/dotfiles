@@ -41,6 +41,13 @@ command = "None"
 size = 15.5 # old: 24.5
 builtin_box_drawing = true
 
+# Eén pixel extra letterruimte. Monaspace heeft 0.62 em advance, dus op 15.5 pt
+# en een 2x-scherm is de ideale cel 19.22 device pixels. Alacritty doet
+# (average_advance + offset.x).floor(), dus zonder offset wordt dat 19 en met
+# deze regel 20 — dezelfde breedte die kitty kiest, dat naar boven afrondt.
+[font.offset]
+x = 1
+
 [font.normal]
 family = "MonaspiceNe Nerd Font Mono"
 style = "Regular"
