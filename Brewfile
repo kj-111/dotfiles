@@ -18,6 +18,11 @@ brew "harfbuzz"
 brew "python@3.14"
 # Java language specific implementation of the Language Server Protocol
 brew "jdtls"
+# Terminal muziekspeler. Leest zijn config op macOS uit
+# ~/Library/Preferences/kew; kewrc staat hier en is daarheen gesymlinkt:
+#   mkdir -p ~/Library/Preferences/kew
+#   ln -sf ~/.config/kew/kewrc ~/Library/Preferences/kew/kewrc
+brew "kew"
 # Simple terminal UI for git commands
 brew "lazygit"
 # Language Server for the Lua language
