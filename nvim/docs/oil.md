@@ -2,20 +2,20 @@
 
 Volledige help: `:h oil`; in de verkenner toont `g?` alle toetsen.
 
-| toets | doet |
-|---|---|
-| `<leader>e` | openen op het huidige bestand, nog eens = sluiten |
-| `l` | de map in, of het bestand openen |
-| `h` of `-` | een niveau terug |
-| `_` | naar de cwd |
-| `` ` `` | zet nvims cwd naar de map waar je nú staat |
-| `<C-s>` / `<C-t>` | het bestand openen in een verticale split of een tab |
-| `<C-p>` | preview van het bestand onder de cursor |
-| `<C-o>` | terug waar je vandaan navigeerde (Vim zelf, zie onder) |
-| `gx` | het bestand openen in de app die macOS ervoor kent |
-| `gs` | sorteervolgorde wijzigen |
-| `<C-l>` | de lijst opnieuw inlezen |
-| `g.` | dotfiles aan/uit; `g\` — de prullenbak |
+| toets             | doet                                                   |
+| ----------------- | ------------------------------------------------------ |
+| `<leader>e`       | openen op het huidige bestand, nog eens = sluiten      |
+| `l`               | de map in, of het bestand openen                       |
+| `h` of `-`        | een niveau terug                                       |
+| `_`               | naar de cwd                                            |
+| `` ` ``           | zet nvims cwd naar de map waar je nú staat             |
+| `<C-s>` / `<C-t>` | het bestand openen in een verticale split of een tab   |
+| `<C-p>`           | preview van het bestand onder de cursor                |
+| `<C-o>`           | terug waar je vandaan navigeerde (Vim zelf, zie onder) |
+| `gx`              | het bestand openen in de app die macOS ervoor kent     |
+| `gs`              | sorteervolgorde wijzigen                               |
+| `<C-l>`           | de lijst opnieuw inlezen                               |
+| `g.`              | dotfiles aan/uit; `g\` — de prullenbak                 |
 
 Open je oil vanuit een bestand, dan staat de cursor meteen op dat bestand in
 de lijst. En andersom brengt sluiten je terug naar precies waar je was.
