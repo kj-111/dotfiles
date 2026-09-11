@@ -18,8 +18,6 @@ brew "harfbuzz"
 brew "python@3.14"
 # Java language specific implementation of the Language Server Protocol
 brew "jdtls"
-# Terminal muziekspeler; vraagt een symlink, zie kew/README.md
-brew "kew"
 # Simple terminal UI for git commands
 brew "lazygit"
 # Language Server for the Lua language
