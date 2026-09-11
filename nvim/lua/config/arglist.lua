@@ -185,7 +185,7 @@ vim.api.nvim_create_autocmd('VimLeavePre', {
   end,
 })
 
--- Ctrl+cijfer vergt het uitgebreide toetsenbordprotocol (Alacritty).
+-- Ctrl+cijfer vergt het uitgebreide toetsenbordprotocol (kitty, Alacritty).
 for i = 1, 6 do
   vim.keymap.set('n', '<C-' .. i .. '>', function() goto_slot(i) end, { desc = 'Arglist-slot ' .. i })
 end
