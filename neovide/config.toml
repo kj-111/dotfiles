@@ -15,6 +15,10 @@ bold = { family = "MonaspiceNe Nerd Font Mono", style = "Bold" }
 italic = { family = "MonaspiceNe Nerd Font Mono", style = "Italic" }
 bold_italic = { family = "MonaspiceNe Nerd Font Mono", style = "Bold Italic" }
 size = 15.5
+# Eén pixel extra letterruimte, zoals font.offset.x in alacritty.toml. Neovide
+# rondt de celbreedte niet af (font_width = glyph_advance + width), dus 19.22
+# wordt hier 20.22; alacritty komt met zijn floor op precies 20.
+width = 1
 
 # calt = Monaspace's texture healing, liga = ligaturen; alleen Neovide past ze toe.
 [font.features]
