@@ -1,4 +1,4 @@
-# Runnen: C, Java en Python
+# Runnen: C, Java, Rust en Python
 
 compileren.md gaat over `:make`, shell.md over hoe je aan een shell komt.
 Dit is wat je erin typt.
@@ -123,6 +123,141 @@ met `<scope>test</scope>`, dus je main-code heeft geen jars nodig.
 
 De diepere uitleg — bytecode, JVM, classpath, de Maven-lifecycle — staat in
 `~/academia/uni/java/notes/md/java-tooling.md`.
+
+## Rust
+
+Cargo bouwt én draait in één commando: "Run a binary or example of the local
+package" (`cargo run --help`). Hij zoekt zelf omhoog naar `Cargo.toml`, dus
+waar je in het project staat maakt niet uit.
+
+Dat werkt ook zonder de terminal. In een Rust-buffer is `makeprg` gewoon
+`cargo $*` (compileren.md), dus `:make run` voert hetzelfde `cargo run` uit —
+alles achter `:make` gaat rechtstreeks naar cargo.
+
+### Cargo-project
+
+```
+cargo run
+```
+
+Heeft het project meer dan één binary, dan moet je kiezen — "Name of the bin
+target to run":
+
+```
+cargo run --bin tweede
+```
+
+Elke extra binary staat als eigen `[[bin]]` in `Cargo.toml`. Heeft het project
+er maar één, zoals `projects/rust/code`, dan volstaat kaal `cargo run`.
+
+Argumenten voor je eigen programma komen achter `--`; zonder die scheiding
+leest cargo ze als zijn eigen vlaggen. In de help heet dat `[ARGS]...`,
+"Arguments for the binary or example to run":
+
+```
+cargo run -- een twee
+```
+
+Is er niets veranderd, dan kun je de binary ook rechtstreeks starten. Hij
+staat in `target/debug/` onder de `name` uit `Cargo.toml` — voor
+`projects/rust/code` dus `rust-oefeningen`, niet `main`:
+
+```
+./target/debug/rust-oefeningen
+```
+
+Dat scheelt: gemeten op dat project 21 ms rechtstreeks tegen 178–199 ms via
+`cargo run`, allebei op een al gebouwd project. Die 180 ms is niet voor niets
+— cargo controleert eerst of er iets gewijzigd is en hercompileert zo nodig.
+Precies daarom is `cargo run` het normale commando en is de binary rechtstreeks
+alleen handig als je zeker weet dat er niets veranderd is.
+
+`--release` bouwt de geoptimaliseerde versie, die dan in `target/release/`
+terechtkomt.
+
+### :make run of de terminal
+
+Het verschil zit niet in wat er draait, maar in waar de in- en uitvoer heen
+gaat. Bij `:make run` komt de output van je programma in de quickfix: een
+`println!` levert daar gewoon een regel op.
+
+Alleen heeft `:make` geen invoerkanaal, en dat is geen detail. Een programma
+dat op `read_line` wacht krijgt meteen einde-bestand: gemeten leverde dat
+`gelezen: 0 bytes -> ""` op, zonder foutmelding en zonder dat je iets kunt
+intypen. Je prompt staat er wel, je antwoord komt er nooit.
+
+Dus `:make run` als je alleen output wilt zien en in de buffer wilt blijven;
+`CTRL-F` en `cargo run` zodra je programma iets terugvraagt (shell.md). Dat
+is dezelfde afweging als bij Java.
+
+### Tests
+
+```
+cargo test
+```
+
+"Execute all unit and integration tests and build examples of a local package"
+(`cargo test --help`). Een naam erachter filtert; de rest wordt geteld als
+"filtered out":
+
+```
+cargo test dubbel_werkt
+```
+
+Wat je test met `println!` uitprint, slikt de testrunner standaard in. Met
+`--nocapture` zie je het wel — en ook hier scheidt `--` jouw vlaggen van die
+van cargo:
+
+```
+cargo test -- --nocapture
+```
+
+Via `:make test` werkt het ook, maar met een beperking die het waard is te
+weten. Faalt een test, dan komt de output wel in de quickfix maar zonder
+regelnummers: gemeten 16 regels, geen enkele aanspringbaar, ook al staat de
+panic-locatie (`src/main.rs:18:9`) gewoon in de tekst. De cargo-errorformat
+herkent compilerfouten, geen testpanics. Ter vergelijking: bij een echte
+typefout levert `:make check` wél een bruikbare regel op —
+`src/main.rs:2:18 mismatched types`, direct aanspringbaar met `]q`.
+
+Dus: `:make check` voor compilerfouten, `cargo test` in de terminal voor
+faalende tests, waar je de panic-locatie leest en er zelf heen springt.
+
+### Los bestand
+
+Zoals bij C: compileren geeft een uitvoerbare file met dezelfde naam zonder
+extensie.
+
+```sh
+rustc los.rs
+./los
+```
+
+Eén verschil met cargo: kale `rustc` staat niet op de recentste editie.
+`async` faalt dan met `expected identifier`, terwijl hetzelfde bestand met de
+vlag wel compileert. `Cargo.toml` regelt dat in een project via `edition`
+(2024 in `projects/rust/code`); los geef je het zelf mee:
+
+```sh
+rustc --edition=2024 los.rs
+```
+
+De keuzes staan in `--edition <2015|2018|2021|2024|future>` (`rustc --help`).
+
+### Welke wanneer
+
+| situatie                   | commando                               |
+| -------------------------- | -------------------------------------- |
+| project, gewoon draaien    | `cargo run`                            |
+| project met meer binaries  | `cargo run --bin naam`                 |
+| argumenten meegeven        | `cargo run -- een twee`                |
+| niets veranderd, snelst    | `./target/debug/naam`                  |
+| tests                      | `cargo test`, of `cargo test naam`     |
+| print uit tests zien       | `cargo test -- --nocapture`            |
+| draaien zonder de terminal | `:make run`, output in de quickfix     |
+| programma vraagt om invoer | `CTRL-F`, dan `cargo run`              |
+| compilerfouten in quickfix | `:make check` (compileren.md)          |
+| los oefenbestand           | `rustc --edition=2024 los.rs && ./los` |
 
 ## Python
 

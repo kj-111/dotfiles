@@ -40,6 +40,11 @@ Prettierd valt terug op `PRETTIERD_DEFAULT_CONFIG` (zshrc) als het omhoog
 zoeken niets oplevert. Wijzig je die config, dan moet de daemon zijn omgeving
 opnieuw lezen: `prettierd restart`.
 
+In markdown lijnt prettier meteen je tabellen uit: elke cel wordt opgevuld tot
+de langste in die kolom, en de streepjesregel groeit mee. Je typt dus gewoon
+`|---|---|` met de kolommen scheef onder elkaar, en na `:w` staat het recht.
+Spaties tellen hoeft in deze docs dus nooit.
+
 Clang-format kent géén gebruikersconfig. Hij loopt alleen omhoog vanaf het
 bestand en stopt daar — nagemeten: een bestand in `/tmp` kreeg kale
 LLVM-stijl terwijl `~/.clang-format` bestond. Daarom staat de echte file in
