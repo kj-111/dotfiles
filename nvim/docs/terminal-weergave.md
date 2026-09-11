@@ -1,9 +1,52 @@
 # Alacritty-weergave behouden: Ghostty, kitty en foot
 
-Onderzocht op 10 september 2026. Mijn huidige Alacritty ziet er goed uit en blijft
-de referentie. Dit is naslag voor een eventuele overstap, geen migratieadvies of
-actieve configuratie. Een iTerm2-gebruiker tevredenstellen is niet hetzelfde als
-mijn Alacritty-weergave reproduceren.
+> Onderzocht op 10 september 2026, met Alacritty als referentie. Op 11 september
+> is kitty daadwerkelijk geïnstalleerd en afgesteld; de uitkomst staat hieronder
+> en spreekt het advies over Display P3 tegen. De rest van het onderzoek blijft
+> staan zoals het toen is vastgesteld.
+
+Dit was naslag voor een eventuele overstap, geen migratieadvies of actieve
+configuratie. Een iTerm2-gebruiker tevredenstellen is niet hetzelfde als mijn
+Alacritty-weergave reproduceren.
+
+## Uitkomst: kitty, 11 september 2026
+
+Kitty is geïnstalleerd, ingericht en visueel beoordeeld. Alacritty blijft
+voorlopig de terminal die draait; de afgestelde `kitty.conf` en het omzetten
+van aerospace staan op de branch `kitty`. De vergelijkingsprocedure onderaan
+is gevolgd, met één beslissende afwijking van wat hierboven werd aangeraden.
+
+Display P3 bleek wél de oplossing. Niet omdat het onderzoek fout was, maar
+omdat de referentie verschoof. Met Alacritty als doel is `srgb` correct — die
+tagt zijn venster hard als sRGB, zonder optie. Maar Neovide tagt zijn venster
+helemaal niet: die rendert via glutin, waardoor dezelfde RGB-waarden
+ongeconverteerd naar het scherm gaan en op een P3-scherm voller ogen. Blauw
+`#81a1c1` was daar het duidelijkst. Zodra Neovide de referentie werd in plaats
+van Alacritty, draaide het advies om naar `macos_colorspace displayp3`.
+
+De drie apps gaan dus fundamenteel anders met kleur om, en dat verklaart
+waarom ze nooit gelijk kónden zijn:
+
+| app       | kleurbeheer                                  | instelbaar |
+| --------- | -------------------------------------------- | ---------- |
+| Alacritty | tagt het venster hard als sRGB               | nee        |
+| Neovide   | tagt niet; waarden gaan ongeconverteerd door | nee        |
+| kitty     | tagt, standaard sRGB                         | ja         |
+
+Verder uit de praktijk:
+
+- `text_composition_strategy 1.7 55`, tegen de macOS-default `1.7 30`. Het
+  eerste getal blijft: gamma raakt vooral donkere tekst op licht en doet bij
+  Nord bijna niets. Deze instelling herlaadt niet live.
+- Texture healing uit, en dat bevestigt de waarschuwing hieronder: de `m` oogde
+  meteen vreemd. In het fontbestand zelf nagegaan — `calt` roept lookups 159 tot
+  163 aan, die `m` vervangen door `m.both`, `m.left` of `m.right` afhankelijk
+  van de buren. In Alacritty zag je dat nooit, want die shapet niet. In Neovide
+  blijft het bewust aan.
+- Alle vier de faces expliciet opgeven, niet `bold_font auto`. Monaspace zet
+  elke weight in een eigen familie, dus kitty's automatische keuze landde op
+  `MonaspiceNeNFM-Medium` in plaats van `-Bold`. Nagemeten met kitty's eigen
+  fontresolutie; `kitten choose-fonts` toont hetzelfde.
 
 ## De referentie
 
@@ -94,7 +137,8 @@ Bij afwijkende letterdikte is `text_composition_strategy` de relevante instellin
 strokes geven. Numerieke waarden sturen gamma en extra contrast; de beschreven
 macOS-default is `1.7 30`. Dit is geen equivalente schaal voor Ghostty's `70`.
 Herstart kitty bij zo'n vergelijking: deze compositie-instelling is niet live
-herlaadbaar. Display P3 is ook hier niet het uitgangspunt voor een sRGB-match.
+herlaadbaar. Display P3 is niet het uitgangspunt voor een sRGB-match — maar zie
+de uitkomst bovenaan: met Neovide als referentie werd het juist de oplossing.
 [kitty-configreferentie](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.text_composition_strategy).
 
 Ook hierover bestaan directe vergelijkingen met Alacritty:
@@ -176,14 +220,18 @@ ook gewone lettervormen. Controleer bij een toekomstige fontupgrade opnieuw.
 
 ## Conclusie en verificatiegrens
 
-Geen reden om mijn tevredenstellende Alacritty-rendering nu te veranderen.
-Voor Ghostty en kitty: dezelfde sRGB-kleuren en fontbestanden eerst; extra
-renderinginstellingen alleen na een zichtbaar verschil. foot bewaren als
-Wayland-optie, niet als Mac-migratieplan.
+De aanpak hierboven klopte: eerst dezelfde kleuren en fontbestanden, daarna één
+renderingoptie tegelijk. Alleen het eindpunt is anders geworden, omdat de
+referentie halverwege verschoof van Alacritty naar Neovide — zie de uitkomst
+bovenaan. De les is niet "P3 is beter", maar dat het antwoord afhangt van
+waarmee je vergelijkt, en dat je die keuze expliciet moet maken vóór je afstelt.
 
-Deze doc is gecontroleerd tegen lokale configuratie, upstreamdocumentatie,
-Ghostty 1.3.1- en kitty 0.48.2-broncode en historische meldingen. De online docs
-en foot `master` kunnen veranderen: verifieer bij installatie de meegeleverde
-handleiding. Ghostty, kitty en foot zijn hiervoor niet geïnstalleerd of visueel
-getest. Dit onderzoek onderbouwt dus de aanpak, niet een gemeten visuele match
-of een snelheidsrangschikking.
+foot blijft een Wayland-optie, geen Mac-migratieplan. Ghostty is niet getest;
+die had voor de cursor trail een externe GLSL-shader nodig, en die trail is
+uiteindelijk toch niet gebruikt.
+
+Het onderzoek van 10 september is gecontroleerd tegen lokale configuratie,
+upstreamdocumentatie, Ghostty 1.3.1- en kitty 0.48.2-broncode en historische
+meldingen — toen zonder installatie. Kitty is daarna wél geïnstalleerd en
+visueel beoordeeld; Ghostty en foot niet. De online docs en foot `master`
+kunnen veranderen: verifieer bij installatie de meegeleverde handleiding.

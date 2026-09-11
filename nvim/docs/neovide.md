@@ -28,15 +28,17 @@ ongewijzigd: `y`/`p` en de gewone registers volgen nog steeds Vim.
 
 ## Font
 
-Zelfde familie, faces en grootte als `alacritty.toml`, zodat beide er hetzelfde
-uitzien. Eerder stond hier Light/Medium om Neovides zwaardere rendering te
-compenseren, maar met Monaspace viel dat te dun uit — mede omdat text_gamma en
-text_contrast al afdunnen.
+Zelfde familie, faces en grootte als `alacritty.toml`, zodat editor en terminal
+er hetzelfde uitzien. Eerder stond hier Light/Medium om
+Neovides zwaardere rendering te compenseren, maar met Monaspace viel dat te dun
+uit — mede omdat text_gamma en text_contrast al afdunnen.
 
-Hier wijken de twee wél bewust af, via `[font.features]`. Alacritty shapet niet
-(geen harfbuzz, en van CoreText alleen `CTFontGetGlyphsForCharacters`), dus
-daar worden `liga` en `calt` nooit toegepast — je ziet Monaspace kaal. Neovide
+In `[font.features]` wijkt Neovide wél bewust af. Alacritty shapet niet (geen
+harfbuzz, en van CoreText alleen `CTFontGetGlyphsForCharacters`), dus daar
+worden `liga` en `calt` nooit toegepast — je ziet Monaspace kaal. Neovide
 shapet wel, en is dus de enige plek waar texture healing (`calt`) te zien is.
+Een terminal die wél shapet, zoals kitty, zou het ook tonen; daar bleek de `m`
+er vreemd van te ogen (terminal-weergave.md).
 
 Dat is een afweging, geen gratis winst. Texture healing kiest de vorm van een
 teken op basis van zijn buren, dus zodra je een letter bijtypt kan het teken
