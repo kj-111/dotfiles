@@ -1,9 +1,7 @@
-# Zo kaal mogelijk: wat hier ontbreekt, staat al goed als default. De weergave
-# is afgemeten aan alacritty; die vergelijking staat in
+# Wat hier ontbreekt, staat al goed als default. Waarom de rest zo staat:
 # nvim/docs/terminal-weergave.md.
 
 # ─── Venster ─────────────────────────────────────────────────────────────────
-# none haalt ook de tabs weg: dat dwingt macOS af bij vensters zonder titelbalk.
 
 window-decoration = none
 macos-window-shadow = false
@@ -12,19 +10,10 @@ quit-after-last-window-closed = true
 window-padding-x = 0
 window-padding-y = 0
 confirm-close-surface = false
+resize-overlay = never
 auto-update = off
 
-# aerospace verandert het venster bij elke layoutwissel; de overlay zou dan
-# telkens opflitsen.
-resize-overlay = never
-
 # ─── Font: Monaspace Neon ────────────────────────────────────────────────────
-# Stijlen expliciet: de Medium-face adverteert nameID 2 = "Regular", waardoor
-# automatisch matchen op Bold kan misgrijpen (dat deed kitty).
-# calt aan = texture healing, zoals in neovide; liga uit.
-# adjust-cell-width brengt de cel van 19 naar 20 px, gelijk aan alacritty.
-# font-thicken is ghostty's naam voor CoreGraphics' font smoothing; alacritty
-# zet die altijd aan, ghostty niet.
 
 font-family = MonaspiceNe Nerd Font Mono
 font-style = Regular
@@ -37,7 +26,6 @@ font-thicken = true
 adjust-cell-width = 1
 
 # ─── Kleuren: Nord ───────────────────────────────────────────────────────────
-# Zelfde palet als nvim/colors/nord.lua.
 
 background = #2e3440
 foreground = #d8dee9
@@ -63,29 +51,24 @@ palette = 13=#b48ead
 palette = 14=#8fbcbb
 palette = 15=#eceff4
 
-# ─── Cursor en muis ──────────────────────────────────────────────────────────
-# no-cursor houdt de shell-integratie van de cursorvorm af. sudo staat bij
-# ghostty standaard uit, bij kitty aan; die zet terminfo door onder sudo.
+# ─── Cursor ──────────────────────────────────────────────────────────────────
 
 cursor-color = #88c0d0
 cursor-text = #2e3440
 cursor-style-blink = false
 adjust-cursor-thickness = 4
-shell-integration-features = no-cursor,sudo
-
-# Cursor trail: vier hoeken met een eigen duur, net als neovide. always omdat
-# de cursor bij verlies van focus hol wordt en de animatie anders bevriest.
 custom-shader = shaders/cursor_warp.glsl
 custom-shader-animation = always
 
+# ─── Muis en klembord ────────────────────────────────────────────────────────
+
 mouse-hide-while-typing = true
 mouse-scroll-multiplier = precision:3
-
-# copy-on-select staat op macOS standaard aan, in alacritty niet.
 copy-on-select = false
 
-# ─── Bel en meldingen ────────────────────────────────────────────────────────
+# ─── Shell, bel en meldingen ─────────────────────────────────────────────────
 
+shell-integration-features = no-cursor,sudo
 bell-features = no-attention
 notify-on-command-finish = unfocused
 notify-on-command-finish-after = 15s
