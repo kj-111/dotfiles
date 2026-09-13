@@ -11,6 +11,7 @@ window-padding-x = 0
 window-padding-y = 0
 confirm-close-surface = false
 resize-overlay = never
+progress-style = false
 auto-update = off
 
 # ─── Font: Monaspace Neon ────────────────────────────────────────────────────
@@ -58,7 +59,7 @@ cursor-text = #2e3440
 cursor-style-blink = false
 adjust-cursor-thickness = 4
 custom-shader = shaders/cursor_warp.glsl
-custom-shader-animation = always
+custom-shader-animation = true
 
 # ─── Muis en klembord ────────────────────────────────────────────────────────
 
