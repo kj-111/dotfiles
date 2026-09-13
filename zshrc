@@ -9,7 +9,7 @@
 #   toetsen en macOS-instellingen: hyperkey/README.md
 
 bindkey -e
-setopt prompt_subst INC_APPEND_HISTORY SHARE_HISTORY HIST_IGNORE_DUPS HIST_REDUCE_BLANKS HIST_VERIFY AUTO_CD NOMATCH
+setopt prompt_subst SHARE_HISTORY HIST_IGNORE_DUPS HIST_REDUCE_BLANKS HIST_VERIFY AUTO_CD NOMATCH
 
 typeset -U path PATH
 path=(

@@ -89,7 +89,7 @@ fi
 mkdir -p "$target_dir"
 cp -R "$template_dir"/. "$target_dir"
 
-grep -rl '__PROJECT_NAME__' "$target_dir" | while IFS= read -r file; do
+grep -rIl '__PROJECT_NAME__' "$target_dir" | while IFS= read -r file; do
   PROJECT_NAME="$project_name" perl -0pi -e 's/__PROJECT_NAME__/$ENV{PROJECT_NAME}/g' "$file"
 done
 

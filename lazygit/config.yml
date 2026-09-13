@@ -1,7 +1,6 @@
 gui:
   border: "single"
   nerdFontsVersion: "3"
-  showIcons: true
   showRandomTip: false
   showCommandLog: false
   showBottomLine: true
