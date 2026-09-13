@@ -1,18 +1,41 @@
-// sRGB -> Linear conversion (needed because Ghostty passes sRGB values but the shader pipeline operates in linear color space)
-vec3 sRGBToLinear(vec3 c) {
-    return mix(c / 12.92, pow((c + 0.055) / 1.055, vec3(2.4)), step(vec3(0.04045), c));
-}
+// Cursor trail voor ghostty, met de animatielogica van neovide.
+//
+// Origineel: cursor_warp.glsl uit sahaj-b/ghostty-cursor-shaders (MIT).
+// Hier is elke waarde en elke beslissing nagelopen tegen neovide 0.16.2 als
+// enige bron van waarheid: src/renderer/cursor_renderer/mod.rs en
+// src/renderer/animation_utils.rs. Waar de shader afweek van neovide is de
+// shader aangepast, ook als het origineel op zichzelf verdedigbaar was. De
+// afwijkingen staan per plek in commentaar, met regelverwijzing.
+//
+// Wat principieel niet over te zetten is: neovide bewaart de snelheid van de
+// veer tussen sprongen, waardoor ingedrukte j/k gaat golven. Ghostty geeft een
+// shader geen toestand tussen frames, dus elke sprong start hier vanuit
+// stilstand. En neovide tekent één pad door de vier hoeken dat zelf de cursor
+// ís, terwijl ghostty de cursor al verplaatst heeft en dit er een vorm achter
+// tekent — vandaar het gat dat onderaan uit de trail wordt geponst.
+//
+// Geen sRGB->lineair conversie: die zat in het origineel, maar geldt alleen bij
+// alpha-blending = linear. Op de default `native` kiest ghostty het
+// pixelformaat bgra8unorm en niet bgra8unorm_srgb (Metal.zig:204-212), dus de
+// shader werkt al in sRGB. Lineariseren maakte #88c0d0 tot (63,134,161).
 
 // --- CONFIGURATION ---
-vec4 TRAIL_COLOR = vec4(sRGBToLinear(iCurrentCursorColor.rgb), iCurrentCursorColor.a); // for custom color: vec4(0.2, 0.6, 1.0, 0.5); (wrap in sRGBToLinear for correct brightness)
+vec4 TRAIL_COLOR = iCurrentCursorColor; // for custom color: vec4(0.2, 0.6, 1.0, 0.5);
 // DURATION en TRAIL_SIZE staan op neovide's animation_length en trail_size
 // (cursor_renderer/mod.rs). Origineel stond hier 0.2 en 0.8.
 const float DURATION = 0.15; // total animation time
+// De veer komt asymptotisch aan: op x=1 rest er nog 9%. Neovide loopt door tot
+// onder 0.01 px; hier tekenen we tot 2.5x de duur, waar nog 0.05% rest.
+const float SETTLE = 2.5;
 const float TRAIL_SIZE = 1.0; // 0.0 = all corners move together. 1.0 = max smear (leading corners jump instantly)
-const float THRESHOLD_MIN_DISTANCE = 1.5; // min distance to show trail (units of cursor height)
+// Op 0 omdat j/k precies één cursorhoogte is en met de oorspronkelijke 1.5 dus
+// nooit een trail kreeg. Typen wordt verderop apart afgevangen.
+const float THRESHOLD_MIN_DISTANCE = 0.0; // min distance to show trail (units of cursor height)
 const float BLUR = 1.0; // blur size in pixels (for antialiasing)
 const float TRAIL_THICKNESS = 1.0;  // 1.0 = full cursor height, 0.0 = zero height, >1.0 = funky aah
-const float TRAIL_THICKNESS_X = 0.9;
+// 1.0 en niet de oorspronkelijke 0.9: neovide's draw_rectangle (mod.rs:537)
+// trekt het pad door de vier hoeken zelf, zonder de vorm smaller te maken.
+const float TRAIL_THICKNESS_X = 1.0;
 
 const float FADE_ENABLED = 0.0; // 1.0 to enable fade gradient along the trail, 0.0 to disable
 const float FADE_EXPONENT = 5.0; // exponent for fade gradient along the trail
@@ -64,9 +87,15 @@ const float SPRING_DAMPING = 0.9;
 //     return x == 1.0 ? 1.0 : 1.0 - pow(2.0, -10.0 * x);
 // }
 
-// EaseOutCirc
+// Neovide's kritisch gedempte veer (animation_utils.rs:104-114). Bij een sprong
+// vanuit stilstand is velocity 0, dus b = position*omega en blijft er van de
+// analytische oplossing dit over:
+//     position(t) = delta * (1 + omega*t) * exp(-omega*t),  omega = 4/duur
+// Met x = t/duur wordt omega*t exact 4x. Niet klemmen op 1: de staart is
+// asymptotisch, net als bij neovide, dat pas stopt onder 0.01 px.
 float ease(float x) {
-    return sqrt(1.0 - pow(x - 1.0, 2.0));
+    float ot = 4.0 * x;
+    return 1.0 - (1.0 + ot) * exp(-ot);
 }
 
 // // EaseOutBack
@@ -89,6 +118,28 @@ float ease(float x) {
 //     float osc = cos(freq * 6.283185 * x) + (SPRING_DAMPING * sqrt(SPRING_STIFFNESS) / freq) * sin(freq * 6.283185 * x);
 //     return 1.0 - decay * osc;
 // }
+
+// Neovide rangschikt de vier hoeken door hun uitlijning met de bewegings-
+// richting oplopend te sorteren, met de index als tiebreak (mod.rs:462-481).
+// Er is dus altijd precies één hoek met rang 0 en één met rang 1, ook bij een
+// zuiver horizontale of verticale sprong. Volgorde van STANDARD_CORNERS:
+// 0 linksboven, 1 rechtsboven, 2 rechtsonder, 3 linksonder.
+float rankOf(float ai, int i, float a0, float a1, float a2, float a3) {
+    float r = 0.0;
+    r += (a0 < ai || (a0 == ai && 0 < i)) ? 1.0 : 0.0;
+    r += (a1 < ai || (a1 == ai && 1 < i)) ? 1.0 : 0.0;
+    r += (a2 < ai || (a2 == ai && 2 < i)) ? 1.0 : 0.0;
+    r += (a3 < ai || (a3 == ai && 3 < i)) ? 1.0 : 0.0;
+    return r;
+}
+
+// rang 2 en 3 leiden, rang 1 zit ertussenin, rang 0 sleept (mod.rs:174-181)
+float durationFromRank(float rank) {
+    const float TRAIL = DURATION;
+    const float LEAD = DURATION * (1.0 - TRAIL_SIZE);
+    const float SIDE = (LEAD + TRAIL) / 2.0;
+    return rank >= 2.0 ? LEAD : (rank >= 1.0 ? SIDE : TRAIL);
+}
 
 float getSdfRectangle(in vec2 p, in vec2 xy, in vec2 b)
 {
@@ -135,22 +186,6 @@ float antialising(float distance, float blurAmount) {
   return 1. - smoothstep(0., normalize(vec2(blurAmount, blurAmount), 0.).x, distance);
 }
 
-// Determines animation duration based on a corner's alignment with the move direction(dot product)
-// dot_val will be in [-2, 2]
-// > 0.5 (1 or 2) = Leading
-// > -0.5 (0)     = Side
-// <= -0.5 (-1 or -2) = Trailing
-float getDurationFromDot(float dot_val, float DURATION_LEAD, float DURATION_SIDE, float DURATION_TRAIL) {
-    float isLead = step(0.5, dot_val);
-    float isSide = step(-0.5, dot_val) * (1.0 - isLead);
-    
-    // Start with trailing duration
-    float duration = mix(DURATION_TRAIL, DURATION_SIDE, isSide);
-    // Mix in leading duration
-    duration = mix(duration, DURATION_LEAD, isLead);
-    return duration;
-}
-
 void mainImage(out vec4 fragColor, in vec2 fragCoord){
     #if !defined(WEB)
     fragColor = texture(iChannel0, fragCoord.xy / iResolution.xy);
@@ -176,8 +211,16 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
     vec4 newColor = vec4(fragColor);
 
     float baseProgress = iTime - iTimeCursorChange;
-    
-    if (lineLength > minDist && baseProgress < DURATION - 0.001) {
+
+    // Korte sprong volgens neovide (mod.rs:165): tot twee tekens op dezelfde
+    // regel. Daar tekenen we niets. Neovide schuift in dat geval de cursor zelf
+    // in 0.04s, maar ghostty verplaatst de cursor al meteen — een trail erbij
+    // zou een tweede rechthoek naast de cursor zetten, zichtbaar bij het typen.
+    vec2 jumpVec = centerCC - centerCP;
+    float sameLine = 1.0 - step(0.0001, abs(jumpVec.y));
+    float isShortJump = sameLine * step(abs(jumpVec.x), 2.001 * currentCursor.z);
+
+    if (lineLength > minDist && isShortJump < 0.5 && baseProgress < DURATION * SETTLE - 0.001) {
         // defining corners of cursors
 
         // Y (Height) with TRAIL_THICKNESS
@@ -217,48 +260,30 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
         vec2 cp_bl = vec2(cp_new_left_x, cp_new_bottom_y);
         vec2 cp_br = vec2(cp_new_right_x, cp_new_bottom_y);
 
-        // calculating durations for every corner
-        const float DURATION_TRAIL = DURATION;
-        const float DURATION_LEAD = DURATION * (1.0 - TRAIL_SIZE);
-        const float DURATION_SIDE = (DURATION_LEAD + DURATION_TRAIL) / 2.0;
-
-        vec2 moveVec = centerCC - centerCP;
+        vec2 moveVec = jumpVec;
         vec2 s = sign(moveVec);
 
-        // dot products for each corner, determining alignment with movement direction
-        float dot_tl = dot(vec2(-1., 1.), s);
-        float dot_tr = dot(vec2( 1., 1.), s);
-        float dot_bl = dot(vec2(-1.,-1.), s);
-        float dot_br = dot(vec2( 1.,-1.), s);
+        // Uitlijning per hoek: het genormaliseerde dotproduct met de reisrichting
+        // (mod.rs:197-214). Op het sprongmoment staan alle hoeken nog op de vorige
+        // rechthoek, dus is de reisrichting voor alle vier gelijk aan moveVec.
+        vec2 td = normalize(moveVec);
+        float a_tl = dot(vec2(-1.,  1.), td);
+        float a_tr = dot(vec2( 1.,  1.), td);
+        float a_br = dot(vec2( 1., -1.), td);
+        float a_bl = dot(vec2(-1., -1.), td);
 
-        // assign durations based on dot products
-        float dur_tl = getDurationFromDot(dot_tl, DURATION_LEAD, DURATION_SIDE, DURATION_TRAIL);
-        float dur_tr = getDurationFromDot(dot_tr, DURATION_LEAD, DURATION_SIDE, DURATION_TRAIL);
-        float dur_bl = getDurationFromDot(dot_bl, DURATION_LEAD, DURATION_SIDE, DURATION_TRAIL);
-        float dur_br = getDurationFromDot(dot_br, DURATION_LEAD, DURATION_SIDE, DURATION_TRAIL);
-
-        // check direction of horizontal movement
-        float isMovingRight = step(0.5, s.x);
-        float isMovingLeft  = step(0.5, -s.x);
-
-        // calculate vertical-rail durations
-        float dot_right_edge = (dot_tr + dot_br) * 0.5;
-        float dur_right_rail = getDurationFromDot(dot_right_edge, DURATION_LEAD, DURATION_SIDE, DURATION_TRAIL);
-        
-        float dot_left_edge = (dot_tl + dot_bl) * 0.5;
-        float dur_left_rail = getDurationFromDot(dot_left_edge, DURATION_LEAD, DURATION_SIDE, DURATION_TRAIL);
-
-        float final_dur_tl = mix(dur_tl, dur_left_rail, isMovingLeft);
-        float final_dur_bl = mix(dur_bl, dur_left_rail, isMovingLeft);
-        
-        float final_dur_tr = mix(dur_tr, dur_right_rail, isMovingRight);
-        float final_dur_br = mix(dur_br, dur_right_rail, isMovingRight);
+        float final_dur_tl = durationFromRank(rankOf(a_tl, 0, a_tl, a_tr, a_br, a_bl));
+        float final_dur_tr = durationFromRank(rankOf(a_tr, 1, a_tl, a_tr, a_br, a_bl));
+        float final_dur_br = durationFromRank(rankOf(a_br, 2, a_tl, a_tr, a_br, a_bl));
+        float final_dur_bl = durationFromRank(rankOf(a_bl, 3, a_tl, a_tr, a_br, a_bl));
 
         // calculate progress for each corner based on the duration and time since cursor change
-        float prog_tl = ease(clamp(baseProgress / final_dur_tl, 0.0, 1.0));
-        float prog_tr = ease(clamp(baseProgress / final_dur_tr, 0.0, 1.0));
-        float prog_bl = ease(clamp(baseProgress / final_dur_bl, 0.0, 1.0));
-        float prog_br = ease(clamp(baseProgress / final_dur_br, 0.0, 1.0));
+        // max() vangt de leidende hoek af: die heeft duur 0 bij TRAIL_SIZE 1.0,
+        // en delen door nul geeft inf en daarna NaN in ease().
+        float prog_tl = ease(baseProgress / max(final_dur_tl, 1e-5));
+        float prog_tr = ease(baseProgress / max(final_dur_tr, 1e-5));
+        float prog_bl = ease(baseProgress / max(final_dur_bl, 1e-5));
+        float prog_br = ease(baseProgress / max(final_dur_br, 1e-5));
 
         // get the trial corner positions based on progress
         vec2 v_tl = mix(cp_tl, cc_tl, prog_tl);
@@ -279,13 +304,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
 
         vec4 trail = TRAIL_COLOR;
         
-        float effectiveBlur = BLUR;
-        if (BLUR < 2.5) {
-          // no antialising on horizontal/vertical movement, fixes 'pulse' like thing on end cursor
-          float isDiagonal = abs(s.x) * abs(s.y); // 1.0 if diagonal, 0.0 if H/V
-          float effectiveBlur = mix(0.0, BLUR, isDiagonal);
-        }
-        float shapeAlpha = antialising(sdfTrail, effectiveBlur); // shape mask
+        // Neovide antialiast onvoorwaardelijk (mod.rs:347), dus geen uitzondering
+        // voor horizontaal/verticaal. Die stond hier wel, maar deed niets: de
+        // binnenste declaratie overschaduwde de buitenste.
+        float shapeAlpha = antialising(sdfTrail, BLUR); // shape mask
 
         if (FADE_ENABLED > 0.5) {
             // apply fade gradient along the trail
