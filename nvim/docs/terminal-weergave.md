@@ -1,20 +1,18 @@
 # Alacritty-weergave behouden: Ghostty, kitty en foot
 
-> Onderzocht op 10 september 2026, met Alacritty als referentie. Op 11 september
-> is kitty daadwerkelijk geïnstalleerd en afgesteld; de uitkomst staat hieronder
-> en spreekt het advies over Display P3 tegen. De rest van het onderzoek blijft
-> staan zoals het toen is vastgesteld.
+> Onderzocht op 10 september 2026, met Alacritty als referentie. Op 13 september
+> is Ghostty de terminal geworden; Alacritty blijft geïnstalleerd als terugval
+> en blijft de maatstaf waaraan de weergave wordt afgemeten. De rest van het
+> onderzoek blijft staan zoals het toen is vastgesteld.
 
-Dit was naslag voor een eventuele overstap, geen migratieadvies of actieve
-configuratie. Een iTerm2-gebruiker tevredenstellen is niet hetzelfde als mijn
-Alacritty-weergave reproduceren.
+Dit begon als naslag voor een eventuele overstap. De uitkomsten staan hieronder
+in de volgorde waarin ze zijn vastgesteld; de laatste is de huidige stand.
 
 ## Uitkomst: kitty, 11 september 2026
 
-Kitty is geïnstalleerd, ingericht en visueel beoordeeld. Alacritty blijft
-voorlopig de terminal die draait; de afgestelde `kitty.conf` en het omzetten
-van aerospace staan op de branch `kitty`. De vergelijkingsprocedure onderaan
-is gevolgd, met één beslissende afwijking van wat hierboven werd aangeraden.
+Kitty is geïnstalleerd, ingericht en visueel beoordeeld, en op 13 september
+weer volledig verwijderd — de branch is weg bij beide remotes. Wat hier staat
+bleef relevant, want Ghostty liep tegen dezelfde vragen aan.
 
 Display P3 bleek wél de oplossing. Niet omdat het onderzoek fout was, maar
 omdat de referentie verschoof. Met Alacritty als doel is `srgb` correct — die
@@ -51,8 +49,8 @@ Verder uit de praktijk:
 
 ## Omgedraaid: Neovide naar Alacritty, 13 september 2026
 
-Alacritty is de terminal die draait, dus is Alacritty weer de referentie. Daarom
-staat `srgb = true` nu in `neovide/config.toml`. Neovide roept dan
+Alacritty is de referentie voor de weergave, ook nu Ghostty de terminal is die
+draait. Daarom staat `srgb = true` in `neovide/config.toml`. Neovide roept dan
 `NSColorSpace::sRGBColorSpace()` aan — letterlijk dezelfde aanroep die Alacritty
 hardgecodeerd doet — in plaats van `deviceRGBColorSpace()`:
 
@@ -71,10 +69,10 @@ OpenGL-pad en zegt niets over wat de vlag hier uitricht.
 
 ## Uitkomst: ghostty, 13 september 2026
 
-Ghostty 1.3.1 geïnstalleerd en ingericht op de branch `ghostty`; daarin staan
-alleen `ghostty/config` en het omzetten van aerospace. De config wordt gelezen
-vanaf `~/.config/ghostty/config`, dus net als bij alacritty en kitty is er geen
-symlink nodig. Nagegaan met `ghostty +show-config`.
+Ghostty 1.3.1 is de terminal geworden. De config wordt gelezen vanaf
+`~/.config/ghostty/config`, dus net als bij alacritty is er geen symlink nodig.
+Nagegaan met `ghostty +show-config`. Alacritty blijft geïnstalleerd als
+terugval en als maatstaf.
 
 De celbreedte is gemeten in plaats van geschat, via `TIOCGWINSZ` in alle drie de
 terminals, met hetzelfde font op 15.5 pt:
@@ -98,20 +96,65 @@ Wat verder afwijkt van kitty:
 - `scrollback-limit` staat in bytes, niet in regels, met 10 MB als default.
   Alacritty's `history = 10000` letterlijk overnemen zou 10 kB scrollback geven.
 - `copy-on-select` staat op macOS standaard aan, in Alacritty niet.
-- `keybind = clear` wist ook `super+q=quit`. Bij kitty zit afsluiten in het
-  systeemmenu, hier is het een gewone keybind en moet hij terug.
+- `keybind = clear` wist ook `super+q=quit`. Afsluiten gaat nu via `exit` of
+  `CTRL-D`, want `quit-after-last-window-closed` staat aan.
 - De `sudo`-feature van de shell-integratie staat standaard uit; bij kitty aan.
+  Die is hier geen luxe: ghostty's terminfo zit alleen in de app-bundel en niet
+  in de systeempaden, en de wrapper zet `--preserve-env=TERMINFO`. Zonder die
+  feature verliest `sudo nvim` undercurl (`Smulx`) en truecolor (`setrgbf`).
+- `resize-overlay` staat standaard op `after-first` en zou bij elke
+  aerospace-layoutwissel opflitsen.
+- `mouse-scroll-multiplier` scheidt trackpad (`precision`, default 1) van muis
+  (`discrete`, default 3). Alleen de eerste moest naar 3.
 
 De vier faces expliciet opgeven is hier net zo nodig, en de oorzaak is nu
 scherper: de Medium-face van Monaspace adverteert nameID 2 = "Regular" en zet
 "Medium" pas in nameID 17. Wie op nameID 2 matcht ziet Medium dus als een gewone
 Regular staan, wat verklaart hoe kitty hem als bold kon kiezen.
 
-Nog niet vastgesteld: de dikte van de balkcursor in insert mode. Kitty kreeg
-`cursor_beam_thickness 2.5`, gelijk aan Alacritty's `thickness = 0.25` op een cel
-van 20 px. Ghostty's `adjust-cursor-thickness` is een verschil ten opzichte van
-een basiswaarde die ik niet heb kunnen meten, dus die blijft uit tot hij
-zichtbaar te dun of te dik is.
+De tekst oogde dunner dan in Alacritty, en dat is geen inbeelding. Beide
+rasteren via CoreGraphics en zetten daar één vlag verschillend:
+
+```rust
+// alacritty, crossfont/src/darwin/mod.rs
+cg_context.set_should_smooth_fonts(*FONT_SMOOTHING_ENABLED);  // ongezet = true
+```
+
+```zig
+// ghostty 1.3.1, src/font/face/coretext.zig:483
+context.setShouldSmoothFonts(ctx, opts.thicken);              // default false
+```
+
+Alacritty's eigen comment noemt het effect: font smoothing "increases the stroke
+width". Vandaar `font-thicken = true`. Aan `font-thicken-strength` valt niets te
+draaien: die zet de grijswaarde van de vulling, en de default 255 is wit —
+precies wat Alacritty met `set_rgb_fill_color(1.0, 1.0, 1.0, 1.0)` doet.
+
+De balkcursor is `adjust-cursor-thickness = 4`. Ghostty's basis is 1 px
+(`Metrics.zig`, "not determined by fonts but rather by user configuration"), en
+Alacritty tekent `0.25 × 20 px = 5`.
+
+De cursor trail is `shaders/cursor_warp.glsl`, MIT, uit
+[sahaj-b/ghostty-cursor-shaders](https://github.com/sahaj-b/ghostty-cursor-shaders).
+Die is gekozen omdat hij Neovide's model volgt en niet dat van kitty: vier
+hoeken met een eigen duur, en een open lus via `iTimeCursorChange`. Neovide's
+formule staat er letterlijk in:
+
+```rust
+// neovide, cursor_renderer/mod.rs:172
+let leading = animation_length * (1.0 - trail_size);
+match rank { 2..=3 => leading, 1 => (leading + trailing) / 2.0, 0 => trailing }
+```
+
+`DURATION` en `TRAIL_SIZE` zijn in de shader op Neovide's defaults gezet, 0.15
+en 1.0. `custom-shader-animation = always` is nodig omdat de cursor bij
+focusverlies hol wordt en de animatie anders bevriest.
+
+Alternatieven bekeken en afgevallen: `boo`/`tinkle`/`wisp`
+([hced](https://github.com/hced/ghostty-cursor-trails)) splitsen de hoeken via
+`LEAD_EDGE_LAG` en tekenen gebogen banen; `smear_cursor_blocks` en `cursor_tail`
+gebruiken een gesloten lus, hetzelfde model als kitty; `cursor_blaze` is een
+vlameffect met vaste kleur.
 
 ## De referentie
 

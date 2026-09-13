@@ -50,7 +50,7 @@ zoeken tot de treffers kloppen, `CTRL-A`, `ALT-Enter`, en dan `]q` of
 `:cdo s/oud/nieuw/g | update` over de hele lijst.
 
 Alt-Enter werkt hier doordat de terminal Option als modifier doorgeeft
-(`macos_option_as_alt both` in kitty.conf, `option_as_alt` in
+(`macos-option-as-alt` in ghostty/config, `option_as_alt` in
 alacritty.toml); zonder die instelling stuurt de Option-toets op macOS een
 teken in plaats van een modifier.
 
