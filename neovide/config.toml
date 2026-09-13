@@ -1,6 +1,7 @@
 fork = true
 frame = "none"
 maximized = true
+srgb = true
 tabs = false
 # Globale hotkeys ⌘⌃Z (pinned window) en ⌘⌃N (editors switcher); leeg = uit.
 system-pinned-hotkey = ""
