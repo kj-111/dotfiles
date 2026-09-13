@@ -142,7 +142,7 @@ local function open()
   -- vensterwissel mag niet; de guard vangt de routes die zelf al sloten.
   vim.api.nvim_create_autocmd('WinLeave', {
     group = group,
-    buffer = buf,
+    buf = buf,
     once = true,
     callback = function()
       vim.schedule(function()
@@ -154,7 +154,7 @@ local function open()
   -- Elke manier van sluiten schrijft terug, ook :q of wegklikken.
   vim.api.nvim_create_autocmd('BufWinLeave', {
     group = group,
-    buffer = buf,
+    buf = buf,
     once = true,
     callback = function()
       menu_win = nil

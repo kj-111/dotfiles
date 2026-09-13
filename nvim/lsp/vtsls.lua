@@ -36,7 +36,6 @@ return {
         variableTypes = { enabled = true, suppressWhenTypeMatchesName = true },
         propertyDeclarationTypes = { enabled = true },
         functionLikeReturnTypes = { enabled = true },
-        enumMemberValues = { enabled = true },
       },
     },
   },

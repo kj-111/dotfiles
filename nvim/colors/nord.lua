@@ -176,8 +176,6 @@ local groups = {
   markdownH4 = { fg = c.nord14 },
   markdownH5 = { fg = c.nord8 },
   markdownH6 = { fg = c.nord15 },
-  mkdCodeStart = { fg = c.nord8 },
-  mkdCodeEnd = { fg = c.nord8 },
 
   -- Treesitter captures
   ['@comment'] = { fg = c.nord3_bright },
@@ -247,9 +245,6 @@ local groups = {
   yamlBlockMappingKey = { fg = c.nord7 },
   yamlBool = { link = 'Boolean' },
   yamlDocumentStart = { link = 'Keyword' },
-  yamlTSField = { fg = c.nord7 },
-  yamlTSString = { fg = c.nord4 },
-  yamlTSPunctSpecial = { link = 'Keyword' },
   yamlKey = { fg = c.nord7 },
 
   -- LSP references and diagnostics

@@ -12,10 +12,6 @@ return {
       -- De cmdline is van de wildmenu; blink pakt hier
       -- anders <Tab> af.
       cmdline = { enabled = false },
-      signature = {
-        enabled = true,
-        trigger = { enabled = false },
-      },
     })
   end,
 }
