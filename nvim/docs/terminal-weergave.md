@@ -18,20 +18,40 @@ is gevolgd, met één beslissende afwijking van wat hierboven werd aangeraden.
 
 Display P3 bleek wél de oplossing. Niet omdat het onderzoek fout was, maar
 omdat de referentie verschoof. Met Alacritty als doel is `srgb` correct — die
-tagt zijn venster hard als sRGB, zonder optie. Maar Neovide tagt zijn venster
-helemaal niet: die rendert via glutin, waardoor dezelfde RGB-waarden
-ongeconverteerd naar het scherm gaan en op een P3-scherm voller ogen. Blauw
+tagt zijn venster hard als sRGB, zonder optie. Neovide tagt óók, maar op macOS
+standaard als `deviceRGB`: dan converteert het systeem niet en landen dezelfde
+RGB-waarden in het kleurbereik van het scherm zelf, wat op P3 voller oogt. Blauw
 `#81a1c1` was daar het duidelijkst. Zodra Neovide de referentie werd in plaats
 van Alacritty, draaide het advies om naar `macos_colorspace displayp3`.
 
 De drie apps gaan dus fundamenteel anders met kleur om, en dat verklaart
 waarom ze nooit gelijk kónden zijn:
 
-| app       | kleurbeheer                                  | instelbaar |
-| --------- | -------------------------------------------- | ---------- |
-| Alacritty | tagt het venster hard als sRGB               | nee        |
-| Neovide   | tagt niet; waarden gaan ongeconverteerd door | nee        |
-| kitty     | tagt, standaard sRGB                         | ja         |
+| app       | kleurbeheer                    | instelbaar             |
+| --------- | ------------------------------ | ---------------------- |
+| Alacritty | tagt het venster hard als sRGB | nee                    |
+| Neovide   | tagt, standaard `deviceRGB`    | ja, `srgb`             |
+| kitty     | tagt, standaard sRGB           | ja, `macos_colorspace` |
+
+## Omgedraaid: Neovide naar Alacritty, 13 september 2026
+
+Alacritty is de terminal die draait, dus is Alacritty weer de referentie. Daarom
+staat `srgb = true` nu in `neovide/config.toml`. Neovide roept dan
+`NSColorSpace::sRGBColorSpace()` aan — letterlijk dezelfde aanroep die Alacritty
+hardgecodeerd doet — in plaats van `deviceRGBColorSpace()`:
+
+```rust
+// neovide 0.16.2, src/renderer/metal.rs:95
+ns_window.setColorSpace(Some(
+    if srgb { NSColorSpace::sRGBColorSpace() } else { NSColorSpace::deviceRGBColorSpace() }
+        .as_ref(),
+));
+```
+
+Op de Metal-pad, die macOS standaard neemt, is dat het enige wat de vlag doet;
+de Skia-surface staat er los van en gebruikt altijd `ColorSpace::new_srgb()`.
+De hulptekst ("may help with GPUs with weird pixel formats") verwijst naar de
+OpenGL-pad en zegt niets over wat de vlag hier uitricht.
 
 Verder uit de praktijk:
 
