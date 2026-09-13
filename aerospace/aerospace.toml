@@ -11,7 +11,7 @@ automatically-unhide-macos-hidden-apps = true
 on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
 after-startup-command = [
-  'exec-and-forget open -a "Alacritty"'
+  'exec-and-forget open -a "Ghostty"'
 ]
 
 [workspace-to-monitor-force-assignment]
@@ -46,7 +46,7 @@ if.app-name-regex-substring = 'mpv'
 run = 'layout floating'
 
 [[on-window-detected]]
-if.app-id = 'org.alacritty'
+if.app-id = 'com.mitchellh.ghostty'
 run = ['layout accordion', 'move-node-to-workspace 1']
 [[on-window-detected]]
 if.app-id = 'info.sioyek.sioyek'
@@ -68,7 +68,7 @@ if.app-name-regex-substring = '(?i)neovide'
 run = ['fullscreen on', 'move-node-to-workspace 1']
 
 [mode.main.binding]
-# Terminal-"tabs" = losse Alacritty-vensters: cmd-n maakt er een, de accordion
+# Terminal-"tabs" = losse Ghostty-vensters: cmd-n maakt er een, de accordion
 # op workspace 1 stapelt ze, h/l bladert. Bewust geen tmux en geen picker.
 alt-ctrl-cmd-h = 'focus left'
 alt-ctrl-cmd-j = 'focus down'
@@ -90,5 +90,5 @@ alt-ctrl-cmd-a = 'layout accordion'
 alt-ctrl-cmd-enter = 'fullscreen'
 
 alt-ctrl-cmd-s = 'exec-and-forget open -a Helium'
-alt-ctrl-cmd-t = 'exec-and-forget open -a Alacritty'
+alt-ctrl-cmd-t = 'exec-and-forget open -a Ghostty'
 alt-ctrl-cmd-f = 'exec-and-forget open -a Finder'
