@@ -41,3 +41,11 @@ herinstallatie en gaat mee in de backup van `~/academia`.
 
 De rest blijft in `~/Library/Application Support/sioyek/`: `auto.config` (door
 sioyek zelf geschreven) en `last_document_path.txt`.
+
+Controleren of het werkt — een geldige symlink zegt nog niet dat sioyek er
+doorheen schrijft, dus kijk ook of de tabellen vollopen:
+
+```sh
+ls -l ~/Library/Application\ Support/sioyek/*.db
+sqlite3 ~/academia/.sioyek/shared.db 'select count(*) from highlights'
+```

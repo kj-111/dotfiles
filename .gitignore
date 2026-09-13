@@ -20,7 +20,6 @@ claude/
 codex/
 hardware.md
 mole/
-windows/
 
 # Exercism CLI-config bevat de persoonlijke API-token.
 exercism/user.json
