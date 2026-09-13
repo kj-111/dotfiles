@@ -216,9 +216,15 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
     // regel. Daar tekenen we niets. Neovide schuift in dat geval de cursor zelf
     // in 0.04s, maar ghostty verplaatst de cursor al meteen — een trail erbij
     // zou een tweede rechthoek naast de cursor zetten, zichtbaar bij het typen.
+    // Gemeten in celhoogtes en niet in cursorbreedtes: ghostty geeft als breedte
+    // de sprite van de cursor (generic.zig:2141), dus bij een balkcursor de
+    // balkdikte in plaats van de cel. Neovide deelt door de celmaat, die niet
+    // van de vorm afhangt. De hoogte is voor blok en balk wel de cel, en met
+    // Monaspace is 2 cellen breed gelijk aan 1.03 celhoogte; 1.05 houdt marge
+    // en blijft ruim onder de 1.54 van drie cellen.
     vec2 jumpVec = centerCC - centerCP;
     float sameLine = 1.0 - step(0.0001, abs(jumpVec.y));
-    float isShortJump = sameLine * step(abs(jumpVec.x), 2.001 * currentCursor.z);
+    float isShortJump = sameLine * step(abs(jumpVec.x), 1.05 * currentCursor.w);
 
     if (lineLength > minDist && isShortJump < 0.5 && baseProgress < DURATION * SETTLE - 0.001) {
         // defining corners of cursors

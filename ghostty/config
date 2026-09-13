@@ -58,6 +58,7 @@ cursor-color = #88c0d0
 cursor-text = #2e3440
 cursor-style-blink = false
 adjust-cursor-thickness = 4
+# Trail uit: deze twee regels commenten
 custom-shader = shaders/cursor_warp.glsl
 custom-shader-animation = true
 
