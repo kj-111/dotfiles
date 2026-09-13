@@ -27,11 +27,27 @@ van Alacritty, draaide het advies om naar `macos_colorspace displayp3`.
 De drie apps gaan dus fundamenteel anders met kleur om, en dat verklaart
 waarom ze nooit gelijk kónden zijn:
 
-| app       | kleurbeheer                    | instelbaar             |
-| --------- | ------------------------------ | ---------------------- |
-| Alacritty | tagt het venster hard als sRGB | nee                    |
-| Neovide   | tagt, standaard `deviceRGB`    | ja, `srgb`             |
-| kitty     | tagt, standaard sRGB           | ja, `macos_colorspace` |
+| app       | kleurbeheer                    | instelbaar              |
+| --------- | ------------------------------ | ----------------------- |
+| Alacritty | tagt het venster hard als sRGB | nee                     |
+| Neovide   | tagt, standaard `deviceRGB`    | ja, `srgb`              |
+| kitty     | tagt, standaard sRGB           | ja, `macos_colorspace`  |
+| Ghostty   | tagt, standaard sRGB           | ja, `window-colorspace` |
+
+Verder uit de praktijk:
+
+- `text_composition_strategy 1.7 55`, tegen de macOS-default `1.7 30`. Het
+  eerste getal blijft: gamma raakt vooral donkere tekst op licht en doet bij
+  Nord bijna niets. Deze instelling herlaadt niet live.
+- Texture healing uit, en dat bevestigt de waarschuwing hieronder: de `m` oogde
+  meteen vreemd. In het fontbestand zelf nagegaan — `calt` roept lookups 159 tot
+  163 aan, die `m` vervangen door `m.both`, `m.left` of `m.right` afhankelijk
+  van de buren. In Alacritty zag je dat nooit, want die shapet niet. In Neovide
+  blijft het bewust aan.
+- Alle vier de faces expliciet opgeven, niet `bold_font auto`. Monaspace zet
+  elke weight in een eigen familie, dus kitty's automatische keuze landde op
+  `MonaspiceNeNFM-Medium` in plaats van `-Bold`. Nagemeten met kitty's eigen
+  fontresolutie; `kitten choose-fonts` toont hetzelfde.
 
 ## Omgedraaid: Neovide naar Alacritty, 13 september 2026
 
@@ -53,20 +69,49 @@ de Skia-surface staat er los van en gebruikt altijd `ColorSpace::new_srgb()`.
 De hulptekst ("may help with GPUs with weird pixel formats") verwijst naar de
 OpenGL-pad en zegt niets over wat de vlag hier uitricht.
 
-Verder uit de praktijk:
+## Uitkomst: ghostty, 13 september 2026
 
-- `text_composition_strategy 1.7 55`, tegen de macOS-default `1.7 30`. Het
-  eerste getal blijft: gamma raakt vooral donkere tekst op licht en doet bij
-  Nord bijna niets. Deze instelling herlaadt niet live.
-- Texture healing uit, en dat bevestigt de waarschuwing hieronder: de `m` oogde
-  meteen vreemd. In het fontbestand zelf nagegaan — `calt` roept lookups 159 tot
-  163 aan, die `m` vervangen door `m.both`, `m.left` of `m.right` afhankelijk
-  van de buren. In Alacritty zag je dat nooit, want die shapet niet. In Neovide
-  blijft het bewust aan.
-- Alle vier de faces expliciet opgeven, niet `bold_font auto`. Monaspace zet
-  elke weight in een eigen familie, dus kitty's automatische keuze landde op
-  `MonaspiceNeNFM-Medium` in plaats van `-Bold`. Nagemeten met kitty's eigen
-  fontresolutie; `kitten choose-fonts` toont hetzelfde.
+Ghostty 1.3.1 geïnstalleerd en ingericht op de branch `ghostty`; daarin staan
+alleen `ghostty/config` en het omzetten van aerospace. De config wordt gelezen
+vanaf `~/.config/ghostty/config`, dus net als bij alacritty en kitty is er geen
+symlink nodig. Nagegaan met `ghostty +show-config`.
+
+De celbreedte is gemeten in plaats van geschat, via `TIOCGWINSZ` in alle drie de
+terminals, met hetzelfde font op 15.5 pt:
+
+| app       | xpixel | kolommen | celbreedte |
+| --------- | ------ | -------- | ---------- |
+| Alacritty | 1600   | 80       | 20 px      |
+| kitty     | 3420   | 171      | 20 px      |
+| Ghostty   | 3420   | 180      | 19 px      |
+
+Ghostty rondt dus af zoals Alacritty zónder `font.offset`, niet zoals kitty.
+`adjust-cell-width = 1` haalt hem naar 20. Die eenheid is apparaatpixels en geen
+punten; ook dat is nagemeten, want op een retinascherm was 19 → 21 net zo
+aannemelijk geweest.
+
+Wat verder afwijkt van kitty:
+
+- `window-decoration = none` schakelt op macOS ook de tabs uit. Dat dwingt het
+  systeem af, dus een aparte tab-optie is overbodig.
+- `font-feature` geldt voor alle faces tegelijk; kitty heeft er vier regels voor.
+- `scrollback-limit` staat in bytes, niet in regels, met 10 MB als default.
+  Alacritty's `history = 10000` letterlijk overnemen zou 10 kB scrollback geven.
+- `copy-on-select` staat op macOS standaard aan, in Alacritty niet.
+- `keybind = clear` wist ook `super+q=quit`. Bij kitty zit afsluiten in het
+  systeemmenu, hier is het een gewone keybind en moet hij terug.
+- De `sudo`-feature van de shell-integratie staat standaard uit; bij kitty aan.
+
+De vier faces expliciet opgeven is hier net zo nodig, en de oorzaak is nu
+scherper: de Medium-face van Monaspace adverteert nameID 2 = "Regular" en zet
+"Medium" pas in nameID 17. Wie op nameID 2 matcht ziet Medium dus als een gewone
+Regular staan, wat verklaart hoe kitty hem als bold kon kiezen.
+
+Nog niet vastgesteld: de dikte van de balkcursor in insert mode. Kitty kreeg
+`cursor_beam_thickness 2.5`, gelijk aan Alacritty's `thickness = 0.25` op een cel
+van 20 px. Ghostty's `adjust-cursor-thickness` is een verschil ten opzichte van
+een basiswaarde die ik niet heb kunnen meten, dus die blijft uit tot hij
+zichtbaar te dun of te dik is.
 
 ## De referentie
 
