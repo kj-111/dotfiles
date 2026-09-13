@@ -41,6 +41,12 @@ voor alleen de huidige buffer kan het rechtstreeks met
 `:lua vim.lsp.inlay_hint.enable(true, { bufnr = 0 })`. (De zesde opt-in is
 native completion — die rol vervult blink hier.)
 
+Van de inlay hints hoort `enumMemberValues` alleen bij TypeScript. Het
+configuratieschema van vtsls 0.3.0 kent wel
+`typescript.inlayHints.enumMemberValues.enabled`, maar geen javascript-variant
+(`configuration.schema.json` in het pakket). Deze config draait alleen op
+javascript- en javascriptreact-buffers, dus die sleutel deed hier niets.
+
 ## Hoe nvim een server vindt en start
 
 1. `lsp/<naam>.lua` beschrijft één server; `config/lsp.lua` scant die map en

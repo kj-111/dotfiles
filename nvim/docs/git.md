@@ -58,3 +58,12 @@ tweede nvim.
 
 Deze config-repo heeft twee remotes, dus pushen is `:Git push origin main`
 én `:Git push gitlab main`.
+
+## LazyGit
+
+In LazyGits bestandenpaneel commit `CTRL-S` de staged wijzigingen met een
+tijdstempel en pusht daarna. Staat er niets staged, dan gebeurt er niets.
+
+Die sneltoets pusht naar één remote. Voor de twee remotes van deze config-repo
+blijven de twee expliciete pushcommando's hierboven gelden. Los bedienen kan
+ook: `c` commit en `P` pusht in LazyGit.

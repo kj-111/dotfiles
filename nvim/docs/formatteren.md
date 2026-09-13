@@ -128,9 +128,11 @@ Twee afwijkingen en drie keuzes die het uitleggen waard zijn:
   C-specifiek: zonder accolades leidt een tweede regel erbij tot een fout die
   je niet ziet
 - `SortIncludes: Never` — in C kan de volgorde van headers betekenis hebben
-- `DerivePointerAlignment: false` — die staat standaard áán en zou de
-  pointerstijl per bestand overnemen van wat er al staat. Precies wat je niet
-  wilt als je een vaste stijl afspreekt
+- `DerivePointerAlignment: false` — dit is al de LLVM-default, hier expliciet
+  gehouden om `PointerAlignment: Left` vast te leggen. Met `true` kan de
+  formatter de pointerstijl afleiden uit het bestand. Gecontroleerd met de
+  geïnstalleerde Apple-clangd 21: weglaten en `false` gaven dezelfde opmaak;
+  `true` nam de overheersende bestaande pointerstijl over
 
 ## Waarom de configs zelf kaal zijn
 

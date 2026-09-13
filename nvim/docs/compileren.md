@@ -119,8 +119,10 @@ make run F=hallo  bouwt het en draait het
 make clean        ruimt de binaries op
 ```
 
-`make <Tab>` vult de doelen niet aan, dus de Makefile openen is de manier om
-te zien wat er is — bovenin staan ze in een comment.
+In de zsh-shell vult `make <Tab>` de doelen wel aan: `compinit` activeert de
+meegeleverde `_make`-completion, die de Makefile leest. Een proef met zsh 5.9
+vulde `make ru<Tab>` aan tot `make run `. Voor de betekenis van een doel lees
+je de Makefile. Neovims `:make` heeft deze shellcompletion niet.
 
 ## make[1] en "is up to date"
 

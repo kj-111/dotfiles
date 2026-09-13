@@ -114,7 +114,7 @@ Die derde regel is de valkuil: omnifunc antwoordt asynchroon, en een
 handmatige CTRL-N wacht daar niet op. De `o`-bron is er voor
 'autocomplete', dat wél opnieuw kijkt als het antwoord binnenkomt.
 
-Snippets en auto-imports werk je niet mis door `vim.lsp.completion.enable()`
+LSP-snippets en auto-imports werk je niet mis door `vim.lsp.completion.enable()`
 over te slaan: CTRL-X CTRL-O registreert zelf de CompleteDone-haak — in
 een proef zonder `enable()` stond de augroup `nvim.lsp.completion_1` er
 meteen (runtime/lua/vim/lsp/completion.lua, `register_completedone`). Die
@@ -132,24 +132,36 @@ de `omnifunc` die ftplugin/python.vim zet gaat er wel aan (lsp.lua,
   nabijheidsbonus; ingebouwd is er alleen `completeopt+=fuzzy`
 - pad, snippets en buffer als eigen bronnen, plus de nvim-cmp-bronnen via
   een compatibiliteitslaag
-- signature help (jij hebt die aan, blink.lua)
-- 0,5–4 ms per toetsaanslag, async — tegenover een tijdslimiet die per
-  definitie een deel van de bronnen afkapt
 
-Wat je níet inlevert door over te stappen: LSP-items, snippets,
-auto-imports, documentatiepopup, cmdline-aanvulling. Die zitten er
-allemaal al in.
+LSP-items, LSP-snippets, auto-imports, de documentatiepopup en
+cmdline-aanvulling zijn ingebouwd. Signature help gebruikt hier native
+`CTRL-S`; Blinks aparte signature help staat uit, zodat `CTRL-K` beschikbaar
+blijft voor digraphs.
+
+De zeven eigen snippets in `snippets/markdown.json` zijn een aparte bron:
+Blink ontdekt die JSON-bestanden en verwerkt ook de datumvariabelen.
+`vim.snippet.expand()` leest zelf geen snippetbestanden en zijn resolver in
+Neovim 0.12.5 kent `$CURRENT_YEAR`, `$CURRENT_MONTH` en `$CURRENT_DATE` niet
+(`runtime/lua/vim/snippet.lua`, `resolve_variable`). Die functionaliteit
+behoud je dus niet automatisch bij een overstap.
 
 ## Proberen zonder iets te slopen
 
-Blink hoeft er niet uit; zet het per buffer aan en kijk hoe het voelt:
+Schakel Blink eerst voor deze buffer uit en activeer dan native completion:
 
 ```vim
+:let b:completion = v:false
 :setlocal autocomplete complete=.,o completeopt=menuone,noselect,popup
 ```
 
 'autocomplete' is global-local, dus dit raakt alleen deze buffer
-(:h 'autocomplete'). Bevalt het niet: `:setlocal noautocomplete`.
+(:h 'autocomplete'). `b:completion` is Blinks eigen bufferswitch. Terug naar
+de globale opties en Blink:
+
+```vim
+:setlocal autocomplete< complete< completeopt<
+:unlet! b:completion
+```
 
 De cmdline heeft zijn eigen versie hiervan, met wildtrigger() in plaats
 van 'autocomplete' — die staat al aan in autocmds.lua en is beschreven in
