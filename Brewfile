@@ -62,6 +62,8 @@ cask "claude-code"
 cask "codex"
 cask "font-jetbrains-mono-nerd-font"
 cask "font-monaspice-nerd-font"
+# Terminal emulator that uses platform-native UI and GPU acceleration
+cask "ghostty"
 # Convert your caps lock key or any of your modifier keys to the hyper key
 cask "hyperkey"
 # GPU-based terminal emulator
