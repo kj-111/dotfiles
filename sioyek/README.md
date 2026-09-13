@@ -16,7 +16,7 @@ xattr -dr com.apple.quarantine /Applications/sioyek.app
 
 Die laatste stap moet echt. De app is adhoc gesigneerd — `Signature=adhoc` en
 `TeamIdentifier=not set` volgens `codesign -dv` — dus Gatekeeper weigert hem
-zonder. Zelfde situatie als Alacritty (gui-apps.txt).
+zonder. Zie gui-apps.txt voor de andere apps die buiten Homebrew om komen.
 
 De `Info.plist` meldt versie 2.0; dat is een fout in de alpha-build, niet de
 verkeerde download.

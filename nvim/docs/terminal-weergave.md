@@ -1,9 +1,9 @@
 # Alacritty-weergave behouden: Ghostty, kitty en foot
 
 > Onderzocht op 10 september 2026, met Alacritty als referentie. Op 13 september
-> is Ghostty de terminal geworden; Alacritty blijft geïnstalleerd als terugval
-> en blijft de maatstaf waaraan de weergave wordt afgemeten. De rest van het
-> onderzoek blijft staan zoals het toen is vastgesteld.
+> is Ghostty de terminal geworden en zijn Alacritty en kitty verwijderd.
+> Alacritty blijft de maatstaf waaraan de weergave is afgemeten; dat is wat dit
+> document bewaart. De rest staat zoals het toen is vastgesteld.
 
 Dit begon als naslag voor een eventuele overstap. De uitkomsten staan hieronder
 in de volgorde waarin ze zijn vastgesteld; de laatste is de huidige stand.
@@ -71,8 +71,7 @@ OpenGL-pad en zegt niets over wat de vlag hier uitricht.
 
 Ghostty 1.3.1 is de terminal geworden. De config wordt gelezen vanaf
 `~/.config/ghostty/config`, dus net als bij alacritty is er geen symlink nodig.
-Nagegaan met `ghostty +show-config`. Alacritty blijft geïnstalleerd als
-terugval en als maatstaf.
+Nagegaan met `ghostty +show-config`.
 
 De celbreedte is gemeten in plaats van geschat, via `TIOCGWINSZ` in alle drie de
 terminals, met hetzelfde font op 15.5 pt:
@@ -158,8 +157,11 @@ vlameffect met vaste kleur.
 
 ## De referentie
 
-Lokaal: Alacritty 0.17.0, [alacritty.toml](../../alacritty/alacritty.toml) en
-[nord.lua](../colors/nord.lua). Behoud bij een vergelijking:
+De weergave die hieronder beschreven staat, is die van Alacritty 0.17.0 — de
+maatstaf waaraan alles is afgemeten. Alacritty zelf is op 13 september
+verwijderd, dus dit is wat ervan bewaard is gebleven; de werkende versie staat
+in [ghostty/config](../../ghostty/config) en [nord.lua](../colors/nord.lua).
+Behoud bij een vergelijking:
 
 - `MonaspiceNe Nerd Font Mono`, 15.5 pt; Regular, Bold, Italic en Bold Italic.
   Gebruik dezelfde geïnstalleerde fontbestanden, niet zomaar een andere

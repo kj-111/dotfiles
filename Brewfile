@@ -66,8 +66,6 @@ cask "font-monaspice-nerd-font"
 cask "ghostty"
 # Convert your caps lock key or any of your modifier keys to the hyper key
 cask "hyperkey"
-# GPU-based terminal emulator
-cask "kitty"
 # Free cross-platform office suite, fresh version
 cask "libreoffice"
 # Neovim Client

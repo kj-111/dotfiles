@@ -1,5 +1,6 @@
-# Ghostty om zijn graphics protocol, verder zo kaal als alacritty. Wat in
-# alacritty.toml staat en hier ontbreekt, is al default.
+# Zo kaal mogelijk: wat hier ontbreekt, staat al goed als default. De weergave
+# is afgemeten aan alacritty; die vergelijking staat in
+# nvim/docs/terminal-weergave.md.
 
 # ─── Venster ─────────────────────────────────────────────────────────────────
 # none haalt ook de tabs weg: dat dwingt macOS af bij vensters zonder titelbalk.
@@ -36,7 +37,7 @@ font-thicken = true
 adjust-cell-width = 1
 
 # ─── Kleuren: Nord ───────────────────────────────────────────────────────────
-# Zelfde palet als alacritty.toml en colors/nord.lua.
+# Zelfde palet als nvim/colors/nord.lua.
 
 background = #2e3440
 foreground = #d8dee9

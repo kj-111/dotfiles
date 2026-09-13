@@ -50,9 +50,8 @@ zoeken tot de treffers kloppen, `CTRL-A`, `ALT-Enter`, en dan `]q` of
 `:cdo s/oud/nieuw/g | update` over de hele lijst.
 
 Alt-Enter werkt hier doordat de terminal Option als modifier doorgeeft
-(`macos-option-as-alt` in ghostty/config, `option_as_alt` in
-alacritty.toml); zonder die instelling stuurt de Option-toets op macOS een
-teken in plaats van een modifier.
+(`macos-option-as-alt` in ghostty/config); zonder die instelling stuurt de
+Option-toets op macOS een teken in plaats van een modifier.
 
 De andere kant op kan ook: `:Pick list scope='quickfix'` bladert fuzzy door
 een bestaande quickfixlijst — en net zo `scope='location'`, `'jumplist'` of

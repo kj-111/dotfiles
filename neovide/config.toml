@@ -9,7 +9,7 @@ system-switcher-hotkey = ""
 system-tab-prev-hotkey = ""
 system-tab-next-hotkey = ""
 
-# Gelijk aan alacritty.toml: zelfde familie, faces en grootte.
+# Gelijk aan ghostty/config: zelfde familie, faces en grootte.
 [font]
 normal = { family = "MonaspiceNe Nerd Font Mono", style = "Regular" }
 bold = { family = "MonaspiceNe Nerd Font Mono", style = "Bold" }
