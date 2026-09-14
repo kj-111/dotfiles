@@ -153,63 +153,152 @@ vlameffect met vaste kleur.
 
 ### De shader tegen de bron gelegd
 
-Het origineel is regel voor regel nagelopen tegen neovide 0.16.2, met
-`cursor_renderer/mod.rs` en `animation_utils.rs` als enige bron van waarheid.
-Elf plekken weken af. Dit is wat je moet terugzetten als je ooit een nieuwere
-versie van de shader binnenhaalt; in het bestand zelf staat elke afwijking ook
-becommentarieerd met regelverwijzing.
+Op 14 september opnieuw gecontroleerd tegen **Neovide 0.16.2** en **Ghostty
+1.3.1**. Neovides cursorcode is de referentie; Ghostty bepaalt welke gegevens
+de shader krijgt. De uitleg staat hier, de shader bevat alleen de gebruikte
+logica en de oorspronkelijke herkomstvermelding.
 
-| plek                      | origineel      | nu             | reden                                  |
-| ------------------------- | -------------- | -------------- | -------------------------------------- |
-| `DURATION`                | 0.2            | 0.15           | `animation_length`                     |
-| `TRAIL_SIZE`              | 0.8            | 1.0            | `trail_size`                           |
-| `ease()`                  | EaseOutCirc    | veer           | neovide's eigen respons, zie hieronder |
-| rangschikking             | vaste drempels | sortering      | `mod.rs:462`                           |
-| rail-logica               | aanwezig       | weg            | bestaat niet in neovide                |
-| `THRESHOLD_MIN_DISTANCE`  | 1.5            | 0.0            | neovide kent geen afstandsdrempel      |
-| korte sprong              | —              | onderdrukt     | `mod.rs:165`                           |
-| tekenvenster              | `DURATION`     | × `SETTLE` 2.5 | de veer komt asymptotisch aan          |
-| `TRAIL_THICKNESS_X`       | 0.9            | 1.0            | `draw_rectangle` verkleint niets       |
-| antialiasing-uitzondering | aanwezig       | weg            | `mod.rs:347` is onvoorwaardelijk       |
-| sRGB→lineair              | aanwezig       | weg            | verkeerd bij `alpha-blending = native` |
+De vorige shader gebruikte al de juiste duur en veerformule, maar miste deze
+details:
 
-De easing is de grootste. Bij een sprong vanuit stilstand is `velocity` nul, dus
-valt neovide's kritisch gedempte veer terug op een gesloten vorm die een shader
-gewoon kan uitrekenen. Met `omega = 4/duur` en `x = t/duur` wordt `omega·t`
-exact `4x`:
+| onderdeel         | huidige werking                                                                                            | bron                                                            |
+| ----------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| hoekvolgorde      | linksboven, rechtsboven, rechtsonder, linksonder; bij gelijke uitlijning beslist deze index                | `STANDARD_CORNERS` en `corner_ranks`                            |
+| balkcursor        | richting van iedere hoek gemeten vanuit het midden van de volledige tekstcel                               | `set_cursor_shape()` en `calculate_direction_alignment()`       |
+| leidende hoeken   | duur nul betekent onmiddellijk op de bestemming, ook op het eerste shaderframe                             | `CriticallyDampedSpringAnimation::update()`                     |
+| einde van de veer | iedere as stopt onder 0,01 pixel; geen vaste afkapduur                                                     | dezelfde functie                                                |
+| pixelraster       | hoeken worden vóór het tekenen afgerond, halve pixels van nul af                                           | `draw_rectangle()`                                              |
+| randen            | dekking rond de rand, zonder de vroegere blur van één pixel naar buiten                                    | `paint.set_anti_alias(true)`; de shader benadert Skia's dekking |
+| zichtbaarheid     | geen trail bij verborgen cursor, ontbrekende vorige cursor of een beweging van vóór de laatste focuswissel | Ghostty-uniforms                                                |
 
-```glsl
-float ease(float x) { float ot = 4.0 * x; return 1.0 - (1.0 + ot) * exp(-ot); }
+De hoekvolgorde was op macOS verticaal gespiegeld. Ghostty gebruikt daar
+`custom_shader_y_is_down = true` en geeft met `iCurrentCursor.xy` de
+**linkeronderhoek** door. De oude shader behandelde die als linksboven.
+De rechthoek lag nog goed, maar bij een sprong naar rechts kreeg linksonder
+de langste staart. Neovide geeft die aan linksboven. De shader rekent nu
+rechtstreeks in pixels met dezelfde Y-richting als Neovide.
+[Neovide: hoeken en sortering](https://github.com/neovide/neovide/blob/0.16.2/src/renderer/cursor_renderer/mod.rs#L26),
+[Ghostty: Metal-as](https://github.com/ghostty-org/ghostty/blob/v1.3.1/src/renderer/Metal.zig#L34),
+[Ghostty: cursorcoördinaten](https://github.com/ghostty-org/ghostty/blob/v1.3.1/src/renderer/generic.zig#L2141).
+
+Voor een sprong vanuit stilstand is de resterende afstand:
+
+```text
+offset(t) = delta × (1 + omega × t) × exp(-omega × t)
+omega = 4 / duur
 ```
 
-Die komt asymptotisch aan: op `x = 1` rest nog 9,2%, op 2,5 nog 0,05%. Vandaar
-`SETTLE`, anders springt de cursor het laatste stuk. De leidende hoek heeft bij
-`TRAIL_SIZE = 1.0` duur nul; dat is afgevangen met `max(dur, 1e-5)`, waarna
-`exp()` naar nul onderloopt in plaats van NaN te geven.
+Bij lange hoekreizen blijven de duren 0,15 s voor de achterste hoek, 0,075 s
+voor de tussenhoek en 0 s voor de twee voorste hoeken. De oude grens van
+2,5 × 0,15 s liet bij een
+sprong van 3000 pixels nog ongeveer 1,5 pixel over en kapte dat ineens af.
+Nu volgt iedere as Neovides grens van 0,01 pixel. Samenvallende afgeronde
+hoeken veroorzaken bovendien geen deling door nul meer in de afstandsfunctie.
+[Neovide: veer en stopgrens](https://github.com/neovide/neovide/blob/0.16.2/src/renderer/animation_utils.rs#L89),
+[duur per hoek](https://github.com/neovide/neovide/blob/0.16.2/src/renderer/cursor_renderer/mod.rs#L156),
+[pixelafronding](https://github.com/neovide/neovide/blob/0.16.2/src/renderer/cursor_renderer/mod.rs#L537).
 
-Twee afwijkingen zijn gedwongen en niet op te lossen. De korte-sprongtest meet
-in celhoogtes en niet in celbreedtes, omdat ghostty als cursorbreedte de sprite
-doorgeeft (`generic.zig:2141`) — bij een balkcursor dus de balkdikte, 5 px in
-plaats van 20. Neovide deelt door de celmaat, die niet van de vorm afhangt, maar
-die breedte zit niet in de uniforms. Met Monaspace is 2 cellen breed gelijk aan
-1,03 celhoogte, dus staat de drempel op 1,05. Zonder die correctie kreeg je in
-insert mode bij elke toetsaanslag een trail.
+### Wat een Ghostty-shader niet kan overnemen
 
-En de golf bij ingedrukte `j` is principieel onhaalbaar. Neovide overschrijft bij
-een nieuwe sprong alleen `position` en laat `velocity` staan (`mod.rs:132`),
-terwijl het de afstand meet vanaf waar de hoek op dat moment stáát en niet vanaf
-de vorige bestemming. Beide vragen toestand tussen frames; ghostty geeft een
-shader alleen twee posities, één tijdstip, en `iChannel0` als het huidige scherm.
+Neovide bewaart de actuele positie én snelheid van iedere hoek. Bij een nieuwe
+sprong blijft de snelheid staan. Ghostty geeft alleen de vorige en huidige
+cursorrechthoek door; `iChannel0` bevat het huidige scherm, geen vorig frame.
+De golf bij ingedrukte `j/k` is daardoor niet exact te reconstrueren. Deze
+shader berekent elke sprong vanuit stilstand. Ook Neovides herstel na een lang
+frame (`animation_length <= dt`) heeft toestand nodig om daarna niet opnieuw
+halverwege de beweging te verschijnen.
+[Neovide: bestemming veranderen](https://github.com/neovide/neovide/blob/0.16.2/src/renderer/cursor_renderer/mod.rs#L124),
+[Ghostty: beschikbare uniforms](https://github.com/ghostty-org/ghostty/blob/v1.3.1/src/renderer/shaders/shadertoy_prefix.glsl).
 
-Nog een structureel verschil, dat verklaart waarom korte sprongen hier niets
-tekenen in plaats van kort te schuiven: neovide's `draw_rectangle` trekt één pad
-door de vier hoeken en dát ís de cursor, met het teken erbinnen geclipt. Ghostty
-verplaatst zijn cursor meteen en de shader tekent er een vorm achter — vandaar
-ook het gat dat uit de trail wordt geponst.
+Korte horizontale sprongen tot twee cellen blijven zonder trail. Neovide
+verplaatst dan de hele cursor met een veerduur van 0,04 s. Ghostty heeft die
+cursor al op zijn bestemming getekend; een extra schuivende rechthoek zou
+twee cursors opleveren. De shader behoudt daarom de echte cursorpixels en
+tekent alleen buiten die rechthoek. Dit is een bewuste benadering, geen
+identieke uitvoering van Neovides korte animatie.
 
-`custom-shader-animation` staat op `true` en niet op `always`. Met `always` liep
-de lus door terwijl het venster onbeheerd was: 11% CPU van één core tegen 0,0%,
-gemeten over acht samples op een idle venster.
+Een sprong met tegelijk een vormwissel animeert wel: bijvoorbeeld `A` vanaf
+het begin van een lange regel, waarbij het blok een insert-balk wordt. Iedere
+hoek vertrekt uit de vorige cursorrechthoek en beweegt naar zijn eigen nieuwe
+bestemming, zoals in Neovides `Corner::update()`. De aanvankelijke controle
+die alle formaatwissels oversloeg, blokkeerde ook deze gewone beweging en is
+verwijderd. Een vormwissel zonder verplaatsing blijft zonder extra trail.
+
+Neovide heeft geen aparte `A`-animatie. `set_cursor_shape()` wijzigt de
+relatieve vorm en bewaart de bestaande hoeken met `..corner`. Daarna berekent
+`Corner::update()` voor iedere hoek zijn eigen afstand. Ook de korte duur
+van 0,04 s wordt in `Corner::jump()` per hoek gekozen: bij het versmallen
+van een brede blokcursor kan één hoek minder dan twee cellen reizen terwijl
+de andere verder gaan. Beide details zitten nu in de shader.
+[Vormwissel](https://github.com/neovide/neovide/blob/0.16.2/src/renderer/cursor_renderer/mod.rs#L265),
+[afstand per hoek](https://github.com/neovide/neovide/blob/0.16.2/src/renderer/cursor_renderer/mod.rs#L124),
+[duur per hoek](https://github.com/neovide/neovide/blob/0.16.2/src/renderer/cursor_renderer/mod.rs#L156).
+
+De verdere broncontrole bevestigde dat insert- en commandoregelanimatie
+standaard aanstaan. Dubbelbrede blokcursors volgen hun doorgegeven
+rechthoekmaat. Smooth blink staat standaard uit en de VFX-lijst is leeg:
+er ontbreekt geen standaard deeltjes- of fade-effect.
+[Defaults en dubbele breedte](https://github.com/neovide/neovide/blob/0.16.2/src/renderer/cursor_renderer/mod.rs#L72),
+[lege VFX-default](https://github.com/neovide/neovide/blob/0.16.2/src/renderer/cursor_renderer/cursor_vfx.rs#L55).
+
+Neovides venster-ID, viewportmarges en lopende scrollanimatie ontbreken in de
+Ghostty-uniforms. Ook tekent Neovide de cursorletter opnieuw, geclipt aan het
+bewegende pad; de shader bewaart de al getekende Ghostty-cursor. Blinken en de
+unfocused outline blijven van Ghostty. Een kleurwissel reset bovendien
+Ghostty's bewegingsuniforms, terwijl Neovide zijn bestaande beweging kan
+voortzetten. Die verloren geschiedenis is niet uit de twee resterende
+cursorrechthoeken te herstellen.
+[Venster en scroll](https://github.com/neovide/neovide/blob/0.16.2/src/renderer/cursor_renderer/mod.rs#L294),
+[cursor tekenen](https://github.com/neovide/neovide/blob/0.16.2/src/renderer/cursor_renderer/mod.rs#L336),
+[Ghostty: kleurwissel](https://github.com/ghostty-org/ghostty/blob/v1.3.1/src/renderer/generic.zig#L2198).
+
+Een blokcursor levert zijn celmaat rechtstreeks. Bij een balk of underscore
+ontbreekt één celafmeting in de uniforms. `CELL_ASPECT = 20.0 / 39.0` vult die
+aan voor de huidige MonaspiceNe Nerd Font Mono op 15,5 pt en Retina-schaal 2.
+Nagerekend uit het lokale font: 2000 units/em, advance 1240, typo-ascent 1990
+en descent −500. Op 31 pixels/em geeft dat 19,22 × 38,595 pixels; Ghostty rondt
+naar 19 × 39 en `adjust-cell-width = 1` maakt er 20 × 39 van. Bij een andere
+zoom, schaal of font kan deze verhouding afwijken.
+[Ghostty: fontmetrics](https://github.com/ghostty-org/ghostty/blob/v1.3.1/src/font/face/coretext.zig#L642),
+[afronding](https://github.com/ghostty-org/ghostty/blob/v1.3.1/src/font/Metrics.zig#L265).
+
+De kleuren blijven ongewijzigd: met de huidige `alpha-blending = native`
+gebruikt Ghostty `bgra8unorm`, zodat hier geen sRGB-naar-lineairconversie
+hoort. De achtergrondalpha blijft behouden.
+[Ghostty: pixelformaat](https://github.com/ghostty-org/ghostty/blob/v1.3.1/src/renderer/Metal.zig#L204).
+
+### Controle en zelf testen
+
+De oorspronkelijke `CriticallyDampedSpringAnimation` is uit Neovides
+versiebestand gehaald en in een tijdelijk Rust-programma uitgevoerd. De GLSL
+is gecompileerd en op de lokale OpenGL 4.1-GPU gerenderd. Na de `A`-correctie
+kwamen alle 352 combinaties van afgeronde hoekposities overeen: 12 richtingen
+× 3 cursorvormen × 8 tijdstippen, plus 8 vormwissels × 8 tijdstippen. De
+Rust-veer liep in stappen van 1/120 s; de sprongen liepen op tot 3000 pixels.
+De referentie kreeg dezelfde cursorafmetingen als de shader. De
+vergelijking gebruikt dezelfde verstreken tijd; de twee apps kunnen hun
+eerste animatieframe op een ander moment tonen.
+
+Daarnaast zijn 44 beelden gecontroleerd op geldige kleurwaarden, behoud van
+cursorpixels en alpha, `A`/`I`, brede cursors, typen en vormwissels zonder
+verplaatsing. De `A`- en `I`-proeven combineerden een sprong van 300 pixels
+met de overgang van blok naar balk. Beide tekenden een trail; typen en alleen
+van vorm wisselen niet. De eerdere controles op verborgen cursors,
+focuswissels en samenvallende hoeken waren eveneens geslaagd.
+Dit controleert de GLSL en geometrie; Ghostty's omzetting naar Metal en
+Skia's precieze randdekking zijn hiermee niet visueel gelijk bewezen.
+
+Herlaad Ghostty via **Reload Configuration** in het menu. Vergelijk met
+Neovide: één `j` of `k`, `A` vanaf het begin van een lange regel, `I` vanaf het
+einde, een grote horizontale sprong, diagonale verplaatsingen
+en daarna ingedrukte `j/k`. Controleer in insert mode dat typen geen tweede
+balkcursor oplevert. Grote losse sprongen zijn de bruikbaarste vergelijking
+voor de hoekvorm; herhaalde sprongen tonen de hierboven beschreven beperking.
+
+`custom-shader-animation = true` blijft staan. De eerdere meting van
+13 september vergeleek `always` met `true` in een onbeheerd venster:
+11% van één CPU-core tegenover 0,0%, over acht samples. Die CPU-meting is
+niet herhaald voor deze shaderwijziging.
 
 ## De referentie
 
