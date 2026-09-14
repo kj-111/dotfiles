@@ -65,7 +65,7 @@ custom-shader-animation = true
 # ─── Muis en klembord ────────────────────────────────────────────────────────
 
 mouse-hide-while-typing = true
-mouse-scroll-multiplier = precision:3
+mouse-scroll-multiplier = precision:1
 copy-on-select = false
 
 # ─── Shell, bel en meldingen ─────────────────────────────────────────────────
