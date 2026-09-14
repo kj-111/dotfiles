@@ -145,15 +145,71 @@ let leading = animation_length * (1.0 - trail_size);
 match rank { 2..=3 => leading, 1 => (leading + trailing) / 2.0, 0 => trailing }
 ```
 
-`DURATION` en `TRAIL_SIZE` zijn in de shader op Neovide's defaults gezet, 0.15
-en 1.0. `custom-shader-animation = always` is nodig omdat de cursor bij
-focusverlies hol wordt en de animatie anders bevriest.
-
 Alternatieven bekeken en afgevallen: `boo`/`tinkle`/`wisp`
 ([hced](https://github.com/hced/ghostty-cursor-trails)) splitsen de hoeken via
 `LEAD_EDGE_LAG` en tekenen gebogen banen; `smear_cursor_blocks` en `cursor_tail`
 gebruiken een gesloten lus, hetzelfde model als kitty; `cursor_blaze` is een
 vlameffect met vaste kleur.
+
+### De shader tegen de bron gelegd
+
+Het origineel is regel voor regel nagelopen tegen neovide 0.16.2, met
+`cursor_renderer/mod.rs` en `animation_utils.rs` als enige bron van waarheid.
+Elf plekken weken af. Dit is wat je moet terugzetten als je ooit een nieuwere
+versie van de shader binnenhaalt; in het bestand zelf staat elke afwijking ook
+becommentarieerd met regelverwijzing.
+
+| plek                      | origineel      | nu             | reden                                  |
+| ------------------------- | -------------- | -------------- | -------------------------------------- |
+| `DURATION`                | 0.2            | 0.15           | `animation_length`                     |
+| `TRAIL_SIZE`              | 0.8            | 1.0            | `trail_size`                           |
+| `ease()`                  | EaseOutCirc    | veer           | neovide's eigen respons, zie hieronder |
+| rangschikking             | vaste drempels | sortering      | `mod.rs:462`                           |
+| rail-logica               | aanwezig       | weg            | bestaat niet in neovide                |
+| `THRESHOLD_MIN_DISTANCE`  | 1.5            | 0.0            | neovide kent geen afstandsdrempel      |
+| korte sprong              | —              | onderdrukt     | `mod.rs:165`                           |
+| tekenvenster              | `DURATION`     | × `SETTLE` 2.5 | de veer komt asymptotisch aan          |
+| `TRAIL_THICKNESS_X`       | 0.9            | 1.0            | `draw_rectangle` verkleint niets       |
+| antialiasing-uitzondering | aanwezig       | weg            | `mod.rs:347` is onvoorwaardelijk       |
+| sRGB→lineair              | aanwezig       | weg            | verkeerd bij `alpha-blending = native` |
+
+De easing is de grootste. Bij een sprong vanuit stilstand is `velocity` nul, dus
+valt neovide's kritisch gedempte veer terug op een gesloten vorm die een shader
+gewoon kan uitrekenen. Met `omega = 4/duur` en `x = t/duur` wordt `omega·t`
+exact `4x`:
+
+```glsl
+float ease(float x) { float ot = 4.0 * x; return 1.0 - (1.0 + ot) * exp(-ot); }
+```
+
+Die komt asymptotisch aan: op `x = 1` rest nog 9,2%, op 2,5 nog 0,05%. Vandaar
+`SETTLE`, anders springt de cursor het laatste stuk. De leidende hoek heeft bij
+`TRAIL_SIZE = 1.0` duur nul; dat is afgevangen met `max(dur, 1e-5)`, waarna
+`exp()` naar nul onderloopt in plaats van NaN te geven.
+
+Twee afwijkingen zijn gedwongen en niet op te lossen. De korte-sprongtest meet
+in celhoogtes en niet in celbreedtes, omdat ghostty als cursorbreedte de sprite
+doorgeeft (`generic.zig:2141`) — bij een balkcursor dus de balkdikte, 5 px in
+plaats van 20. Neovide deelt door de celmaat, die niet van de vorm afhangt, maar
+die breedte zit niet in de uniforms. Met Monaspace is 2 cellen breed gelijk aan
+1,03 celhoogte, dus staat de drempel op 1,05. Zonder die correctie kreeg je in
+insert mode bij elke toetsaanslag een trail.
+
+En de golf bij ingedrukte `j` is principieel onhaalbaar. Neovide overschrijft bij
+een nieuwe sprong alleen `position` en laat `velocity` staan (`mod.rs:132`),
+terwijl het de afstand meet vanaf waar de hoek op dat moment stáát en niet vanaf
+de vorige bestemming. Beide vragen toestand tussen frames; ghostty geeft een
+shader alleen twee posities, één tijdstip, en `iChannel0` als het huidige scherm.
+
+Nog een structureel verschil, dat verklaart waarom korte sprongen hier niets
+tekenen in plaats van kort te schuiven: neovide's `draw_rectangle` trekt één pad
+door de vier hoeken en dát ís de cursor, met het teken erbinnen geclipt. Ghostty
+verplaatst zijn cursor meteen en de shader tekent er een vorm achter — vandaar
+ook het gat dat uit de trail wordt geponst.
+
+`custom-shader-animation` staat op `true` en niet op `always`. Met `always` liep
+de lus door terwijl het venster onbeheerd was: 11% CPU van één core tegen 0,0%,
+gemeten over acht samples op een idle venster.
 
 ## De referentie
 
@@ -336,9 +392,11 @@ referentie halverwege verschoof van Alacritty naar Neovide — zie de uitkomst
 bovenaan. De les is niet "P3 is beter", maar dat het antwoord afhangt van
 waarmee je vergelijkt, en dat je die keuze expliciet moet maken vóór je afstelt.
 
-foot blijft een Wayland-optie, geen Mac-migratieplan. Ghostty is niet getest;
-die had voor de cursor trail een externe GLSL-shader nodig, en die trail is
-uiteindelijk toch niet gebruikt.
+foot blijft een Wayland-optie, geen Mac-migratieplan. Over Ghostty stond hier
+dat een cursor trail een externe GLSL-shader zou vergen en dat die toch niet
+gebruikt zou worden. Het eerste klopt, het tweede niet: Ghostty is op
+13 september de terminal geworden en juist die shader komt het dichtst bij
+Neovide — zie de uitkomst bovenaan.
 
 Het onderzoek van 10 september is gecontroleerd tegen lokale configuratie,
 upstreamdocumentatie, Ghostty 1.3.1- en kitty 0.48.2-broncode en historische
