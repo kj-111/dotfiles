@@ -1,15 +1,13 @@
 # Apps die buiten Homebrew om geinstalleerd worden; al de rest staat in de Brewfile.
 Helium 0.16.2.1 - https://helium.computer/download
-JetBrains Toolbox 3.7.2.87231 - https://www.jetbrains.com/toolbox-app/
-IntelliJ IDEA 2026.2.1 (via jetbrains-toolbox) - https://www.jetbrains.com/idea/download/
-PyCharm 2026.2.1 (via jetbrains-toolbox) - https://www.jetbrains.com/pycharm/download/
-WebStorm 2026.2.1 (via jetbrains-toolbox) - https://www.jetbrains.com/webstorm/download/
+JetBrains Toolbox 3.7.2.87231 - https://www.jetbrains.com/toolbox-app/ (autostart uit)
 reMarkable 3.28.1 - https://support.remarkable.com/articles/Knowledge/Desktop-app
 Sioyek 3-alpha0 (ARM64) - https://github.com/ahrm/sioyek/releases/tag/sioyek3-alpha0
 
 (Amphetamine 5.3.2 - https://apps.apple.com/us/app/amphetamine/id937984704)
 (BlueJ 6.0.0 - https://www.bluej.org/)
 (Excalidraw - https://excalidraw.com (PWA via Helium: App installeren; komt in ~/Applications/Chromium Apps))
+(IntelliJ IDEA / PyCharm / WebStorm - via jetbrains-toolbox; setup in jetbrains/examen-setup.md)
 (SceneBuilder 26.0.0 - https://gluonhq.com/products/scene-builder/)
 (UTM 4.7.5 - https://mac.getutm.app/)
 (Wacom Tablet Driver - https://www.wacom.com/en-us/support/product-support/drivers)
