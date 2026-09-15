@@ -60,7 +60,6 @@ cask "nikitabobko/tap/aerospace"
 cask "claude-code"
 # OpenAI's coding agent that runs in your terminal
 cask "codex"
-cask "font-jetbrains-mono-nerd-font"
 cask "font-monaspice-nerd-font"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
