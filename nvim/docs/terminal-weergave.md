@@ -8,45 +8,6 @@
 Dit begon als naslag voor een eventuele overstap. De uitkomsten staan hieronder
 in de volgorde waarin ze zijn vastgesteld; de laatste is de huidige stand.
 
-## Uitkomst: kitty, 11 september 2026
-
-Kitty is geïnstalleerd, ingericht en visueel beoordeeld, en op 13 september
-weer volledig verwijderd — de branch is weg bij beide remotes. Wat hier staat
-bleef relevant, want Ghostty liep tegen dezelfde vragen aan.
-
-Display P3 bleek wél de oplossing. Niet omdat het onderzoek fout was, maar
-omdat de referentie verschoof. Met Alacritty als doel is `srgb` correct — die
-tagt zijn venster hard als sRGB, zonder optie. Neovide tagt óók, maar op macOS
-standaard als `deviceRGB`: dan converteert het systeem niet en landen dezelfde
-RGB-waarden in het kleurbereik van het scherm zelf, wat op P3 voller oogt. Blauw
-`#81a1c1` was daar het duidelijkst. Zodra Neovide de referentie werd in plaats
-van Alacritty, draaide het advies om naar `macos_colorspace displayp3`.
-
-De drie apps gaan dus fundamenteel anders met kleur om, en dat verklaart
-waarom ze nooit gelijk kónden zijn:
-
-| app       | kleurbeheer                    | instelbaar              |
-| --------- | ------------------------------ | ----------------------- |
-| Alacritty | tagt het venster hard als sRGB | nee                     |
-| Neovide   | tagt, standaard `deviceRGB`    | ja, `srgb`              |
-| kitty     | tagt, standaard sRGB           | ja, `macos_colorspace`  |
-| Ghostty   | tagt, standaard sRGB           | ja, `window-colorspace` |
-
-Verder uit de praktijk:
-
-- `text_composition_strategy 1.7 55`, tegen de macOS-default `1.7 30`. Het
-  eerste getal blijft: gamma raakt vooral donkere tekst op licht en doet bij
-  Nord bijna niets. Deze instelling herlaadt niet live.
-- Texture healing uit, en dat bevestigt de waarschuwing hieronder: de `m` oogde
-  meteen vreemd. In het fontbestand zelf nagegaan — `calt` roept lookups 159 tot
-  163 aan, die `m` vervangen door `m.both`, `m.left` of `m.right` afhankelijk
-  van de buren. In Alacritty zag je dat nooit, want die shapet niet. In Neovide
-  blijft het bewust aan.
-- Alle vier de faces expliciet opgeven, niet `bold_font auto`. Monaspace zet
-  elke weight in een eigen familie, dus kitty's automatische keuze landde op
-  `MonaspiceNeNFM-Medium` in plaats van `-Bold`. Nagemeten met kitty's eigen
-  fontresolutie; `kitten choose-fonts` toont hetzelfde.
-
 ## Omgedraaid: Neovide naar Alacritty, 13 september 2026
 
 Alacritty is de referentie voor de weergave, ook nu Ghostty de terminal is die
@@ -380,29 +341,6 @@ bewijs dat P3 voor mijn setup beter is.
 over Linux/HDR. Zulke meldingen niet zonder meer vertalen naar een Mac.
 Een melding bevestigt dat iemand een verschil ziet, niet dat alle versies en
 schermen dezelfde oorzaak of oplossing hebben.
-
-## kitty
-
-Begin met `macos_colorspace srgb`, `text_composition_strategy platform` en
-`macos_thicken_font 0`: de gedocumenteerde defaults. Neem daarnaast mijn exacte
-font en kleuren over. Gebruik `kitten choose-fonts` om de faces te controleren.
-
-Bij afwijkende letterdikte is `text_composition_strategy` de relevante instelling.
-`legacy` maakt doorgaans lichte tekst op donker dunner, maar kan onregelmatige
-strokes geven. Numerieke waarden sturen gamma en extra contrast; de beschreven
-macOS-default is `1.7 30`. Dit is geen equivalente schaal voor Ghostty's `70`.
-Herstart kitty bij zo'n vergelijking: deze compositie-instelling is niet live
-herlaadbaar. Display P3 is niet het uitgangspunt voor een sRGB-match — maar zie
-de uitkomst bovenaan: met Neovide als referentie werd het juist de oplossing.
-[kitty-configreferentie](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.text_composition_strategy).
-
-Ook hierover bestaan directe vergelijkingen met Alacritty:
-[issue #6643](https://github.com/kovidgoyal/kitty/issues/6643) beschrijft minder
-scherpe tekst op een 1080p-scherm; de maker verwijst naar
-`text_composition_strategy` voor persoonlijke afstemming.
-[Issue #2580](https://github.com/kovidgoyal/kitty/issues/2580) meldt juist te dunne
-fonts. Dit zijn historische gebruikerservaringen, geen vaststaand oordeel over
-de huidige versie of mijn scherm.
 
 ## foot
 

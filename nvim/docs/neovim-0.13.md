@@ -58,8 +58,8 @@ Resultaat:
 | `:restart`               | eigen sessie wordt na Neovims herstel correct teruggevonden  |
 
 De graphics-healthcheck faalde in de geïsoleerde headless testterminal. Dat
-zegt alleen dat daar geen imageprotocol beschikbaar was. Kitty levert dat
-protocol wel, dus daar is `vim.ui.img` interactief te testen.
+zegt alleen dat daar geen imageprotocol beschikbaar was. Interactieve weergave
+via `vim.ui.img` is daarmee niet getest.
 
 De tijdelijke testomgeving is na de controle volledig verwijderd. De
 stabiele Neovim-installatie, plugindata en sessies zijn niet gewijzigd.
