@@ -72,6 +72,11 @@ set grepformat=%f:%l:%c:%m
 " Keep a subtle gutter as visual padding, even when there are no signs.
 set signcolumn=yes
 
+" Show whitespace. leadmultispace repeats over the indent, so it draws a guide
+" every 4 columns. Tabs fall back to the tab char; leadtab is Neovim-only.
+set list
+let &listchars = 'tab:» ,trail:·,nbsp:␣,leadmultispace:│   '
+
 " Always show the statusline.
 set laststatus=2
 
@@ -88,6 +93,17 @@ filetype plugin indent on
 
 " Keep the gutter the same color as the editor background.
 highlight! link SignColumn Normal
+
+" Whitespace markers default to ANSI blue, which reads as content. Color 8 is
+" the terminal's dim grey (#4C566A in the Nord palette ghostty loads).
+highlight SpecialKey cterm=NONE ctermfg=8 gui=NONE guifg=#4C566A
+highlight NonText    cterm=NONE ctermfg=8 gui=NONE guifg=#4C566A
+
+" The statusline defaults to reverse video, which inverts to a solid bright bar.
+" Blue instead, so it reads as Vim at a glance: Neovim's bar is grey. Color 4 is
+" #81A1C1 in the Nord palette ghostty loads; dark text keeps it readable.
+highlight StatusLine   cterm=NONE ctermfg=0 ctermbg=4 gui=NONE guifg=#2E3440 guibg=#81A1C1
+highlight StatusLineNC cterm=NONE ctermfg=8 ctermbg=0 gui=NONE guifg=#4C566A guibg=#3B4252
 
 " Extend % wherever a filetype defines extra matching pairs.
 packadd! matchit
