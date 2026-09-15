@@ -68,8 +68,6 @@ cask "ghostty"
 cask "hyperkey"
 # Free cross-platform office suite, fresh version
 cask "libreoffice"
-# Neovim Client
-cask "neovide-app"
 # Utility to uninstall apps and remove leftover files from old/uninstalled apps
 cask "pearcleaner"
 # JDK from the Eclipse Foundation (Adoptium)

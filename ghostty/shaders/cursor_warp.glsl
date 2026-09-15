@@ -1,4 +1,4 @@
-// Cursor trail voor ghostty, met de animatielogica van neovide.
+// Cursor trail voor ghostty.
 //
 // Origineel: cursor_warp.glsl uit sahaj-b/ghostty-cursor-shaders (MIT).
 

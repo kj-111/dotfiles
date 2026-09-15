@@ -71,7 +71,7 @@ staat. Hangt hij: `:lsp restart` herstart de clients van deze buffer
 Op 11 september 2026 gaf rust-analyzer `1.98.1` tijdens typen herhaaldelijk
 `-32603: request handler panicked: field FieldIndex(4294967295) out of range`.
 De logs wezen op `textDocument/diagnostic` en rust-analyzers interne
-MIR/borrow-checkanalyse, niet op Neovide of Blink. `:lsp restart` verhielp
+MIR/borrow-checkanalyse. `:lsp restart` verhielp
 de meldingen; er is niets aan de config gewijzigd.
 
 [Upstream #22928](https://github.com/rust-lang/rust-analyzer/issues/22928)

@@ -43,7 +43,7 @@ export FZF_DEFAULT_COMMAND="rg --files --hidden --no-ignore --glob '!.git'"
 [[ -r /opt/homebrew/opt/fzf/shell/completion.zsh ]] && source /opt/homebrew/opt/fzf/shell/completion.zsh
 [[ -r /opt/homebrew/opt/fzf/shell/key-bindings.zsh ]] && source /opt/homebrew/opt/fzf/shell/key-bindings.zsh
 
-alias c='clear' q='exit' nv='nvim' nvide='neovide' sioyek='open -a Sioyek' lg='lazygit'
+alias c='clear' q='exit' nv='nvim' sioyek='open -a Sioyek' lg='lazygit'
 
 mkcd() { mkdir -p "$1" && cd "$1" }
 

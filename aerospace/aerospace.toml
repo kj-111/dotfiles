@@ -63,9 +63,6 @@ run = 'move-node-to-workspace 3'
 [[on-window-detected]]
 if.app-id = 'org.greenfoot.Greenfoot'
 run = 'move-node-to-workspace 3'
-[[on-window-detected]]
-if.app-name-regex-substring = '(?i)neovide'
-run = ['fullscreen on', 'move-node-to-workspace 1']
 
 [mode.main.binding]
 # Terminal-"tabs" = losse Ghostty-vensters: cmd-n maakt er een, de accordion

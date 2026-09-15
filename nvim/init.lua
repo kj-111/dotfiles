@@ -8,7 +8,6 @@
 vim.loader.enable()
 
 require('set')
-require('config.neovide').setup()
 require('autocmds')
 require('remap')
 
