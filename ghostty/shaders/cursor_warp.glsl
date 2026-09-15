@@ -1,6 +1,13 @@
 // Cursor trail voor ghostty.
 //
 // Origineel: cursor_warp.glsl uit sahaj-b/ghostty-cursor-shaders (MIT).
+//
+// De animatielogica is volledig overgezet uit de broncode van neovide 0.16.2:
+// src/renderer/cursor_renderer/mod.rs en src/renderer/animation_utils.rs.
+// Daar komen de veerformule, de duren per hoek, de sortering die bepaalt welke
+// hoek achterblijft en de regel voor korte sprongen vandaan. Wie deze shader
+// ooit vervangt door een nieuwere upstreamversie, moet die twee bestanden er
+// weer naast leggen.
 
 const float DURATION = 0.15;
 const float SHORT_DURATION = 0.04;
