@@ -1,5 +1,5 @@
 -- Neovim Version: NVIM v0.12.5
--- macOS Version: 26.6.2
+-- macOS Version: 27.0
 
 -- Filosofie: bewust minimaal en native
 
