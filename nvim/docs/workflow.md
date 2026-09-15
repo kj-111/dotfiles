@@ -9,8 +9,8 @@ De cwd is het anker: de pickers, `:grep`, `:make` en de LSP-root werken
 allemaal vanaf daar — én de sessie, zie onderaan.
 
 1. In de terminal `cd` naar de projectmap, dan `nvim` zonder argumenten: zo
-   wordt de projectsessie hersteld en later weer bewaard. `nvim .` (start in
-   oil) of `nvim src/Main.java` is bewust een eenmalige start zonder
+   wordt een bestaande projectsessie hersteld en later weer bewaard. `nvim .`
+   (start in oil) of `nvim src/Main.java` is bewust een eenmalige start zonder
    automatisch sessieherstel of -bewaring
 2. Nieuw Java-project: eerst `jinit naam`; losse map zonder projectbestanden:
    `touch .java-root`, anders vindt jdtls zijn root niet
@@ -24,8 +24,7 @@ allemaal vanaf daar — én de sessie, zie onderaan.
    verplaatst — dan worden relatieve commando's als `:e bestand` weer kort.
    Alleen voor dít venster: `:lcd map` — ":h :lcd: only set the current
    directory for the current window"; andere splits houden het anker
-7. Klaar: `:qa` — na de argumentloze projectstart wordt de sessie bewaard,
-   zie onderaan
+7. Klaar: `:qa` — een actieve sessie wordt bewaard; zie onderaan
 
 ## Twee bestanden naast elkaar
 
@@ -115,14 +114,7 @@ plaats van als live diagnose. Wanneer je wat wil: compileren.md.
 
 ## Terugkomen: de sessie
 
-Sluit je nvim af, dan wordt de stand van die map bewaard: je buffers, de
-arglist, de vensterindeling, je folds en zelfs de terminal-split (die komt
-terug met een verse shell). Start je later `nvim` zónder argumenten in
-dezelfde map, dan staat alles er weer.
-
-- de sessie hangt aan de cwd, dus `~/project` en `~/project/src` zijn er twee
-- `nvim bestand.java` overslaat het herstel: met een argument wil je dát
-  bestand, niet je vorige stand; zo'n eenmalige start overschrijft de bewaarde
-  projectsessie bij afsluiten ook niet
-
-Hoe het werkt, waar het staat en wat er precies in gaat: sessie.md.
+Voer in een project één keer `:SessionCreate` uit om de sessie aan te maken.
+Daarna herstelt `nvim` zonder argumenten in diezelfde map de sessie en bewaart
+`:qa` de nieuwe stand. Zonder aangemaakte of herstelde sessie wordt niets
+automatisch bewaard. Inhoud, opslag en uitzonderingen: [sessie.md](sessie.md).
